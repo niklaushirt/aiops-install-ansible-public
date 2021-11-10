@@ -1,0 +1,298 @@
+
+# *************************************************************************************************************************************************
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Connection Details
+# --------------------------------------------------------------------------------------------------------------------------------------
+# *************************************************************************************************************************************************
+
+# *************************************************************************************************************************************************
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Get Cluster FQDN
+# --------------------------------------------------------------------------------------------------------------------------------------
+# *************************************************************************************************************************************************
+
+- name: PREREQUISITES -  🌏 Get Cluster FQDN
+  shell: |
+    CLUSTER_ROUTE=$(oc get routes console -n openshift-console | tail -n 1 2>&1 ) 
+    CLUSTER_FQDN=$( echo $CLUSTER_ROUTE | awk '{print $2}')
+    echo ${CLUSTER_FQDN##*console.}
+  register: CLUSTER_NAME
+
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# WAIOPS
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: LOGIN -  🚀 WAIOPS
+  shell: |
+    echo "CloudPak for Watson AIOps"
+    echo "**********************************************************************************************************************************"
+    echo "CP4WAIOPS"
+    echo "**********************************************************************************************************************************"
+    echo "    AIOPS:"
+    echo "        URL:      https://cpd-{{ WAIOPS_NAMESPACE }}.{{ CLUSTER_NAME.stdout }}"
+    echo "        ADMIN USER:"
+    echo "         User:     $(oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_username}' | base64 --decode && echo)"
+    echo "         Password: $(oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 --decode)"
+    echo " "
+    echo "    Administration hub / Common Services"
+    echo "        URL:      https://cp-console.{{ CLUSTER_NAME.stdout }}"
+    echo "        User:     $(oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_username}' | base64 --decode && echo)"
+    echo "        Password: $(oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 --decode)"
+    echo " "
+    echo " "
+    echo " "
+    echo " "
+  register: output_string
+  ignore_errors: yes
+- name: LOGIN -          🔐 WAIOPS
+  debug: 
+    var: output_string.stdout_lines
+  #when: PRINT_LOGINS == true
+
+
+
+
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# OCP Demo User
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: LOGIN -  🚀 OCP Demo User
+  shell: |
+    echo "**********************************************************************************************************************************"
+    echo "OCP Connection Details"
+    echo "**********************************************************************************************************************************"
+    DEMO_TOKEN=$(oc -n default get secret $(oc get secret -n default |grep -m1 demo-admin-token|awk '{print$1}') -o jsonpath='{.data.token}'|base64 --decode)
+    DEMO_URL=$(oc status|grep -m1 "In project"|awk '{print$6}')
+    echo "        URL:     $DEMO_URL"
+    echo "        Token:   $DEMO_TOKEN"
+    echo ""
+    echo ""
+    echo ""
+    echo "        Login:   oc login --token=$DEMO_TOKEN --server=$DEMO_URL"
+    echo ""
+    echo " "
+    echo " "
+    echo " "
+    echo " "
+  register: output_string
+  ignore_errors: yes
+- name: LOGIN -          🔐 OCP Demo User
+  debug: 
+    var: output_string.stdout_lines
+  #when: PRINT_LOGINS == true
+
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Demo Apps
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: LOGIN -  🚀 Demo Apps
+  shell: |
+    echo "**********************************************************************************************************************************"
+    echo "Demo Apps - Details"
+    echo "**********************************************************************************************************************************"
+    appURL=$(oc get routes -n robot-shop web  -o jsonpath="{['spec']['host']}")|| true
+    echo "    RobotShop:"
+    echo "        APP URL:           http://$appURL/"
+    echo ""
+    appURL=$(oc get routes -n kubetoy kubetoy  -o jsonpath="{['spec']['host']}")|| true
+    echo "    Kubetoy:"
+    echo "        APP URL:           http://$appURL/"
+    echo " "
+    echo " "
+    echo " "
+    echo " "
+  register: output_string
+  ignore_errors: yes
+- name: LOGIN -          🔐 Demo Apps
+  debug: 
+    var: output_string.stdout_lines
+  #when: PRINT_LOGINS == true
+
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# LDAP Connection
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: LOGIN -  🚀 LDAP Connection
+  shell: |
+    echo "**********************************************************************************************************************************"
+    echo "LDAP Connection Details"
+    echo "**********************************************************************************************************************************"
+    echo "    OPENLDAP:"
+    echo "        URL:      http://openldap-admin-default.{{ CLUSTER_NAME.stdout }}/"
+    echo "        User:     cn=admin,dc=ibm,dc=com"
+    echo "        Password: P4ssw0rd!"
+    echo " "
+    echo " "
+    echo " "
+    echo " "
+  register: output_string
+  ignore_errors: yes
+- name: LOGIN -          🔐 LDAP Connection
+  debug: 
+    var: output_string.stdout_lines
+  #when: PRINT_LOGINS == true
+
+
+
+
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# ADDONS - Turbonomic
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: CHECK -  🔎 ADDONS - Turbonomic
+  k8s_info:
+    kind: Namespace
+    name: turbonomic
+  register: K8S_EXISTS
+
+- name: LOGIN -  🚀 ADDONS - Turbonomic
+  block:
+  - name: LOGIN -  🚀 ADDONS - Turbonomic
+    shell: |
+      echo "**********************************************************************************************************************************"
+      echo "Turbonomic Dashboard Connection Details"
+      echo "**********************************************************************************************************************************"
+      echo "    Turbonomic Dashboard :"
+      echo "        URL:      https://api-turbonomic.{{ CLUSTER_NAME.stdout }}/"
+      echo "        User:     administrator"
+      echo "        Password: As set at init step"
+      echo " "
+      echo " "
+      echo " "
+      echo " "
+    register: ready
+    ignore_errors: yes
+  - name: LOGIN -          🔐 ADDONS - Turbonomic
+    debug: 
+      var: ready.stdout_lines
+    #when: PRINT_LOGINS == true
+  when: K8S_EXISTS.resources|length != 0
+
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# ADDONS - Humio
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: CHECK -  🔎 ADDONS - Humio
+  k8s_info:
+    kind: Namespace
+    name: humio-logging
+  register: K8S_EXISTS
+
+- name: LOGIN -  🚀 ADDONS - Humio
+  block:
+  - name: LOGIN -  🚀 ADDONS - Humio
+    shell: |
+      echo "**********************************************************************************************************************************"
+      echo "HUMIO Connection Details"
+      echo "**********************************************************************************************************************************"
+      echo "    HUMIO:"
+      echo "        URL:      http://humio-humio-logging.{{ CLUSTER_NAME.stdout }}/"
+      echo "        User:     developer"
+      echo "        Password: $(oc get secret developer-user-password -n humio-logging -o=template --template={{.data.password}} | base64 --decode)"
+      echo ""
+      echo ""
+      echo ""
+      echo "        INTEGRATION URL:      http://humio-humio-logging.{{ CLUSTER_NAME.stdout }}/api/v1/repositories/aiops/query"
+      echo " "
+      echo " "
+      echo " "
+      echo " "
+    register: output_string
+    ignore_errors: yes
+  - name: LOGIN -          🔐 ADDONS - Humio
+    debug: 
+      var: output_string.stdout_lines
+    #when: PRINT_LOGINS == true
+  when: K8S_EXISTS.resources|length != 0
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# ADDONS - Rook/Ceph
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: CHECK -  🔎 ADDONS - Rook/Ceph
+  k8s_info:
+    kind: Namespace
+    name: rook-ceph
+  register: K8S_EXISTS
+
+- name: LOGIN -  🚀 ADDONS - Rook/Ceph
+  block:
+  - name: LOGIN -  🚀 ADDONS - Rook/Ceph
+    shell: |
+      echo "**********************************************************************************************************************************"
+      echo "Rook/Ceph Dashboard Connection Details"
+      echo "**********************************************************************************************************************************"
+      echo "    Rook/Ceph Dashboard :"
+      echo "        URL:      https://dash-rook-ceph.{{ CLUSTER_NAME.stdout }}/"
+      echo "        User:     admin"
+      echo "        Password: $(oc -n rook-ceph get secret rook-ceph-dashboard-password -o jsonpath="{['data']['password']}" | base64 --decode)"
+    register: output_string
+    ignore_errors: yes
+  - name: LOGIN -          🔐 ADDONS - Rook/Ceph
+    debug: 
+      var: output_string.stdout_lines
+    #when: PRINT_LOGINS == true
+  when: K8S_EXISTS.resources|length != 0
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# USER
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: LOGIN -  🚀 Flink Task Manager
+  shell: |
+    echo "**********************************************************************************************************************************"
+    echo "Flink Task Manager"
+    echo "**********************************************************************************************************************************"
+    appURL=$(oc get routes -n {{ WAIOPS_NAMESPACE }} job-manager  -o jsonpath="{['spec']['host']}")
+    echo "    Flink Task Manager:"
+    echo "        APP URL:           https://$appURL/"
+    echo ""
+    echo "        In Chrome: if you get blocked just type "thisisunsafe" and it will continue (you don't get any visual feedback when typing!)"
+    echo " "
+    echo " "
+    echo " "
+    echo " "
+  register: output_string
+  ignore_errors: yes
+- name: LOGIN -          🔐 Flink Task Manager
+  debug: 
+    var: output_string.stdout_lines
+  #when: PRINT_LOGINS == true
+
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Service Now
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: LOGIN -  🚀 Service Now Connection
+  shell: |
+    echo "**********************************************************************************************************************************"
+    echo "Service Now Connection Details"
+    echo "**********************************************************************************************************************************"
+    echo "    INTEGRATION SNOW-->CP4WAIOPS:"
+    echo "        URL:                   https://cpd-aiops.{{ CLUSTER_NAME.stdout }}    (URL for IBM Watson AIOps connection)"
+    echo "        Instance Name:         aimanager"
+    echo "        User:                  admin"
+    echo "        Password:              $(oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 --decode)"
+    echo ""
+    echo "    INTEGRATION CP4WAIOPS-->SNOW:"
+    echo "        URL:                   Your SNOW URL"
+    echo "        User ID:               abraham.lincoln             (if you followed the demo install instructions)"
+    echo "        Password:              P4ssw0rd!                   (if you followed the demo install instructions)"
+    echo "        Encrypted Password:    g4W3L7/eFsUjV0eMncBkbg==    (if you followed the demo install instructions)"
+    echo " "
+    echo " "
+    echo " "
+    echo " "
+  register: output_string
+  ignore_errors: yes
+- name: LOGIN -          🔐 Service Now Connection
+  debug: 
+    var: output_string.stdout_lines
+  #when: PRINT_LOGINS == true

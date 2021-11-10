@@ -1,0 +1,113 @@
+
+# *************************************************************************************************************************************************
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Install HUMIO
+# --------------------------------------------------------------------------------------------------------------------------------------
+# *************************************************************************************************************************************************
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Install HUMIO
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: HUMIO -              🚀 Create humio-logging namespace
+  community.kubernetes.k8s:
+    api_version: v1
+    kind: Namespace
+    name: "humio-logging"
+    state: present
+  
+
+- name: HUMIO -              🚀 Install Humio
+  community.kubernetes.k8s:
+    state: present
+    namespace: humio-logging
+    src: ./templates/humio/humio-install.yaml
+  register: task_result
+- name: DEBUG - 🟢 Output
+  debug: 
+    var: task_result.stdout_lines
+    verbosity: 1
+
+- name: HUMIO -              🚀 Humio SCC
+  shell: |
+    oc adm policy add-scc-to-user privileged -n humio-logging -z humio-instance
+    oc adm policy add-scc-to-user privileged -n humio-logging -z default
+
+
+- name: HUMIO -              🚀 Create Humio Route
+  community.kubernetes.k8s:
+    state: present
+    namespace: humio-logging
+    src: ./templates/humio/humio-route.yaml
+  
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Wait for humio-logging being ready
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: HUMIO -              🕦 Wait for humio-logging to become ready
+  shell: oc get pod -n humio-logging humio-instance-humio-core-0 | grep -v Running |grep -v Completed | grep -c ""
+  register: kubectl_get_pods
+  until: kubectl_get_pods.stdout == "1"
+  retries: 500
+  delay: 15
+  
+
+- name: HUMIO -              🚀 Patch Humio Instance
+  shell: |
+    oc delete -n humio-logging secret developer-user-password
+    oc apply -n humio-logging -f ./templates/humio/change-humio-dev-pwd.yaml
+    oc delete -n humio-logging pod humio-instance-humio-core-0
+
+
+- name: HUMIO -              🚀 FluentBit SCC
+  shell: |
+    oc adm policy add-scc-to-user privileged -n humio-logging -z humio-fluentbit-fluentbit-read
+
+
+
+- name: HUMIO -              🚀 Install FluentBit
+  community.kubernetes.k8s:
+    state: present
+    namespace: humio-logging
+    src: ./templates/humio/fluentbit-install.yaml
+
+
+- name: HUMIO -              🚀 Patch FluentBit
+  shell: |
+    oc patch DaemonSet humio-fluentbit-fluentbit -n humio-logging -p '{"spec": {"template": {"spec": {"containers": [{"name": "humio-fluentbit","image": "fluent/fluent-bit:1.4.2","securityContext": {"privileged": true}}]}}}}' --type=merge
+    oc apply -n humio-logging -f ./templates/humio/FluentbitDaemonSet_CUSTOM.yaml
+    oc delete -n humio-logging pods -l k8s-app=humio-fluentbit
+
+
+# *************************************************************************************************************************************************
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Get Cluster FQDN
+# --------------------------------------------------------------------------------------------------------------------------------------
+# *************************************************************************************************************************************************
+
+- name: PREREQUISITES -      🌏 Get Cluster FQDN
+  shell: |
+    CLUSTER_ROUTE=$(oc get routes console -n openshift-console | tail -n 1 2>&1 ) 
+    CLUSTER_FQDN=$( echo $CLUSTER_ROUTE | awk '{print $2}')
+    echo ${CLUSTER_FQDN##*console.}
+  register: CLUSTER_NAME
+
+
+
+
+- name: HUMIO -              🚀 Output Humio Connection Details
+  shell: |
+    echo "**********************************************************************************************************************************"
+    echo "HUMIO Connection Details"
+    echo "**********************************************************************************************************************************"
+    echo "    HUMIO:"
+    echo "        URL:      http://humio-humio-logging.{{ CLUSTER_NAME.stdout }}/"
+    echo "        User:     developer"
+    echo "        Password: $(oc get secret developer-user-password -n humio-logging -o=template --template={{.data.password}} | base64 --decode)"
+    echo ""
+    echo ""
+    echo ""
+    echo "        INTEGRATION URL:      http://humio-humio-logging.{{ CLUSTER_NAME.stdout }}/api/v1/repositories/aiops/query"
+    echo " "
+    echo " "
+    echo " "
+    echo " "
