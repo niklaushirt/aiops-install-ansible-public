@@ -1,5 +1,5 @@
 
-# SLACK TOKEN (User OAuth Token - must start with xoxp-*)
+# SLACK TOKEN (User OAuth Token - must start with xoxp)
 # See documentation under "Create User OAUTH Token"  -  not_configured
 export SLACK_TOKEN=not_configured
 
@@ -62,6 +62,7 @@ echo "--------------------------------------------------------------------------
 
   export SLACK_CHANNEL=$SLACK_REACTIVE
   python3 ./tools/98_reset/slack-cleaner.py
+
 echo " ✅ OK"
 
 

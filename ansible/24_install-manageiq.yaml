@@ -23,7 +23,6 @@
   vars_files: ../00_config_cp4waiops.yaml
 
   roles:
-
     - role: 24_aiops-addons-manageiq
     
 

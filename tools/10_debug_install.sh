@@ -96,13 +96,11 @@ function check_array(){
 }
 
 
-WAIOPS_PARAMETER=$(cat ./00_config_cp4waiops.yaml|grep WAIOPS_NAMESPACE:)
-WAIOPS_NAMESPACE=${WAIOPS_PARAMETER##*:}
-WAIOPS_NAMESPACE=$(echo $WAIOPS_NAMESPACE|tr -d '[:space:]')
+export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
 
-NOI_PARAMETER=$(cat ./00_config_cp4waiops.yaml|grep NOI_NAMESPACE:)
-NOI_NAMESPACE=${NOI_PARAMETER##*:}
-NOI_NAMESPACE=$(echo $NOI_NAMESPACE|tr -d '[:space:]')
+EVTMGR_PARAMETER=$(cat ./00_config_cp4waiops.yaml|grep EVTMGR_NAMESPACE:)
+EVTMGR_NAMESPACE=${EVTMGR_PARAMETER##*:}
+EVTMGR_NAMESPACE=$(echo $EVTMGR_NAMESPACE|tr -d '[:space:]')
 
 
 CLUSTER_ROUTE=$(oc get routes console -n openshift-console | tail -n 1 2>&1 ) 
@@ -209,7 +207,7 @@ menu_check_install_aimgr () {
       echo "🔎 Pods not ready in Namespace $WAIOPS_NAMESPACE"
       echo "--------------------------------------------------------------------------------------------"
 
-      oc get pods -n $WAIOPS_NAMESPACE | grep -v "Completed" | grep "0/"
+      oc get pods -n $WAIOPS_NAMESPACE | grep -v "Completed"| grep -v "Error" | grep "0/"
 
 
       echo ""
@@ -231,12 +229,12 @@ menu_check_install_aimgr () {
             echo ""
             echo ""
             echo "ibm-entitlement-key Pull Secret"
-            oc get secret/ibm-entitlement-key -n cp4waiops --template='{{index .data ".dockerconfigjson" | base64decode}}'
+            oc get secret/ibm-entitlement-key -n $WAIOPS_NAMESPACE --template='{{index .data ".dockerconfigjson" | base64decode}}'
 
             echo ""
             echo ""
             echo "ibm-aiops-pull-secret Pull Secret"
-            oc get secret/ibm-aiops-pull-secret -n cp4waiops --template='{{index .data ".dockerconfigjson" | base64decode}}'
+            oc get secret/ibm-aiops-pull-secret -n $WAIOPS_NAMESPACE --template='{{index .data ".dockerconfigjson" | base64decode}}'
 
       else
             echo "      ✅ OK: All images can be pulled"; 
@@ -247,57 +245,67 @@ menu_check_install_aimgr () {
       echo ""
       echo ""
       echo "--------------------------------------------------------------------------------------------"
-      echo "🔎 Check ZEN Operator"
+      echo "🔎 Check Camel-K Handlers (Hack for 3.2 GA)"
       echo "--------------------------------------------------------------------------------------------"
 
-      export ZEN_LOGS=$(oc logs $(oc get po -n ibm-common-services|grep ibm-zen-operator|awk '{print$1}') -n ibm-common-services)
-      export ZEN_ERRORS=$(echo $ZEN_LOGS|grep -i error)
-      export ZEN_FAILED=$(echo $ZEN_LOGS|grep -i "failed=0")
-      export ZEN_READY=$(echo $ZEN_LOGS|grep -i "ok=2")
-
-      if  ([[ $ZEN_FAILED == "" ]]); 
+    
+      POD_STATUS=$(oc get po -n $WAIOPS_NAMESPACE | grep handlers) 
+      if  ([[ $POD_STATUS =~ "0/" ]]); 
       then 
-            echo "      ⭕ Zen has errors"; 
-            echo "$ZEN_ERRORS"
-            echo "      ⭕ (You may want to run option: 29  - Restart Zen Job)";  
+            echo "      ⭕ Camel-K Handlers cannot connect to Vault"; 
+            echo "      ⭕ Run:"; 
+            echo "      ⭕    oc patch vaultaccess/ibm-vault-access -p '{\"spec\":{\"EVTMGR_\":\"760h\"}}' --type=merge -n $WAIOPS_NAMESPACE";  
+            echo "      ⭕    oc delete pod $(oc get po -n $WAIOPS_NAMESPACE|grep 0/| grep -v "Completed"| grep handlers|awk '{print$1}') -n $WAIOPS_NAMESPACE";  
             echo ""
       else
-            if  ([[ $ZEN_READY == "" ]]); 
-            then 
-                  echo "      ⭕ Zen Operator is still running"; 
-                  echo ""
-            else
-                  echo "      ✅ OK: ZEN Operator has run successfully"; 
-            fi
+            echo "      ✅ OK: Camel-K Handlers"; 
+
+      fi
+
+
+      echo ""
+      echo ""
+      echo "--------------------------------------------------------------------------------------------"
+      echo "🔎 Check Cassandra Pull Secret (Hack for 3.2 GA)"
+      echo "--------------------------------------------------------------------------------------------"
+
+    
+      POD_STATUS=$(oc get po -n $WAIOPS_NAMESPACE | grep aiops-topology-cassandra-auth-secret-generator) 
+      if  ([[  $POD_STATUS =~ "Pull" ]]); 
+      then 
+            echo "      ⭕ aiops-topology-cassandra-auth-secret-generator Pod cannot pull image"; 
+            echo "      ⭕ Run:"; 
+            echo "      ⭕    oc patch -n $WAIOPS_NAMESPACE serviceaccount aiops-topology-service-account -p '{\"imagePullSecrets\": [{\"name\": \"ibm-entitlement-key\"}]}'";  
+            echo "      ⭕    oc delete pod $(oc get po -n $WAIOPS_NAMESPACE|grep ImagePull|awk '{print$1}') -n $WAIOPS_NAMESPACE";  
+            echo ""
+      else
+            echo "      ✅ OK: Pod aiops-topology-cassandra-auth-secret-generator"; 
+
       fi
 
 
 
+
+
       echo ""
       echo ""
       echo "--------------------------------------------------------------------------------------------"
-      echo "🔎 Check IAF Operators"
+      echo "🔎 Check IR Analytics Pull Secret (Hack for 3.2 GA)"
       echo "--------------------------------------------------------------------------------------------"
 
       CP4AIOPS_CHECK_LIST=(
-     "iaf-flink-operator-controller-manager-cdf7d647f-c9sb8"	
-      "iaf-flink-operator-controller-manager-cdf7d647f"
-      "iaf-eventprocessing-operator-controller-manager-748bb7ddbc8v2sw"
-      "iaf-eventprocessing-operator-controller-manager-748bb7ddbc"
-      "ibm-common-service-operator-6b96b56bcb-zz6s4"
-      "iaf-core-operator-controller-manager-684b75d5b7-9f9h9"
-      "iaf-core-operator-controller-manager-684b75d5b7"
-      "iaf-operator-controller-manager-684c5c7897-rzvm4"
-      "iaf-operator-controller-manager-684c5c7897"
-      "ibm-elastic-operator-controller-manager-5c58fcdbdf-5k24h")
-
+            "aiops-ir-analytics-classifier"
+            "aiops-ir-analytics-probablecause"
+            "aiops-ir-analytics-spark-master"
+            "aiops-ir-analytics-spark-pipeline-composer"
+            "aiops-ir-analytics-spark-worker")
       for ELEMENT in ${CP4AIOPS_CHECK_LIST[@]}; do
-       echo "   Check $ELEMENT.."
-            ELEMENT_OK=$(oc get pod -n $WAIOPS_NAMESPACE --ignore-not-found | grep $ELEMENT || true) 
-            if  ([[ ! $ELEMENT_OK =~ "1/1" ]]); 
+        echo "   Check $ELEMENT.."
+            ELEMENT_OK=$(oc get pod -n $WAIOPS_NAMESPACE --ignore-not-found | grep $ELEMENT | grep "Pull" || true) 
+            if  ([[  $ELEMENT_OK =~ "Pull" ]]); 
             then 
                   echo "      ⭕ Pod $ELEMENT not runing successfully"; 
-                  echo "      ⭕ (You may want to run option: 21  - Patch IAF)"; 
+                  echo "      ⭕ (You may want to run option: 25  - Patch IR Pull Secrets)";  
                   echo ""
             else
                   echo "      ✅ OK: Pod $ELEMENT"; 
@@ -305,6 +313,15 @@ menu_check_install_aimgr () {
             fi
 
       done
+
+
+
+
+
+
+
+
+
 
       echo ""
       echo ""
@@ -334,6 +351,160 @@ menu_check_install_aimgr () {
 
 
    
+
+
+
+      echo ""
+      echo ""
+      echo "--------------------------------------------------------------------------------------------"
+      echo "🔎 Check Patches"
+      echo "--------------------------------------------------------------------------------------------"
+
+      INGRESS_OK=$(oc get namespace default -oyaml | grep ingress || true) 
+      if  ([[ ! $INGRESS_OK =~ "ingress" ]]); 
+      then 
+            echo "      ⭕ Ingress Not Patched"; 
+            echo "      ⭕ (You may want to run option: 23  - Patch/enable ZEN route traffic)";  
+            echo ""
+      else
+            echo "      ✅ OK: Ingress Patched"; 
+
+      fi
+
+
+      PATCH_OK=$(oc get deployment aiops-topology-merge -n $WAIOPS_NAMESPACE -oyaml --ignore-not-found| grep "failureThreshold: 61" || true) 
+      if  ([[ ! $PATCH_OK =~ "failureThreshold: 61" ]]); 
+      then 
+            echo "      ⭕ aiops-topology-merge Not Patched"; 
+            echo "      ⭕ (You may want to run option: 22  - Patch evtmanager topology pods)";  
+            echo ""
+      else
+            echo "      ✅ OK: evtmanager-topology-merge Patched"; 
+      fi
+
+
+
+
+      echo ""
+      echo ""
+      echo "--------------------------------------------------------------------------------------------"
+      echo "🔎 Check Routes"
+      echo "--------------------------------------------------------------------------------------------"
+
+
+
+      ROUTE_OK=$(oc get route job-manager -n $WAIOPS_NAMESPACE || true) 
+      if  ([[ ! $ROUTE_OK =~ "job-manager" ]]); 
+      then 
+            echo "      ⭕ job-manager Route does not exist"; 
+            echo "      ⭕ (You may want to run option: 12  - Recreate custom Routes)";  
+            echo ""
+      else
+            echo "      ✅ OK: job-manager Route exists"; 
+      fi
+
+
+      echo ""
+      echo ""
+      echo "--------------------------------------------------------------------------------------------"
+      echo "🔎 Check Error Events"
+      echo "--------------------------------------------------------------------------------------------"
+      oc get events -n $WAIOPS_NAMESPACE|grep -v Normal
+
+
+      echo ""
+      echo ""
+      echo "--------------------------------------------------------------------------------------------"
+      echo "🔎 Check ZEN Operator (this may take a minute or two)"
+      echo "--------------------------------------------------------------------------------------------"
+
+      export ZEN_FAILED=$(oc logs $(oc get po -n ibm-common-services|grep ibm-zen-operator|awk '{print$1}') -n ibm-common-services|grep -i "failed=0")
+      export ZEN_READY=$(oc logs $(oc get po -n ibm-common-services|grep ibm-zen-operator|awk '{print$1}') -n ibm-common-services|grep -i "ok=2")
+      if  ([[ $ZEN_FAILED == "" ]]); 
+      then 
+            echo "      ⭕ Zen has errors"; 
+            echo "      ⭕ (You may want to run option: 29  - Restart Zen Job)";  
+            echo ""
+      else
+            if  ([[ $ZEN_READY == "" ]]); 
+            then 
+                  echo "      ⭕ Zen Operator is still running"; 
+                  echo ""
+            else
+                  echo "      ✅ OK: ZEN Operator has run successfully"; 
+            fi
+      fi
+
+
+      echo ""
+      echo ""
+      echo "--------------------------------------------------------------------------------------------"
+      echo "🔎 Check Base Operators"
+      echo "--------------------------------------------------------------------------------------------"
+
+      CP4AIOPS_CHECK_LIST=(
+            "aimanager-operator"
+            "iaf-core-operator-controller-manager"
+            "iaf-eventprocessing-operator-controller-manager"
+            "iaf-flink-operator-controller-manager"
+            "iaf-operator-controller-manager"
+            "ibm-aiops-orchestrator"
+            "ibm-common-service-operator"
+            "ibm-elastic-operator-controller-manager")
+
+      for ELEMENT in ${CP4AIOPS_CHECK_LIST[@]}; do
+       echo "   Check $ELEMENT.."
+            ELEMENT_OK=$(oc get pod -n $WAIOPS_NAMESPACE --ignore-not-found | grep $ELEMENT || true) 
+            if  ([[ ! $ELEMENT_OK =~ "1/1" ]]); 
+            then 
+                  echo "      ⭕ Pod $ELEMENT not runing successfully"; 
+                  echo "      ⭕ (You may want to run option: 21  - Patch IAF)"; 
+                  echo ""
+            else
+                  echo "      ✅ OK: Pod $ELEMENT"; 
+
+            fi
+
+      done
+
+
+      echo ""
+      echo ""
+      echo "--------------------------------------------------------------------------------------------"
+      echo "🔎 Check Secondary Operators"
+      echo "--------------------------------------------------------------------------------------------"
+
+      CP4AIOPS_CHECK_LIST=(
+           "aiopsedge-operator-controller-manager"
+            "asm-operator"
+            "camel-k-operator"
+            "couchdb-operator"
+            "ibm-cloud-databases-redis"
+            "ibm-ir-ai-operator-controller-manager"
+            "ibm-kong-operator"
+            "ibm-postgreservice-operator-controller-manager"
+            "ibm-secure-tunnel-operator"
+            "ibm-watson-aiops-ui-operator-controller-manager"
+            "ir-core-operator-controller-manager"
+            "ir-lifecycle-operator-controller-manager")
+
+      for ELEMENT in ${CP4AIOPS_CHECK_LIST[@]}; do
+       echo "   Check $ELEMENT.."
+            ELEMENT_OK=$(oc get pod -n $WAIOPS_NAMESPACE --ignore-not-found | grep $ELEMENT || true) 
+            if  ([[ ! $ELEMENT_OK =~ "1/1" ]]); 
+            then 
+                  echo "      ⭕ Pod $ELEMENT not runing successfully"; 
+                  echo "      ⭕ (You may want to run option: 21  - Patch IAF)"; 
+                  echo ""
+            else
+                  echo "      ✅ OK: Pod $ELEMENT"; 
+
+            fi
+
+      done
+
+
+  
 
 
 
@@ -394,11 +565,11 @@ menu_check_install_aimgr () {
             "aimanager-aio-tls"
             "aimanager-ibm-minio-access-secret"
             "aimanager-modeltrain-cert-secret"
-            "cp4waiops-cartridge-kafka-auth"
-            "cp4waiops-postgres-ibm-postgresql-auth-secret"
-            "cp4waiops-postgres-postgresql-conn-secret"
-            "cp4waiops-postgresdb-postgresql-cp4waiops-secret"
-            "cp4waiops-postgresdb-postgresql-cp4waiops-secret-alt")
+            "$WAIOPS_NAMESPACE-cartridge-kafka-auth"
+            "$WAIOPS_NAMESPACE-postgres-ibm-postgresql-auth-secret"
+            "$WAIOPS_NAMESPACE-postgres-postgresql-conn-secret"
+            "$WAIOPS_NAMESPACE-postgresdb-postgresql-$WAIOPS_NAMESPACE-secret"
+            "$WAIOPS_NAMESPACE-postgresdb-postgresql-$WAIOPS_NAMESPACE-secret-alt")
 
       for ELEMENT in ${CP4AIOPS_CHECK_LIST[@]}; do
         echo "   Check $ELEMENT.."
@@ -417,61 +588,12 @@ menu_check_install_aimgr () {
 
 
 
-
-      echo ""
-      echo ""
-      echo "--------------------------------------------------------------------------------------------"
-      echo "🔎 Check Patches"
-      echo "--------------------------------------------------------------------------------------------"
-
-      INGRESS_OK=$(oc get namespace default -oyaml | grep ingress || true) 
-      if  ([[ ! $INGRESS_OK =~ "ingress" ]]); 
-      then 
-            echo "      ⭕ Ingress Not Patched"; 
-            echo "      ⭕ (You may want to run option: 23  - Patch/enable ZEN route traffic)";  
-            echo ""
-      else
-            echo "      ✅ OK: Ingress Patched"; 
-
-      fi
-
-
-      PATCH_OK=$(oc get deployment aiops-topology-merge -n $WAIOPS_NAMESPACE -oyaml --ignore-not-found| grep "failureThreshold: 61" || true) 
-      if  ([[ ! $PATCH_OK =~ "failureThreshold: 61" ]]); 
-      then 
-            echo "      ⭕ aiops-topology-merge Not Patched"; 
-            echo "      ⭕ (You may want to run option: 22  - Patch evtmanager topology pods)";  
-            echo ""
-      else
-            echo "      ✅ OK: evtmanager-topology-merge Patched"; 
-      fi
-
-
-
-
-      echo ""
-      echo ""
-      echo "--------------------------------------------------------------------------------------------"
-      echo "🔎 Check Routes"
-      echo "--------------------------------------------------------------------------------------------"
-
-
-
-      ROUTE_OK=$(oc get route job-manager -n $WAIOPS_NAMESPACE || true) 
-      if  ([[ ! $ROUTE_OK =~ "job-manager" ]]); 
-      then 
-            echo "      ⭕ job-manager Route does not exist"; 
-            echo "      ⭕ (You may want to run option: 12  - Recreate custom Routes)";  
-            echo ""
-      else
-            echo "      ✅ OK: job-manager Route exists"; 
-      fi
 }
 
 
 
 
-menu_check_install_noi () {
+menu_check_INSTALL_EVTMGR () {
 
     echo "--------------------------------------------------------------------------------------------------------------------------------"
     echo " 🚀  Examining CP4WAIOPS Event Manager Installation for hints...." 
@@ -483,7 +605,7 @@ menu_check_install_noi () {
       echo "🔎 Installed Openshift Operator Versions"
       echo "--------------------------------------------------------------------------------------------"
 
-      oc get -n $NOI_NAMESPACE ClusterServiceVersion
+      oc get -n $EVTMGR_NAMESPACE ClusterServiceVersion
 
 
 
@@ -491,19 +613,19 @@ menu_check_install_noi () {
       echo ""
       echo ""
       echo "--------------------------------------------------------------------------------------------"
-      echo "🔎 Pods not ready in Namespace $NOI_NAMESPACE"
+      echo "🔎 Pods not ready in Namespace $EVTMGR_NAMESPACE"
       echo "--------------------------------------------------------------------------------------------"
 
-      oc get pods -n $NOI_NAMESPACE | grep -v "Completed" | grep "0/"
+      oc get pods -n $EVTMGR_NAMESPACE | grep -v "Completed" | grep "0/"
 
 
       echo ""
       echo ""
       echo "--------------------------------------------------------------------------------------------"
-      echo "🔎 Pods with Image Pull Errors in Namespace $NOI_NAMESPACE"
+      echo "🔎 Pods with Image Pull Errors in Namespace $EVTMGR_NAMESPACE"
       echo "--------------------------------------------------------------------------------------------"
 
-      export IMG_PULL_ERROR=$(oc get pods -n $NOI_NAMESPACE | grep "ImagePull")
+      export IMG_PULL_ERROR=$(oc get pods -n $EVTMGR_NAMESPACE | grep "ImagePull")
 
       if  ([[ ! $IMG_PULL_ERROR == "" ]]); 
       then 
@@ -516,12 +638,12 @@ menu_check_install_noi () {
             echo ""
             echo ""
             echo "ibm-entitlement-key Pull Secret"
-            oc get secret/ibm-entitlement-key -n $NOI_NAMESPACE --template='{{index .data ".dockerconfigjson" | base64decode}}'
+            oc get secret/ibm-entitlement-key -n $EVTMGR_NAMESPACE --template='{{index .data ".dockerconfigjson" | base64decode}}'
 
             echo ""
             echo ""
             echo "ibm-aiops-pull-secret Pull Secret"
-            oc get secret/ibm-aiops-pull-secret -n $NOI_NAMESPACE --template='{{index .data ".dockerconfigjson" | base64decode}}'
+            oc get secret/ibm-aiops-pull-secret -n $EVTMGR_NAMESPACE --template='{{index .data ".dockerconfigjson" | base64decode}}'
 
       else
             echo "      ✅ OK: All images can be pulled"; 
@@ -544,7 +666,7 @@ menu_check_install_noi () {
       "evtmanager-ibm-hdm-analytics-dev-inferenceservice")
       for ELEMENT in ${CP4AIOPS_CHECK_LIST[@]}; do
         echo "   Check $ELEMENT.."
-            ELEMENT_OK=$(oc get pod -n $NOI_NAMESPACE --ignore-not-found | grep $ELEMENT || true) 
+            ELEMENT_OK=$(oc get pod -n $EVTMGR_NAMESPACE --ignore-not-found | grep $ELEMENT || true) 
             if  ([[ ! $ELEMENT_OK =~ "1/1" ]]); 
             then 
                   echo "      ⭕ Pod $ELEMENT not runing successfully"; 
@@ -570,7 +692,7 @@ menu_check_install_noi () {
       "evtmanager-topology-topology")
       for ELEMENT in ${CP4AIOPS_CHECK_LIST[@]}; do
         echo "   Check $ELEMENT.."
-            ELEMENT_OK=$(oc get pod -n $NOI_NAMESPACE --ignore-not-found | grep $ELEMENT || true) 
+            ELEMENT_OK=$(oc get pod -n $EVTMGR_NAMESPACE --ignore-not-found | grep $ELEMENT || true) 
             if  ([[ ! $ELEMENT_OK =~ "1/1" ]]); 
             then 
                   echo "      ⭕ Pod $ELEMENT not runing successfully"; 
@@ -599,7 +721,7 @@ menu_check_install_noi () {
 
 
 
-      PATCH_OK=$(oc get deployment aiops-topology-merge -n $NOI_NAMESPACE -oyaml | grep "failureThreshold: 61" || true) 
+      PATCH_OK=$(oc get deployment aiops-topology-merge -n $EVTMGR_NAMESPACE -oyaml | grep "failureThreshold: 61" || true) 
       if  ([[ ! $PATCH_OK =~ "failureThreshold: 61" ]]); 
       then 
             echo "      ⭕ aiops-topology-merge Not Patched"; 
@@ -609,7 +731,12 @@ menu_check_install_noi () {
             echo "      ✅ OK: evtmanager-topology-merge Patched"; 
       fi
 
-
+      echo ""
+      echo ""
+      echo "--------------------------------------------------------------------------------------------"
+      echo "🔎 Check Error Events"
+      echo "--------------------------------------------------------------------------------------------"
+      oc get events -n $EVTMGR_NAMESPACE|grep -v Normal
 
 }
 
@@ -957,7 +1084,7 @@ menu_restart_namespace() {
           echo ""
           echo ""
 
-          echo " 🧻  Restarting Namespace $WAIOPS_NAMESPACE" 
+          echo " ❎  Restarting Namespace $WAIOPS_NAMESPACE" 
           oc delete pods -n $WAIOPS_NAMESPACE --all
           echo "      ✅ OK"
           
@@ -1048,13 +1175,14 @@ rm iaf-system-backup.yaml
 ingress_pod=$(oc get secrets -n openshift-ingress | grep tls | grep -v router-metrics-certs-default | awk '{print $1}')
 oc get secret -n openshift-ingress -o 'go-template={{index .data "tls.crt"}}' ${ingress_pod} | base64 -d > cert.crt
 oc get secret -n openshift-ingress -o 'go-template={{index .data "tls.key"}}' ${ingress_pod} | base64 -d > cert.key
-oc get secret -n $WAIOPS_NAMESPACE external-tls-secret -o 'go-template={{index .data "ca.crt"}}'| base64 -d > ca.crt
+oc get secret -n $WAIOPS_NAMESPACE iaf-system-automationui-aui-zen-ca -o 'go-template={{index .data "ca.crt"}}'| base64 -d > ca.crt
 # backup existing secret
 oc get secret -n $WAIOPS_NAMESPACE external-tls-secret -o yaml > external-tls-secret$(date +%Y-%m-%dT%H:%M:%S).yaml
 # delete existing secret
 oc delete secret -n $WAIOPS_NAMESPACE external-tls-secret
 # create new secret
 oc create secret generic -n $WAIOPS_NAMESPACE external-tls-secret --from-file=ca.crt=ca.crt --from-file=cert.crt=cert.crt --from-file=cert.key=cert.key --dry-run=client -o yaml | oc apply -f -
+#oc create secret generic -n $WAIOPS_NAMESPACE external-tls-secret --from-file=cert.crt=cert.crt --from-file=cert.key=cert.key --dry-run=client -o yaml | oc apply -f -
 # scale down nginx
 REPLICAS=2
 oc scale Deployment/ibm-nginx --replicas=0
@@ -1389,6 +1517,52 @@ menu_restart_operators() {
       fi
 }
 
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Patch IR Pull Secrets
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+menu_patch_ir_pull() {
+      echo "--------------------------------------------------------------------------------------------------------------------------------"
+      echo " 🚀  Patching IR Pull Secrets" 
+      echo "--------------------------------------------------------------------------------------------------------------------------------"
+      echo ""
+      echo ""
+        read -p " ❗❓ Continue? [y,N] " DO_COMM
+        if [[ $DO_COMM == "y" ||  $DO_COMM == "Y" ]]; then
+            echo "   ✅ Ok, continuing..."
+            echo ""
+            echo ""
+            echo ""
+            echo ""
+
+            echo "Patch evtmanager-ibm-hdm-analytics-dev-inferenceservice"
+                  oc patch -n $WAIOPS_NAMESPACE serviceaccount aiops-topology-service-account -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+                  oc patch -n $WAIOPS_NAMESPACE serviceaccount aiops-ir-analytics-spark-worker -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+                  oc patch -n $WAIOPS_NAMESPACE serviceaccount aiops-ir-analytics-spark-pipeline-composer -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+                  oc patch -n $WAIOPS_NAMESPACE serviceaccount aiops-ir-analytics-spark-master -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+                  oc patch -n $WAIOPS_NAMESPACE serviceaccount aiops-ir-analytics-probablecause -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+                  oc patch -n $WAIOPS_NAMESPACE serviceaccount aiops-ir-analytics-classifier -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+                  oc patch -n $WAIOPS_NAMESPACE serviceaccount aiops-ir-lifecycle-eventprocessor-ep -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+                  oc delete pod $(oc get po -n $WAIOPS_NAMESPACE|grep ImagePull|awk '{print$1}') -n $WAIOPS_NAMESPACE
+                 echo "      ✅ OK"
+             echo ""
+
+
+      else
+        echo "    ⚠️  Skipping"
+        echo "--------------------------------------------------------------------------------------------------------------------------------"
+        echo  ""    
+        echo  ""
+      fi
+}
+
+
+
+
+
 incorrect_selection() {
       echo "--------------------------------------------------------------------------------------------------------------------------------"
       echo " ❗ This option does not exist!" 
@@ -1440,6 +1614,7 @@ until [ "$selection" = "0" ]; do
   echo ""
   echo "    	21  - Patch IAF                                                - if the IBM Automation Foundation does not come up try this"
   echo "    	22  - Patch AI Manager merge topology pod                      - if the topology-merge pod is crashlooping"
+  echo "    	25  - Patch IR Pull Secrets                                    - if IR Pods have Image Pull Errors"
   echo "    	28  - Patch/enable ZEN route traffic                           - if ZEN related components are not coming up"
   echo "    	29  - Restart Zen Operator                                     - if Zen Operator Ansible Script has errors - (takes 15-20 minutes)"
   echo "" 
@@ -1465,12 +1640,13 @@ until [ "$selection" = "0" ]; do
   echo ""
   case $selection in
     1 ) clear ; menu_check_install_aimgr  ;;
-    2 ) clear ; menu_check_install_noi  ;;
+    2 ) clear ; menu_check_INSTALL_EVTMGR  ;;
     3 ) clear ; menu_check_install_all  ;;
     11 ) clear ; menu_ssl_certs  ;;
     12 ) clear ; menu_routes  ;;
     21 ) clear ; menu_patch_iaf  ;;
     22 ) clear ; menu_patch_merge_aimanager  ;;
+    25 ) clear ; menu_patch_ir_pull  ;;
     28 ) clear ; menu_enable_zen_traffic  ;;
     29 ) clear ; menu_restart_zen_operator  ;;
 

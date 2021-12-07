@@ -21,9 +21,13 @@ export EVENTS_TYPE=noi   # humio, elk, splunk, ...
 # Override Kafka Topic Name if you have several integrations. Check the name in AI Hub / Data Tools and Integrations / KAfka Integrations / Kafka Topic (greyed out, above Field Mapping)
 #export EVENTS_TOPIC=logs-humio-xyz # Comment out for autodetection
 
-export WAIOPS_PARAMETER=$(cat ./00_config_cp4waiops.yaml|grep WAIOPS_NAMESPACE:)
-export WAIOPS_NAMESPACE=${WAIOPS_PARAMETER##*:}
-export WAIOPS_NAMESPACE=$(echo $WAIOPS_NAMESPACE|tr -d '[:space:]')
+# Get Namespace from Cluster 
+echo "   ------------------------------------------------------------------------------------------------------------------------------"
+echo "   🔬 Getting Installation Namespace"
+echo "   ------------------------------------------------------------------------------------------------------------------------------"
+
+export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
+echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
 
 
 

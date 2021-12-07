@@ -49,24 +49,6 @@
     - role: 11_aiops-install
       when: INSTALL_AIOPS
 
-# Install Add-Ons while CP4WAIOPS is coming up
-    - role: 20_aiops-addons-turbonomic
-      when: INSTALL_TURBONOMIC
-
-    - role: 20_2_aiops-addons-turbonomic-metrics
-      when: INSTALL_TURBONOMIC_METRICS
-
-    - role: 20_3_aiops-addons-turbonomic-gateway
-      when: INSTALL_TURBONOMIC_GATEWAY
-
-    - role: 22_aiops-addons-elk
-      when: INSTALL_ELK
-
-    - role: 23_aiops-addons-awx
-      when: INSTALL_AWX
-
-    - role: 24_aiops-addons-manageiq
-      when: INSTALL_MANAGEIQ
 
 # Install Add-Ons while CP4WAIOPS is coming up
     - role: 25_aiops-addons-ldap
@@ -81,6 +63,9 @@
     - role: 28_aiops-addons-runbook-bastion
       when: INSTALL_RUNBOOK_BASTION
       
+
+
+
 # Wait for Common Services being completely installed
     - role: 99_aiops-wait-common-services
       when: INSTALL_AIOPS
@@ -103,10 +88,36 @@
       when: INSTALL_LDAP and INSTALL_AIOPS
 
 
+
+
+
 # Install Add-Ons after CP4WAIOPS has come up
+    - role: 20_aiops-addons-turbonomic
+      when: INSTALL_TURBONOMIC
+
+    - role: 20_2_aiops-addons-turbonomic-metrics
+      when: INSTALL_TURBONOMIC_METRICS
+
+    - role: 20_3_aiops-addons-turbonomic-gateway
+      when: INSTALL_TURBONOMIC_GATEWAY
+
     - role: 21_aiops-addons-humio
       when: INSTALL_HUMIO
  
+    - role: 22_aiops-addons-elk
+      when: INSTALL_ELK
+
+    - role: 23_aiops-addons-awx
+      when: INSTALL_AWX
+
+    - role: 24_aiops-addons-manageiq
+      when: INSTALL_MANAGEIQ
+
+    - role: 29_aiops-addons-servicemesh
+      when: INSTALL_ISTIO
+
+
+
 
 # Get all login credentials
     - role: 90_aiops-logins

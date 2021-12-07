@@ -32,7 +32,7 @@
 
 
 - name: CHECK -          🕦 Wait for all Pods in {{ WAIOPS_NAMESPACE }} to become ready
-  shell: oc get po -n {{ WAIOPS_NAMESPACE }} | grep -v Completed |grep "0/" |wc -l| tr -d ' '
+  shell: oc get po -n {{ WAIOPS_NAMESPACE }} | grep -v Completed | grep -v Error |grep "0/" |wc -l| tr -d ' '
   register: kubectl_get_pods
   until: kubectl_get_pods.stdout == "0"
   retries: 500

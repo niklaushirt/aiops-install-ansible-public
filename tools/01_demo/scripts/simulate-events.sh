@@ -43,20 +43,27 @@ do
       #------------------------------------------------------------------------------------------------------------------------------------
       echo "          🔨 Updating Timestamps (this can take a minute)"
       echo "   " > /tmp/timestampedErrorFiles-events.json
+
+      EVENTS_SECONDS=10
+
       while IFS= read -r line
       do
-            # Get timestamp in ELK format
-            export my_timestamp=$(date $DATE_FORMAT_EVENTS)
+            ((EVENTS_SECONDS++))
+            ((EVENTS_SECONDS++))
 
+            # Get timestamp in ELK format
+            export my_timestamp=$(date $DATE_FORMAT_EVENTS)":$EVENTS_SECONDS"
+            #echo $my_timestamp
             # Replace in line
             line=${line//MY_TIMESTAMP/$my_timestamp}
             # Write line to temp file
             echo $line >> /tmp/timestampedErrorFiles-events.json
-            sleep 2
-            echo "         ." #$my_timestamp"
+            #sleep 2
+            #echo "         ." #$my_timestamp"
       done < "$actFile"
       echo "          ✅ OK"
       echo " "
+
 
       #------------------------------------------------------------------------------------------------------------------------------------
       #  Split the files in 1500 line chunks for kafkacat

@@ -14,56 +14,123 @@
   include_vars: ../00_config_cp4waiops.yaml
 
 
-- name: NOI -                🔐 Copy Pull Secret from WAIOPS Namespace
+- name: PREREQUISITES -      📥  Installation Parameters"
+  debug:
+    msg:
+    - "** CP4WAIOPS Event Manager Installation Parameters ***********************************************************************"
+    - " Event Manager Namespace:          {{EVTMGR_NAMESPACE}}"
+    - ""
+    - "** Installation Options ***********************************************************************"
+    - " Rook-Ceph installation method:    {{ROOK_CEPH_INSTALL_MODE}}"
+    - " OCP Major Version:                {{OCP_MAJOR_VERSION}}"
+    - " Storage Class File Override:      {{STORAGECLASS_FILE_OVERRIDE}}"
+    - " Storage Class Block Override:     {{STORAGECLASS_BLOCK_OVERRIDE}}"
+    - ""
+    - "**************************************************************************************************************************"
+
+
+
+
+# *************************************************************************************************************************************************
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Checks
+# --------------------------------------------------------------------------------------------------------------------------------------
+# *************************************************************************************************************************************************
+
+- name: PREREQUISITES -      🔐 Check Entitlement provided
+  fail: msg="Please provide IBM Entitlement Pull Secret Key/Token (Get it from here https://myibm.ibm.com/products-services/containerlibrary)"
+  when: "ENTITLED_REGISTRY_KEY is not defined"
+
+
+
+# *************************************************************************************************************************************************
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Login
+# --------------------------------------------------------------------------------------------------------------------------------------
+# *************************************************************************************************************************************************
+- name: PLATFORM -           🌏 Get Cluster FQDN
   shell: |
-    oc create secret docker-registry 'ibm-entitlement-key' --docker-server={{ ENTITLED_REGISTRY }} --docker-username={{ ENTITLED_REGISTRY_USER }} --docker-password={{ ENTITLED_REGISTRY_KEY }} --namespace={{ NOI_NAMESPACE }}
-    oc create secret docker-registry 'ibm-aiops-pull-secret' --docker-server={{ ENTITLED_REGISTRY }} --docker-username={{ ENTITLED_REGISTRY_USER }} --docker-password={{ ENTITLED_REGISTRY_KEY }} --namespace={{ NOI_NAMESPACE }}
-  ignore_errors: yes
+    CLUSTER_ROUTE=$(oc get routes console -n openshift-console | tail -n 1 2>&1 ) 
+    CLUSTER_FQDN=$( echo $CLUSTER_ROUTE | awk '{print $2}')
+    echo ${CLUSTER_FQDN##*console.}
+  register: CLUSTER_NAME
+
+- name: ROOKCEPH -           💾 Set Global Cluster Name={{ CLUSTER_NAME.stdout_lines[0] }} 
+  set_fact: CLUSTER_NAME_GLOBAL={{ CLUSTER_NAME.stdout_lines[0] }} 
 
 
+# *************************************************************************************************************************************************
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Openshift Version
+# --------------------------------------------------------------------------------------------------------------------------------------
+# *************************************************************************************************************************************************
+- name: OPENSHIFT VERSION -  ☑️  Determine OpenShift Major Version
+  shell: |
+    DECLARED_VERSION={{ OCP_MAJOR_VERSION }}
+    if [[ $DECLARED_VERSION =~ "automatic" ]];
+    then
+      VERSION=$(oc version | grep "Server Version"| cut -d':' -f2| cut -d'.' -f1-2)
+      echo ${VERSION//* } 
+    else 
+      echo $DECLARED_VERSION
+    fi
+  register: MAJOR_VERSION
 
+- name: OPENSHIFT VERSION -  💾 Set OCP_MAJOR_VERSION={{ MAJOR_VERSION.stdout_lines[0] }} 
+  set_fact: OCP_MAJOR_VERSION={{ MAJOR_VERSION.stdout_lines[0] }} 
+
+- name: DEBUG -              🟢 Output
+  debug: 
+    var: OCP_MAJOR_VERSION
+    verbosity: 1
 
 # --------------------------------------------------------------------------------------------------------------------------------------
 # Install Netcool Operations Insight
 # --------------------------------------------------------------------------------------------------------------------------------------
 # Create Namespace 
-- name: NOI -                🚀 Create Netcool namespace {{ NOI_NAMESPACE }}
+- name: EVENTMANAGER -       🚀 Create EventManager namespace {{ EVTMGR_NAMESPACE }}
   community.kubernetes.k8s:
     api_version: v1
     kind: Namespace
-    name: "{{ NOI_NAMESPACE }}"
+    name: "{{ EVTMGR_NAMESPACE }}"
     state: present
 
 
 
+- name: EVENTMANAGER -       🔐 Create Pull Secret for {{ EVTMGR_NAMESPACE }} Namespace
+  shell: |
+    oc create secret docker-registry 'ibm-entitlement-key' --docker-server={{ ENTITLED_REGISTRY }} --docker-username={{ ENTITLED_REGISTRY_USER }} --docker-password={{ ENTITLED_REGISTRY_KEY }} --namespace={{ EVTMGR_NAMESPACE }}
+    oc create secret docker-registry 'ibm-aiops-pull-secret' --docker-server={{ ENTITLED_REGISTRY }} --docker-username={{ ENTITLED_REGISTRY_USER }} --docker-password={{ ENTITLED_REGISTRY_KEY }} --namespace={{ EVTMGR_NAMESPACE }}
+  ignore_errors: yes
 
 
 
-# Create NOI Catalog
-- name: NOI -                🚀 Install Catalog
+
+# Create EventManager Catalog
+- name: EVENTMANAGER -       🚀 Install Catalog
   community.kubernetes.k8s:
     state: present
-    src: ./templates/noi/1_cat-ibm-noi.yaml
+    src: ./templates/eventmanager/1_cat-ibm-eventmanager.yaml
 
 
 
-# Create NOI Operator Group
-- name: NOI -                🚀 Install Operator Group
+# Create EventManager Operator Group
+- name: EVENTMANAGER -       🚀 Install Operator Group
   community.kubernetes.k8s:
     state: present
-    template: ./templates/noi/2_group-ibm-noi.j2
+    template: ./templates/eventmanager/2_group-ibm-eventmanager.j2
 
 
-# Create NOI Subscription
-- name: NOI -                🚀 Install Subscription
+# Create EventManager Subscription
+- name: EVENTMANAGER -       🚀 Install Subscription
   community.kubernetes.k8s:
     state: present
-    template: ./templates/noi/3_sub-ibm-noi.j2
+    template: ./templates/eventmanager/3_sub-ibm-eventmanager.j2
 
 
 - name: CHECK -              🕦 Wait for CSV to become ready
   shell: |
-    CSV_READY=$(oc get csv -n {{NOI_NAMESPACE}} | grep "Event Manager")
+    CSV_READY=$(oc get csv -n {{EVTMGR_NAMESPACE}} | grep "Event Manager")
     echo $CSV_READY
   register: resource_ready
   until: ("Succeeded" in resource_ready.stdout)
@@ -71,32 +138,32 @@
   delay: 15
 
 
-# Create NOI Instance
-- name: NOI -                🚀 Install NOI
+# Create EventManager Instance
+- name: EVENTMANAGER -       🚀 Install EventManager
   community.kubernetes.k8s:
     state: present
-    template: ./templates/noi/4_noi-install-template.j2
+    template: ./templates/eventmanager/4_eventmanager-install-template.j2
 
 
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------
-# Wait for NOI Namespace to be ready
+# Wait for EventManager Namespace to be ready
 # --------------------------------------------------------------------------------------------------------------------------------------
 
-- name: CHECK -          🕦 Wait for more than >{{NOI_NS_MIN_PODS_FINAL}} pods in namespace {{NOI_NAMESPACE}}
+- name: CHECK -          🕦 Wait for more than >{{EVTMGR_NS_MIN_PODS_FINAL}} pods in namespace {{EVTMGR_NAMESPACE}}
   shell: |
-    NUM_PODS=$(oc get po -n {{NOI_NAMESPACE}} | wc -l)
+    NUM_PODS=$(oc get po -n {{EVTMGR_NAMESPACE}} | wc -l)
     echo $NUM_PODS
   register: kubectl_num_pods
-  until: kubectl_num_pods.stdout|int > {{NOI_NS_MIN_PODS_FINAL}}
+  until: kubectl_num_pods.stdout|int > {{EVTMGR_NS_MIN_PODS_FINAL}}
   retries: 500
   delay: 15
 
 
 - name: CHECK -          🕦 Wait for WEBGUI to become ready
   shell: |
-    WEBGUI_PODS=$(oc get po -n {{NOI_NAMESPACE}} | grep evtmanager-webgui-0)
+    WEBGUI_PODS=$(oc get po -n {{EVTMGR_NAMESPACE}} | grep evtmanager-webgui-0)
     echo $WEBGUI_PODS
   register: kubectl_webgui_pods
   until: ("2/2" in kubectl_webgui_pods.stdout)
@@ -122,13 +189,13 @@
     echo "---------------------------------------------------------------------------------------------"
     echo "    SMADMIN USER:"
     echo "        User:     smadmin"   
-    echo "        Password: $(oc get secret -n {{NOI_NAMESPACE}} evtmanager-was-secret -o jsonpath='{.data.WAS_PASSWORD}'| base64 --decode && echo)"
+    echo "        Password: $(oc get secret -n {{EVTMGR_NAMESPACE}} evtmanager-was-secret -o jsonpath='{.data.WAS_PASSWORD}'| base64 --decode && echo)"
 
 
     echo "---------------------------------------------------------------------------------------------"
     echo "---------------------------------------------------------------------------------------------"
 
-    echo "    Netcool (NOI):"
+    echo "    EventManager (NOI):"
     echo "        URL:     https://netcool-evtmanager.{{CLUSTER_NAME.stdout_lines[0]}}/"
   register: output_string
   ignore_errors: yes

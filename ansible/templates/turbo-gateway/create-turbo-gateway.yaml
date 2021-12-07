@@ -5,14 +5,14 @@ metadata:
   namespace: default
 data:
   POLLING_INTERVAL: '300'
-  NOI_SUMMARY_PREFIX: '[Turbonomic] '
-  NOI_WEBHOOK_PATH: >-
+  EVTMGR_SUMMARY_PREFIX: '[Turbonomic] '
+  EVTMGR_WEBHOOK_PATH: >-
     /norml/webhook/webhookincomming/cfd95b7e-3bc7-4006-a4a8-a73xxxxxxxxxxxxxx2Gg8wdAXeErarvCrfkF6EEu8u2YkA
   TURBO_API_URL: api-turbonomic.cp4waiops-953327-a376efc1170b9b8ace6422196c51e491-0000.eu-de.containers.appdomain.cloud
   TURBO_BA_NAME: 'RobotShop:robot-shop'
   #TURBO_BA_NAME: 'Quote of the Day Hybrid:qotd-hybrid'
   ACTION_STATES: 'SUCCEEDED,FAILED,READY,IN_PROGRESS'
-  NOI_WEBHOOK_URL: netcool-evtmanager.cp4waiops-953327-a37xxxxxxxxace6422196c51e491-0000.eu-de.containers.appdomain.cloud
+  EVTMGR_WEBHOOK_URL: netcool-evtmanager.cp4waiops-953327-a37xxxxxxxxace6422196c51e491-0000.eu-de.containers.appdomain.cloud
   ACTION_TYPES: 'MOVE,RESIZE_FOR_PERFORMANCE,RESIZE_FOR_EFFICIENCY,RESIZE'
   DEBUG_ENABLED: 'false'
   ENTITY_TYPES: 'VirtualMachine,Application,PhysicalMachine,ContainerSpec,WorkloadController,Container'

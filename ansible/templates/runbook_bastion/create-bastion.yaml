@@ -34,6 +34,8 @@ spec:
             value : "22"
           - name: SSH_KEY
             value : "YOUR SSH PUBLIC KEY"
+        securityContext:
+          privileged: true
 ---
 apiVersion: v1
 kind: Service
@@ -47,3 +49,6 @@ spec:
     - protocol: TCP
       port: 22
       targetPort: 22
+
+
+

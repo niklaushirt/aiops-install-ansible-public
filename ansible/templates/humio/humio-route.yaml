@@ -6,7 +6,7 @@ metadata:
 spec:
   to:
     kind: Service
-    name: humio-instance-humio-core-http
+    name: humiocluster
     weight: 100
   port:
     targetPort: http

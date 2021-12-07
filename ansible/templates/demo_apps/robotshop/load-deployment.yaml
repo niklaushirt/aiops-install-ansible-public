@@ -8,10 +8,16 @@ spec:
   replicas: 1
   selector:
     matchLabels:
+      app: robot-shop
+      version: v1
       service: load
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
+        app: robot-shop
+        version: v1
         service: load
     spec:
       containers:
@@ -22,7 +28,7 @@ spec:
           - name: NUM_CLIENTS
             value: "15"
           - name: SILENT
-            value: "0"
+            value: "1"
           - name: ERROR
             value: "0"
         image: robotshop/rs-load:latest

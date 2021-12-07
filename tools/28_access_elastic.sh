@@ -10,9 +10,7 @@
 # DO NOT EDIT BELOW
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-WAIOPS_PARAMETER=$(cat ./00_config_cp4waiops.yaml|grep WAIOPS_NAMESPACE:)
-WAIOPS_NAMESPACE=${WAIOPS_PARAMETER##*:}
-WAIOPS_NAMESPACE=$(echo $WAIOPS_NAMESPACE|tr -d '[:space:]')
+export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
 
 
 

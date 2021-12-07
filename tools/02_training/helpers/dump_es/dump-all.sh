@@ -38,9 +38,14 @@ export WORKING_DIR="./tools/02_training/helpers/dump_es/DUMP/all"
 export APP_NAME=robot-shop
 export INDEX_TYPE=all
 
-export WAIOPS_PARAMETER=$(cat ./00_config_cp4waiops.yaml|grep WAIOPS_NAMESPACE:)
-export WAIOPS_NAMESPACE=${WAIOPS_PARAMETER##*:}
-export WAIOPS_NAMESPACE=$(echo $WAIOPS_NAMESPACE|tr -d '[:space:]')
+# Get Namespace from Cluster 
+echo "   ------------------------------------------------------------------------------------------------------------------------------"
+echo "   🔬 Getting Installation Namespace"
+echo "   ------------------------------------------------------------------------------------------------------------------------------"
+
+export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
+echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
+
 
 
 

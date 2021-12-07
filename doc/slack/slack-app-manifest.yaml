@@ -14,7 +14,7 @@ features:
     display_name: CP4WAIOPS
     always_online: false
   slash_commands:
-    - command: /waiops-welcome
+    - command: /welcome
       url: https://cap-sg-prd-2.securegateway.appdomain.cloud:18947/aiops/aimanager/instances/xxxxxx/api/slack/events
       description: Welcome to CloudPak for Watson AIOps
       should_escape: false

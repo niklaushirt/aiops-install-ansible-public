@@ -44,10 +44,14 @@ echo "**************************************************************************
 echo "***************************************************************************************************************************************************"
 
 
-# Get Namespace from 00_config_cp4waiops.yaml
-export WAIOPS_PARAMETER=$(cat ./00_config_cp4waiops.yaml|grep WAIOPS_NAMESPACE:)
-export WAIOPS_NAMESPACE=${WAIOPS_PARAMETER##*:}
-export WAIOPS_NAMESPACE=$(echo $WAIOPS_NAMESPACE|tr -d '[:space:]')
+# Get Namespace from Cluster 
+echo "   ------------------------------------------------------------------------------------------------------------------------------"
+echo "   🔬 Getting Installation Namespace"
+echo "   ------------------------------------------------------------------------------------------------------------------------------"
+
+export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
+echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
+
 
 # Define Log format
 export log_output_path=/dev/null 2>&1

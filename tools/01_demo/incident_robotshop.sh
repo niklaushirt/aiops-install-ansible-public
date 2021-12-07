@@ -44,10 +44,15 @@ echo "**************************************************************************
 echo "***************************************************************************************************************************************************"
 
 
-# Get Namespace from 00_config_cp4waiops.yaml
-export WAIOPS_PARAMETER=$(cat ./00_config_cp4waiops.yaml|grep WAIOPS_NAMESPACE:)
-export WAIOPS_NAMESPACE=${WAIOPS_PARAMETER##*:}
-export WAIOPS_NAMESPACE=$(echo $WAIOPS_NAMESPACE|tr -d '[:space:]')
+# Get Namespace from Cluster 
+echo "   ------------------------------------------------------------------------------------------------------------------------------"
+echo "    🔬 Getting Installation Namespace"
+echo "   ------------------------------------------------------------------------------------------------------------------------------"
+
+export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
+echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
+
+
 
 # Define Log format
 export log_output_path=/dev/null 2>&1
@@ -79,17 +84,20 @@ then
       export LOG_TYPE=noi
 fi
 
+oc project $WAIOPS_NAMESPACE  >/tmp/demo.log 2>&1  || true
+
+
 
 echo ""
 echo ""
 echo "   ------------------------------------------------------------------------------------------------------------------------------"
-echo "   🚀  🧻 Closing existing Alerts..."
+echo "   🚀  ❎ Closing existing Alerts..."
 echo "   ------------------------------------------------------------------------------------------------------------------------------"
 export USER_PASS="$(oc get secret aiops-ir-core-ncodl-api-secret -o jsonpath='{.data.username}' | base64 --decode):$(oc get secret aiops-ir-core-ncodl-api-secret -o jsonpath='{.data.password}' | base64 --decode)"
-oc apply -n $WAIOPS_NAMESPACE -f ./tools/98_reset/datalayer-api-route.yaml >/tmp/demo.log 2>&1  || true
+oc apply -n $WAIOPS_NAMESPACE -f ./tools/01_demo/scripts/datalayer-api-route.yaml >/tmp/demo.log 2>&1  || true
 sleep 2
 export DATALAYER_ROUTE=$(oc get route  -n $WAIOPS_NAMESPACE datalayer-api  -o jsonpath='{.status.ingress[0].host}')
-export result=$(curl "https://$DATALAYER_ROUTE/irdatalayer.aiops.io/active/v1/alerts" --silent -X PATCH -u "${USER_PASS}" -d '{"state": "closed"}' -H 'Content-Type: application/json' -H "x-username:admin" -H "x-subscription-id:cfd95b7e-3bc7-4006-a4a8-a73a79c71255")
+export result=$(curl "https://$DATALAYER_ROUTE/irdatalayer.aiops.io/active/v1/alerts" --insecure --silent -X PATCH -u "${USER_PASS}" -d '{"state": "closed"}' -H 'Content-Type: application/json' -H "x-username:admin" -H "x-subscription-id:cfd95b7e-3bc7-4006-a4a8-a73a79c71255")
 echo "       Alerts closed: "$(echo $result | jq ".affected")
 #curl "https://$DATALAYER_ROUTE/irdatalayer.aiops.io/active/v1/alerts" -X GET -u "${USER_PASS}" -H "x-username:admin" -H "x-subscription-id:cfd95b7e-3bc7-4006-a4a8-a73a79c71255" | grep '"state": "open"' | wc -l
 
@@ -103,13 +111,10 @@ echo "   🚀  Initializing..."
 echo "   ------------------------------------------------------------------------------------------------------------------------------"
 
 
-echo "     📛 Select Namespace $WAIOPS_NAMESPACE"
-oc project $WAIOPS_NAMESPACE  >/tmp/demo.log 2>&1  || true
-echo " "
 
 echo "     📥 Get Kafka Topics"
 export KAFKA_TOPIC_LOGS=$(oc get kafkatopics -n $WAIOPS_NAMESPACE | grep cp4waiops-cartridge-logs-$LOG_TYPE| awk '{print $1;}')
-export KAFKA_TOPIC_EVENTS=$(oc get kafkatopics -n $WAIOPS_NAMESPACE | grep cp4waiops-cartridge-alerts-$EVENTS_TYPE| awk '{print $1;}')
+export KAFKA_TOPIC_EVENTS=$(oc get kafkatopics -n $WAIOPS_NAMESPACE | grep -v cp4waiopscp4waiops| grep cp4waiops-cartridge-alerts-$EVENTS_TYPE| awk '{print $1;}')
 
 echo " "
 echo "     🔐 Get Kafka Password"
@@ -124,7 +129,7 @@ export WORKING_DIR_EVENTS="./tools/01_demo/INCIDENT_FILES/$APP_NAME/events"
 echo " "
 
 echo "     📥 Get Date Formats"
-export DATE_FORMAT_EVENTS="-v-60M +%Y-%m-%dT%H:%M:%S"
+export DATE_FORMAT_EVENTS="-v-60M +%Y-%m-%dT%H:%M"
 case $LOG_TYPE in
   elk) export DATE_FORMAT_LOGS="+%Y-%m-%dT%H:%M:%S.000000+00:00";;
   humio) export DATE_FORMAT_LOGS="+%s000";;

@@ -71,9 +71,17 @@
         then
             echo "ibmc-file-gold-gid"
         else
-          # Use Default Class
+          # Use Default Class (storageclass.kubernetes.io/is-default-class:true)
           SC_DEFAULT_STRING=$(oc get sc | grep "(default)")
-          echo ${SC_DEFAULT_STRING//\(*} 
+          if [[ $SC_DEFAULT_STRING =~ "(default)" ]];
+          then
+            echo ${SC_DEFAULT_STRING//\(*} 
+          else
+            echo "No default StorageClass defined. Unable to determine what SC to use." 
+            echo "Please define one using storageclass.kubernetes.io/is-default-class:true"
+            echo "or set the STORAGECLASS_XXX_OVERRIDE in the configuration file."
+            exit 1
+          fi
         fi
       fi
   register: INSTALL_DETECTED_STORAGECLASS

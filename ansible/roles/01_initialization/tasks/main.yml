@@ -39,11 +39,10 @@
 - name: PREREQUISITES -      📥  Installation Parameters"
   debug:
     msg:
-    - "** CP4WAIOPS Parameters ***********************************************************************"
-    - " CP4WAIOPS Installation Name:      {{WAIOPS_NAME}}"
-    - " CP4WAIOPS Namespace:              {{WAIOPS_NAMESPACE}}"
-    - " CP4WAIOPS Installation Size:      {{WAIOPS_SIZE}}"
-    - " CP4WAIOPS Install Event Manager:  {{INSTALL_NOI}}"
+    - "** CP4WAIOPS AI Manager Parameters ***********************************************************************"
+    - " AI Manager Installation Name:      {{WAIOPS_NAME}}"
+    - " AI Manager Namespace:              {{WAIOPS_NAMESPACE}}"
+    - " AI Manager Installation Size:      {{WAIOPS_SIZE}}"
     - ""
     - "** Installation Options ***********************************************************************"
     - " Rook-Ceph installation method:    {{ROOK_CEPH_INSTALL_MODE}}"

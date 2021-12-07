@@ -62,12 +62,62 @@
         
 
 
+  
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Wait for Cassandra Pod
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: CONFIG -             🕦 Wait for Cassandra Pod to become available - this can take up to 45 minutes (hack for 3.2)
+  shell: oc get po -n {{ WAIOPS_NAMESPACE }} | grep aiops-topology-cassandra-auth-secret-generator| grep -c ""
+  register: kubectl_get_pods
+  until: kubectl_get_pods.stdout == "1"
+  retries: 500
+  delay: 15
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Patch Service Account
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: CONFIG -             🩹 Patch aiops-topology-service-account (hack for 3.2)
+  shell: |
+    oc patch -n {{ WAIOPS_NAMESPACE }} serviceaccount aiops-topology-service-account -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+    oc delete pod $(oc get po -n {{ WAIOPS_NAMESPACE }}|grep ImagePull|awk '{print$1}') -n {{ WAIOPS_NAMESPACE }}
+  ignore_errors: yes
+
 
   
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Wait for IR Analytics Pods
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: CONFIG -             🕦 Wait for CIR Analytics Pods to become available - this can take up to 45 minutes (hack for 3.2)
+  shell: oc get po -n {{ WAIOPS_NAMESPACE }} | grep aiops-ir-analytics-probablecause| grep -c ""
+  register: kubectl_get_pods
+  until: kubectl_get_pods.stdout == "1"
+  retries: 500
+  delay: 15
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Patch IR Analytics Pods
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: CONFIG -             🩹 Patch IR Analytics Pods (hack for 3.2)
+  shell: |
+    oc patch -n {{ WAIOPS_NAMESPACE }} serviceaccount aiops-topology-service-account -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+    oc patch -n {{ WAIOPS_NAMESPACE }} serviceaccount aiops-ir-analytics-spark-worker -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+    oc patch -n {{ WAIOPS_NAMESPACE }} serviceaccount aiops-ir-analytics-spark-pipeline-composer -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+    oc patch -n {{ WAIOPS_NAMESPACE }} serviceaccount aiops-ir-analytics-spark-master -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+    oc patch -n {{ WAIOPS_NAMESPACE }} serviceaccount aiops-ir-analytics-probablecause -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+    oc patch -n {{ WAIOPS_NAMESPACE }} serviceaccount aiops-ir-analytics-classifier -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+    oc patch -n {{ WAIOPS_NAMESPACE }} serviceaccount aiops-ir-lifecycle-eventprocessor-ep -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+    oc delete pod $(oc get po -n {{ WAIOPS_NAMESPACE }}|grep ImagePull|awk '{print$1}') -n {{ WAIOPS_NAMESPACE }}
+  ignore_errors: yes
+
+
+
 # --------------------------------------------------------------------------------------------------------------------------------------
 # Wait for Topology Pods
 # --------------------------------------------------------------------------------------------------------------------------------------
-- name: CONFIG -             🕦 Wait for Topology Pods to become available - this can take up to 45 minutes
+- name: CONFIG -             🕦 Wait for Topology Pods to become available - this can take up to 45 minutes (hack for 3.2)
   shell: oc get po -n {{ WAIOPS_NAMESPACE }} | grep aiops-topology-merge| grep -c ""
   register: kubectl_get_pods
   until: kubectl_get_pods.stdout == "1"
@@ -78,24 +128,39 @@
 # --------------------------------------------------------------------------------------------------------------------------------------
 # Patch Topology Pods
 # --------------------------------------------------------------------------------------------------------------------------------------
-- name: CONFIG -             🩹 Patch aiops-topology-merge
+- name: CONFIG -             🩹 Patch aiops-topology-merge (hack for 3.2)
   shell: oc patch deployment aiops-topology-merge -n {{ WAIOPS_NAMESPACE }} --patch-file ./templates/waiops/patches/aiops-topology-merge-patch.yaml
   ignore_errors: yes
 
 
-- name: CONFIG -             🩹 Patch aiops-topology-search
+- name: CONFIG -             🩹 Patch aiops-topology-search (hack for 3.2)
   shell: oc patch deployment aiops-topology-search -n {{ WAIOPS_NAMESPACE }} --patch-file ./templates/waiops/patches/aiops-topology-search-patch.yaml
   ignore_errors: yes
 
 
-- name: CONFIG -             🩹 Patch aiops-topology-status
+- name: CONFIG -             🩹 Patch aiops-topology-status (hack for 3.2)
   shell: oc patch deployment aiops-topology-status -n {{ WAIOPS_NAMESPACE }} --patch-file ./templates/waiops/patches/aiops-topology-status-patch.yaml
   ignore_errors: yes
 
 
-- name: CONFIG -             🩹 Patch aiops-topology-layout
+- name: CONFIG -             🩹 Patch aiops-topology-layout (hack for 3.2)
   shell: oc patch deployment aiops-topology-layout -n {{ WAIOPS_NAMESPACE }} --patch-file ./templates/waiops/patches/aiops-topology-layout-patch.yaml
   ignore_errors: yes
 
 
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Patch IR Analytics Pods
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: CONFIG -             🩹 Patch IR Analytics Pods (hack for 3.2)
+  shell: |
+    oc patch -n {{ WAIOPS_NAMESPACE }} serviceaccount aiops-topology-service-account -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+    oc patch -n {{ WAIOPS_NAMESPACE }} serviceaccount aiops-ir-analytics-spark-worker -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+    oc patch -n {{ WAIOPS_NAMESPACE }} serviceaccount aiops-ir-analytics-spark-pipeline-composer -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+    oc patch -n {{ WAIOPS_NAMESPACE }} serviceaccount aiops-ir-analytics-spark-master -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+    oc patch -n {{ WAIOPS_NAMESPACE }} serviceaccount aiops-ir-analytics-probablecause -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+    oc patch -n {{ WAIOPS_NAMESPACE }} serviceaccount aiops-ir-analytics-classifier -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+    oc patch -n {{ WAIOPS_NAMESPACE }} serviceaccount aiops-ir-lifecycle-eventprocessor-ep -p '{"imagePullSecrets": [{"name": "ibm-entitlement-key"}]}'
+    oc delete pod $(oc get po -n {{ WAIOPS_NAMESPACE }}|grep ImagePull|awk '{print$1}') -n {{ WAIOPS_NAMESPACE }}
+  ignore_errors: yes
 

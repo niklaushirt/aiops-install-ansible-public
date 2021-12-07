@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------------------------------------------------------------------
 # *************************************************************************************************************************************************
 
-- name: CP4WAIOPS -          🚀 Install Custom Resource - INSTALL AI MANAGER
+- name: AI Manager -         🚀 Install Custom Resource - INSTALL AI MANAGER
   community.kubernetes.k8s:
     state: present
     template: './templates/waiops/4_waiops-install-template.j2'

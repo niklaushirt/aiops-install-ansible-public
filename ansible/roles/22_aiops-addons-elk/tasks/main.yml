@@ -52,14 +52,14 @@
   delay: 15
 
 
-- name: ELK -                🚀 Patch ELK Instance
-  shell: |
-    oc patch ClusterLogging instance -n openshift-logging --patch "$(cat ./templates/elk/4_logging-patch.yaml)"  --type=merge
-    #In order to create Filter to only ingest robot-shop logs
-    oc delete cm fluentd -n openshift-logging
-    oc apply -f ./templates/elk/5_fluentd-configmap.yaml
-    oc delete pods -n openshift-logging -l component=fluentd  
-  ignore_errors: yes
+# - name: ELK -                🚀 Patch ELK Instance
+#   shell: |
+#     oc patch ClusterLogging instance -n openshift-logging --patch "$(cat ./templates/elk/4_logging-patch.yaml)"  --type=merge
+#     #In order to create Filter to only ingest robot-shop logs
+#     oc delete cm fluentd -n openshift-logging
+#     oc apply -f ./templates/elk/5_fluentd-configmap.yaml
+#     oc delete pods -n openshift-logging -l component=collector  
+#   ignore_errors: yes
 
     
 - name: ELK -                🚀 Create Elasticsearch Route

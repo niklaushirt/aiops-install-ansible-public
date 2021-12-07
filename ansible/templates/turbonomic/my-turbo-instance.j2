@@ -4,10 +4,11 @@ metadata:
   name: xl-release
 spec:
   global:
+    registry: docker.io
     logtostdout: true
     storageClassName: {{ STORAGE_CLASS_TURBO }}
     repository: turbonomic
-    tag: 8.3.0
+    tag: 8.3.4
     externalArangoDBName: arango.turbo.svc.cluster.local
   vcenter:
     enabled: true
@@ -66,16 +67,16 @@ spec:
   mssql:
     enabled: true
   mysql:
-    enabled: false
+    enabled: true
   oracle:
-    enabled: false
+    enabled: true
   tomcat:
-    enabled: false
+    enabled: true
   jvm:
-    enabled: false
+    enabled: true
   newrelic:
     enabled: true
   websphere:
-    enabled: false
+    enabled: true
   weblogic:
-    enabled: false
+    enabled: true

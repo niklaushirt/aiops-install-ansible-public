@@ -278,18 +278,24 @@ metadata:
   name: cart
   labels:
     app: robot-shop
+    version: v1
     service: cart
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app: robot-shop
+      version: v1
       service: cart
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
+        app: robot-shop
+        version: v1
         service: cart
     spec:
-      
       containers:
       - name: cart
         image: robotshop/rs-cart:latest
@@ -317,18 +323,24 @@ metadata:
   name: catalogue
   labels:
     app: robot-shop
+    version: v1
     service: catalogue
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app: robot-shop
+      version: v1
       service: catalogue
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
+        app: robot-shop
+        version: v1
         service: catalogue
     spec:
-      
       containers:
       - name: catalogue
         image: robotshop/rs-catalogue:latest
@@ -356,15 +368,22 @@ metadata:
   name: dispatch
   labels:
     app: robot-shop
+    version: v1
     service: dispatch
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app: robot-shop
+      version: v1
       service: dispatch
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
+        app: robot-shop
+        version: v1
         service: dispatch
     spec:
       
@@ -394,15 +413,22 @@ metadata:
   name: mongodb
   labels:
     app: robot-shop
+    version: v1
     service: mongodb
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app: robot-shop
+      version: v1
       service: mongodb
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
+        app: robot-shop
+        version: v1
         service: mongodb
     spec:
       
@@ -428,15 +454,22 @@ metadata:
   name: mysql
   labels:
     app: robot-shop
+    version: v1
     service: mysql
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app: robot-shop
+      version: v1
       service: mysql
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
+        app: robot-shop
+        version: v1
         service: mysql
     spec:
       
@@ -466,17 +499,24 @@ metadata:
   name: payment
   labels:
     app: robot-shop
+    version: v1
     service: payment
     stage: prod
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app: robot-shop
+      version: v1
       service: payment
       stage: prod
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
+        app: robot-shop
+        version: v1
         service: payment
         stage: prod
     spec:
@@ -509,15 +549,22 @@ metadata:
   name: rabbitmq
   labels:
     app: robot-shop
+    version: v1
     service: rabbitmq
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app: robot-shop
+      version: v1
       service: rabbitmq
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
+        app: robot-shop
+        version: v1
         service: rabbitmq
     spec:
       
@@ -544,16 +591,26 @@ metadata:
   name: ratings
   labels:
     app: robot-shop
+    version: v2
     service: ratings
+    stage: prod
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app: robot-shop
+      version: v2
       service: ratings
+      stage: prod
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
+        app: robot-shop
+        version: v2
         service: ratings
+        stage: prod
     spec:
       
       containers:
@@ -586,15 +643,22 @@ metadata:
   name: shipping
   labels:
     app: robot-shop
+    version: v1
     service: shipping
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app: robot-shop
+      version: v1
       service: shipping
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
+        app: robot-shop
+        version: v1
         service: shipping
     spec:
       
@@ -629,15 +693,22 @@ metadata:
   name: user
   labels:
     app: robot-shop
+    version: v1
     service: user
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app: robot-shop
+      version: v1
       service: user
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
+        app: robot-shop
+        version: v1
         service: user
     spec:
       
@@ -669,15 +740,22 @@ metadata:
   name: web
   labels:
     app: robot-shop
+    version: v1
     service: web
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app: robot-shop
+      version: v1
       service: web
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
+        app: robot-shop
+        version: v1
         service: web
     spec:
       
@@ -707,17 +785,24 @@ kind: StatefulSet
 metadata:
   labels:
     app: robot-shop
+    version: v1
     service: redis
   name: redis
 spec:
   replicas: 1
   selector:
     matchLabels:
+      app: robot-shop
+      version: v1
       service: redis
   serviceName: redis
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
+        app: robot-shop
+        version: v1
         service: redis
     spec:
       

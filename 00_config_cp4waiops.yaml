@@ -36,24 +36,55 @@ OCP_MAJOR_VERSION: automatic
 
 # *************************************************************************************************************************************************
 # --------------------------------------------------------------------------------------------------------------------------------------
-# CP4WAIOPS INSTALL PARAMETERS
+# CP4WAIOPS AI Manager INSTALL PARAMETERS
 # --------------------------------------------------------------------------------------------------------------------------------------
 # *************************************************************************************************************************************************
 
+# Install standalone AI Manager
+INSTALL_AIOPS: true
 # CP4WAIOPS Namespace for installation
 WAIOPS_NAMESPACE: cp4waiops
 
 # CP4WAIOPS Size of the install (small: PoC/Demo, tall: Production)
 WAIOPS_SIZE: small # Leave at small unless you know what you're doing
+# Version of the catalog subscription
+SUBSCRIPTION_CHANNEL: v3.2
 
-# Install standalone Netcool Oprations Insight
-INSTALL_NOI: false
-# CP4WAIOPS Namespace for installation
-NOI_NAMESPACE: noi
 
-# Override the Storage Class auto detection
+
+# *************************************************************************************************************************************************
+# --------------------------------------------------------------------------------------------------------------------------------------
+# CP4WAIOPS Storage Class Override
+# --------------------------------------------------------------------------------------------------------------------------------------
+# *************************************************************************************************************************************************
+
+# Override the Storage Class auto detection (ibmc-file-gold-gid, rook-cephfs, nfs-client, ...)
 STORAGECLASS_FILE_OVERRIDE: not_configured
+#STORAGECLASS_FILE_OVERRIDE: ibmc-file-gold-gid          # ROKS
+#STORAGECLASS_FILE_OVERRIDE: rook-cephfs                 # FYRE
+#STORAGECLASS_FILE_OVERRIDE: nfs-client                  # TEC
 STORAGECLASS_BLOCK_OVERRIDE: not_configured
+#STORAGECLASS_BLOCK_OVERRIDE: ibmc-file-gold-gid         # ROKS
+#STORAGECLASS_BLOCK_OVERRIDE: rook-cephfs                # FYRE
+#STORAGECLASS_BLOCK_OVERRIDE: nfs-client                 # TEC
+
+
+
+
+# *************************************************************************************************************************************************
+# --------------------------------------------------------------------------------------------------------------------------------------
+# CP4WAIOPS Event Manager INSTALL PARAMETERS
+# --------------------------------------------------------------------------------------------------------------------------------------
+# *************************************************************************************************************************************************
+
+# Install standalone Event Manager (Netcool Oprations Insight)
+INSTALL_EVTMGR: false
+# CP4WAIOPS Namespace for installation
+EVTMGR_NAMESPACE: cp4waiops-evtmgr
+
+
+
+
 
 # *************************************************************************************************************************************************
 # --------------------------------------------------------------------------------------------------------------------------------------
@@ -73,8 +104,7 @@ PRINT_LOGINS: true
 # Install Bastion Server for Runbook Automation
 INSTALL_RUNBOOK_BASTION: true
 
-# Should Rook-Ceph be installed (automatic: install when on IBM Fyre) (enable, automatic, disable)
-ROOK_CEPH_INSTALL_MODE: automatic
+
 
 
 # *************************************************************************************************************************************************
@@ -83,9 +113,13 @@ ROOK_CEPH_INSTALL_MODE: automatic
 # --------------------------------------------------------------------------------------------------------------------------------------
 # *************************************************************************************************************************************************
 
+# Install Rook-Ceph (Should Rook-Ceph be installed (automatic: install when on IBM Fyre) (enable, automatic, disable))
+ROOK_CEPH_INSTALL_MODE: automatic
+
 
 # Install LDAP Server
 INSTALL_LDAP: true
+
 
 # Install Turbonomic (experimental - needs separate license)
 INSTALL_TURBONOMIC: false
@@ -93,18 +127,27 @@ INSTALL_TURBONOMIC: false
 STORAGE_CLASS_TURBO: ibmc-block-gold
 # Install Turbonomic Metrics simulation (highly experimental!)
 INSTALL_TURBONOMIC_METRICS: false
-# Install Turbonomic --> NOI Gateway (highly experimental!)
+# Install Turbonomic --> Event Manager Gateway (highly experimental!)
 INSTALL_TURBONOMIC_GATEWAY: false
 
 
 # Install Humio (needs separate license)
 INSTALL_HUMIO: false
+# Humio Storage Class (ibmc-block-gold, rook-cephfs, nfs-client, ...)
+STORAGE_CLASS_HUMIO: ibmc-block-gold
+
 
 # Install ELK Stack
 INSTALL_ELK: false
 
+
+# Install ServiceMesh/Istio
+INSTALL_ISTIO: false
+
+
 # Install AWX (Open Source Ansible Tower)
 INSTALL_AWX: false
+
 
 # Install ManageIQ (Open Source CloudForms)
 INSTALL_MANAGEIQ: false
@@ -175,23 +218,6 @@ INSTALL_MANAGEIQ: false
 
 
 
-# *************************************************************************************************************************************************
-# --------------------------------------------------------------------------------------------------------------------------------------
-# WAIOPS Storage Classes
-# The definite Storage class will be automatically determined!!!
-# --------------------------------------------------------------------------------------------------------------------------------------
-# *************************************************************************************************************************************************
-
-# CP4WAIOPS default Storage Class (ibmc-file-gold-gid, rook-cephfs, nfs-client, ...)
-#WAIOPS_STORAGE_CLASS_FILE: ibmc-file-gold-gid         # ROKS
-#WAIOPS_STORAGE_CLASS_FILE: rook-cephfs               # FYRE
-#WAIOPS_STORAGE_CLASS_FILE: nfs-client                # TEC
-
-
-# CP4WAIOPS default Large Storage Class (ibmc-file-gold-gid, rook-cephfs, nfs-client, ...)
-#WAIOPS_STORAGE_CLASS_LARGE_BLOCK: ibmc-file-gold-gid  # ROKS
-#WAIOPS_STORAGE_CLASS_LARGE_BLOCK: rook-cephfs        # FYRE
-#WAIOPS_STORAGE_CLASS_LARGE_BLOCK: nfs-client         # TEC
 
 
 # *************************************************************************************************************************************************
@@ -199,17 +225,23 @@ INSTALL_MANAGEIQ: false
 # WAIOPS INSTALL PARAMETERS (do not change)
 # --------------------------------------------------------------------------------------------------------------------------------------
 # *************************************************************************************************************************************************
-INSTALL_AIOPS: true
+
+# Name of the CP4WAIOPS instance
 WAIOPS_NAME: ibm-aiops
+# Create externally accessible Route for Topology
 CREATE_TOPO_ROUTE: true
+# Create externally accessible Route for Flink (security risk!)
 CREATE_FLINK_ROUTE: true
-CREATE_STRIMZI_ROUTE: true
+# Install the EvtManager --> AI Manegr Gateway
 INSTALL_GATEWAY: true
-WAIOPS_NS_MIN_PODS_SECRET: 100
-WAIOPS_NS_MIN_PODS_FINAL: 108
+# Number of Pods to be expected in final CP4WAIOPS Namespace
+WAIOPS_NS_MIN_PODS_FINAL: 115
+# Number of Pods to be expected in final AI Manager Namespace
 CS_NS_MIN_PODS: 35
+# Number of Pods to be expected in final RookCeph Namespace
 ROOK_NS_MIN_PODS: 38
-NOI_NS_MIN_PODS_FINAL: 70
+# Number of Pods to be expected in final Event MAnager Namespace
+EVTMGR_NS_MIN_PODS_FINAL: 70
 
 
 # *************************************************************************************************************************************************
@@ -217,8 +249,12 @@ NOI_NS_MIN_PODS_FINAL: 70
 # LDAP PARAMETERS
 # --------------------------------------------------------------------------------------------------------------------------------------
 # *************************************************************************************************************************************************
+
+# LDAP Domain
 LDAP_DOMAIN: ibm.com
+# LDAP Base
 LDAP_BASE: dc=ibm,dc=com
+# LDAP Admin Password
 LDAP_ADMIN_PASSWORD: P4ssw0rd!
 
 
@@ -240,10 +276,12 @@ LDAP_ADMIN_PASSWORD: P4ssw0rd!
 # IBM ENTITLED REGISTRY PARAMETERS
 # --------------------------------------------------------------------------------------------------------------------------------------
 # *************************************************************************************************************************************************
+# IBM Entitled Registry
 ENTITLED_REGISTRY: cp.icr.io
 ENTITLED_REGISTRY_USER: cp
 ENTITLED_REGISTRY_KEY: TOKEN
-SUBSCRIPTION_CHANNEL: v3.2
+
+
 
 
 

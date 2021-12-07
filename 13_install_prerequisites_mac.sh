@@ -56,6 +56,9 @@ echo ""
         echo "      📥 Install node"
         brew install node
         
+        echo "      📥 Install wget"
+        brew install wget
+
         echo "      📥 Install elasticdump"
         npm install elasticdump -g
         

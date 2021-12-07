@@ -37,9 +37,7 @@ echo "  Initializing......"
 
 
 
-WAIOPS_PARAMETER=$(cat ./00_config_cp4waiops.yaml|grep WAIOPS_NAMESPACE:)
-WAIOPS_NAMESPACE=${WAIOPS_PARAMETER##*:}
-WAIOPS_NAMESPACE=$(echo $WAIOPS_NAMESPACE|tr -d '[:space:]')
+export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
 
 export LOG_TYPE=humio   # humio, elk, splunk, ...
 export EVENT_TYPE=noi   # humio, elk, splunk, ...
@@ -98,13 +96,23 @@ menu_option_2() {
   
   echo "	Press CTRL-C to stop "
 
-  ${KAFKACAT_EXE} -v -X security.protocol=SASL_SSL -X ssl.ca.location=./ca.crt -X sasl.mechanisms=SCRAM-SHA-512 -X sasl.username=$SASL_USER -X sasl.password=$SASL_PASSWORD -b $BROKER -o -10 -C -t cp4waiops-cartridge.incident 
+  ${KAFKACAT_EXE} -v -X security.protocol=SASL_SSL -X ssl.ca.location=./ca.crt -X sasl.mechanisms=SCRAM-SHA-512 -X sasl.username=$SASL_USER -X sasl.password=$SASL_PASSWORD -b $BROKER -o -10 -C -t cp4waiops-cartridge.lifecycle.input.alerts
 
 }
 
 
 menu_option_3() {
-  echo "Monitor $EVENTS_TOPIC"
+  echo "Monitor Stories"
+  
+  echo "	Press CTRL-C to stop "
+
+  ${KAFKACAT_EXE} -v -X security.protocol=SASL_SSL -X ssl.ca.location=./ca.crt -X sasl.mechanisms=SCRAM-SHA-512 -X sasl.username=$SASL_USER -X sasl.password=$SASL_PASSWORD -b $BROKER -o -10 -C -t cp4waiops-cartridge.lifecycle.input.stories 
+
+}
+
+
+menu_option_4() {
+  echo "Monitor Events $EVENTS_TOPIC"
   
   echo "	Press CTRL-C to stop "
 
@@ -113,8 +121,8 @@ menu_option_3() {
 }
 
 
-menu_option_4() {
-  echo "Monitor $LOGS_TOPIC"
+menu_option_5() {
+  echo "Monitor Logs $LOGS_TOPIC"
   
   echo "	Press CTRL-C to stop "
 
@@ -183,9 +191,10 @@ until [ "$selection" = "0" ]; do
   
   echo "  🔎 Observe Kafka Topics "
   echo "    	1  - Get Kafka Topics"
-  echo "    	2  - Monitor Incidents"
-  echo "    	3  - Monitor $EVENTS_TOPIC"
-  echo "    	4  - Monitor $LOGS_TOPIC"
+  echo "    	2  - Monitor Alerts"
+  echo "    	3  - Monitor Stories"
+  echo "    	4  - Monitor Events $EVENTS_TOPIC"
+  echo "    	5  - Monitor Logs $LOGS_TOPIC"
   echo "    	9  - Monitor Specific Topic"
   echo "      "
   echo "    	0  -  Exit"
@@ -199,6 +208,7 @@ until [ "$selection" = "0" ]; do
     2 ) clear ; menu_option_2  ;;
     3 ) clear ; menu_option_3  ;;
     4 ) clear ; menu_option_4  ;;
+    5 ) clear ; menu_option_5  ;;
     9 ) clear ; menu_option_9  ;;
 
     0 ) clear ; exit ;;

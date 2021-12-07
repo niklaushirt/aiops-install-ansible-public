@@ -29,11 +29,6 @@
     - role: 00_pre
 
 # Run Prerequisites
-    - role: 01_initialization
-      when: INSTALL_AIOPS
-  
-    - role: 02_rook-ceph
-      when: ROOK_CEPH_INSTALL_MODE=="enable" or ROOK_CEPH_INSTALL_MODE=="automatic"
 
     - role: 03_aiops-get-storage-class
       when: INSTALL_AIOPS

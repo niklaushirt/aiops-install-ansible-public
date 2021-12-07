@@ -12,9 +12,9 @@
 
 - name: GATEWAY -            🔐 Copy Pull Secret from WAIOPS Namespace
   shell: |
-    oc delete secret evtmanager-omni-secret -n {{ WAIOPS_NAMESPACE }}
-    oc get secret evtmanager-omni-secret -n {{ NOI_NAMESPACE }} -ojson | jq -r '.data.OMNIBUS_ROOT_PASSWORD'| base64 -d > ./OMNIBUS_ROOT_PASSWORD
-    oc create secret generic evtmanager-omni-secret -n {{ WAIOPS_NAMESPACE }} --from-literal=username=root --from-file=password=./OMNIBUS_ROOT_PASSWORD --from-file=OMNIBUS_ROOT_PASSWORD=./OMNIBUS_ROOT_PASSWORD
+    oc delete secret aiops-omni-secret -n {{ WAIOPS_NAMESPACE }}
+    oc get secret evtmanager-omni-secret -n {{ EVTMGR_NAMESPACE }} -ojson | jq -r '.data.OMNIBUS_ROOT_PASSWORD'| base64 -d > ./OMNIBUS_ROOT_PASSWORD
+    oc create secret generic aiops-omni-secret -n {{ WAIOPS_NAMESPACE }} --from-literal=username=root --from-file=password=./OMNIBUS_ROOT_PASSWORD --from-file=OMNIBUS_ROOT_PASSWORD=./OMNIBUS_ROOT_PASSWORD
     rm ./OMNIBUS_ROOT_PASSWORD
   ignore_errors: yes
 

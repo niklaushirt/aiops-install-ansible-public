@@ -71,6 +71,9 @@ spec:
                 customImageNames:
                   description: Use custom image names
                   type: boolean
+                externalArangoDBName:
+                  description: DNS name for external arangodb server
+                  type: string
                 externalIP:
                   description: Static external IP address for ingress LoadBalancer
                   type: string
@@ -86,10 +89,10 @@ spec:
                 externalDbIP:
                   description: IP address for external mysql compliant database server
                   type: string
-                externalTimescaleName:
+                externalTimescaleDBName:
                   description: DNS name for external postgresql/timescaledb database server
                   type: string
-                externalTimescaleIP:
+                externalTimescaleDBIP:
                   description: IP address for external postgresql/timescaledb compliant database server
                   type: string
                 externalInfluxDBName:
@@ -531,6 +534,15 @@ spec:
                 serviceAccountName:
                   description: component serviceAccountName
                   type: string
+                httpsRedirect:
+                  description: true if non-SSL requests should be redirected to corresponding secure URLs
+                  type: boolean
+                nginxIsPrimaryIngress:
+                  description: |-
+                    true if nginx is acting as primary ingress for the appliance (typical, e.g., of OVA
+                    installations), as opposed to being downstream of some other ingress mechanism
+                    as in something like an OpenShift deployemnt
+                  type: boolean
               type: object
             rsyslog:
               properties:
@@ -738,12 +750,6 @@ spec:
                   description: Enable baremetal mediation
                   type: boolean
               type: object
-            cloudfoundry:
-              properties:
-                enabled:
-                  description: Enable Cloud Foundry mediation
-                  type: boolean
-              type: object
             compellent:
               properties:
                 enabled:
@@ -886,18 +892,6 @@ spec:
               properties:
                 enabled:
                   description: Enable HPE OneView mediation
-                  type: boolean
-              type: object
-            openstack:
-              properties:
-                enabled:
-                  description: Enable Openstack mediation
-                  type: boolean
-              type: object
-            pivotal:
-              properties:
-                enabled:
-                  description: Enable Pivotal mediation
                   type: boolean
               type: object
             pure:
@@ -2287,7 +2281,46 @@ spec:
                   description: component serviceAccountName
                   type: string
               type: object
-            mediation-gcp:
+            mediation-gcpsa:
+              properties:
+                annotations:
+                  description: component specific pod annotations list
+                  type: object
+                image:
+                  description: component specific image options
+                  properties:
+                    repository:
+                      description: component container registry and repository name
+                      type: string
+                    tag:
+                      description: component container tag
+                      type: string
+                    pullPolicy:
+                      description: component image pull policy
+                      type: string
+                  type: object
+                javaComponentOptions:
+                  description: component additional java options
+                  type: string
+                debug:
+                  description: component debug
+                  type: boolean
+                resources:
+                  description: component resource configuration
+                  properties:
+                    limits:
+                      description: component limits
+                      properties:
+                        memory:
+                          description: component memory limits
+                          type: string
+                      type: object
+                  type: object
+                serviceAccountName:
+                  description: component serviceAccountName
+                  type: string
+              type: object
+            mediation-gcpproject:
               properties:
                 annotations:
                   description: component specific pod annotations list
@@ -2327,6 +2360,45 @@ spec:
                   type: string
               type: object
             mediation-gcpcost:
+              properties:
+                annotations:
+                  description: component specific pod annotations list
+                  type: object
+                image:
+                  description: component specific image options
+                  properties:
+                    repository:
+                      description: component container registry and repository name
+                      type: string
+                    tag:
+                      description: component container tag
+                      type: string
+                    pullPolicy:
+                      description: component image pull policy
+                      type: string
+                  type: object
+                javaComponentOptions:
+                  description: component additional java options
+                  type: string
+                debug:
+                  description: component debug
+                  type: boolean
+                resources:
+                  description: component resource configuration
+                  properties:
+                    limits:
+                      description: component limits
+                      properties:
+                        memory:
+                          description: component memory limits
+                          type: string
+                      type: object
+                  type: object
+                serviceAccountName:
+                  description: component serviceAccountName
+                  type: string
+              type: object
+            mediation-gcpbilling:
               properties:
                 annotations:
                   description: component specific pod annotations list
@@ -3107,45 +3179,6 @@ spec:
                   type: string
               type: object
             mediation-oracle:
-              properties:
-                annotations:
-                  description: component specific pod annotations list
-                  type: object
-                image:
-                  description: component specific image options
-                  properties:
-                    repository:
-                      description: component container registry and repository name
-                      type: string
-                    tag:
-                      description: component container tag
-                      type: string
-                    pullPolicy:
-                      description: component image pull policy
-                      type: string
-                  type: object
-                javaComponentOptions:
-                  description: component additional java options
-                  type: string
-                debug:
-                  description: component debug
-                  type: boolean
-                resources:
-                  description: component resource configuration
-                  properties:
-                    limits:
-                      description: component limits
-                      properties:
-                        memory:
-                          description: component memory limits
-                          type: string
-                      type: object
-                  type: object
-                serviceAccountName:
-                  description: component serviceAccountName
-                  type: string
-              type: object
-            mediation-pivotal:
               properties:
                 annotations:
                   description: component specific pod annotations list
