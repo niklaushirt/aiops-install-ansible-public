@@ -89,7 +89,7 @@
 # --------------------------------------------------------------------------------------------------------------------------------------
 # Wait for IR Analytics Pods
 # --------------------------------------------------------------------------------------------------------------------------------------
-- name: CONFIG -             🕦 Wait for CIR Analytics Pods to become available - this can take up to 45 minutes (hack for 3.2)
+- name: CONFIG -             🕦 Wait for IR Analytics Pods to become available - this can take up to 45 minutes (hack for 3.2)
   shell: oc get po -n {{ WAIOPS_NAMESPACE }} | grep aiops-ir-analytics-probablecause| grep -c ""
   register: kubectl_get_pods
   until: kubectl_get_pods.stdout == "1"

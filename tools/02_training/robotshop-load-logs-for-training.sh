@@ -36,6 +36,8 @@ echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
 # DO NOT EDIT BELOW
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+unzip ./tools/02_training/TRAINING_FILES/ELASTIC/robot-shop/logs/data-log-training.zip
+
 echo ""
 echo ""
 echo ""

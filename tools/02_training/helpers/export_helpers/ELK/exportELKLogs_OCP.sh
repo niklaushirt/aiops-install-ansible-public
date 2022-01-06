@@ -7,7 +7,7 @@
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 oc project openshift-logging
 
-ES_INDEX=app-000001
+ES_INDEX=app-000003
 
 export routeES=`oc get route elasticsearch -o jsonpath={.spec.host}`
 export token=$(oc whoami -t)

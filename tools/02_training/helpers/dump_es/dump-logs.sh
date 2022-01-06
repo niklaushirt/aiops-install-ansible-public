@@ -126,7 +126,7 @@ echo "**************************************************************************
 
 
 
-export existingIndexes=$(curl -k -u $username:$password -XGET https://localhost:9200/_cat/indices) >$log_output_path 2>&1
+export existingIndexes=$(curl -k -u $username:$password -XGET https://localhost:9200/_cat/indices) 
 
 
 if [[ $existingIndexes == "" ]] ;

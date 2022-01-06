@@ -45,7 +45,7 @@
 
 
 - name: ELK -                🕦 Wait for openshift-logging to become ready
-  shell: oc get po -n openshift-logging | grep -v Running |grep -v Completed | grep -c ""
+  shell: oc get po -n openshift-logging | grep -v Running |grep -v Completed|grep -v Error | grep -c ""
   register: kubectl_get_pods
   until: kubectl_get_pods.stdout == "1"
   retries: 500

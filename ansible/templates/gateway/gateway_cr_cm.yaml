@@ -175,7 +175,7 @@ data:
 
     value.serializer=org.apache.kafka.common.serialization.StringSerializer
 
-    bootstrap.servers=strimzi-cluster-kafka-bootstrap:9092
+    bootstrap.servers=iaf-system-kafka-0:9092
 
     sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule
     required username=token password=KAFKA_JAAS_PASSWORD;

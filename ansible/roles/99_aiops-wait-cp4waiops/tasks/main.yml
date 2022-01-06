@@ -24,7 +24,7 @@
 
 
 - name: CHECK -          🕦 Wait for {{ WAIOPS_NAMESPACE }} to become ready
-  shell: oc get po -n {{ WAIOPS_NAMESPACE }} | grep -v Running |grep -v Completed |grep -v zen-tour-job| wc -l| tr -d ' '
+  shell: oc get po -n {{ WAIOPS_NAMESPACE }} | grep -v Running |grep -v Completed|grep -v Error |grep -v zen-tour-job| wc -l| tr -d ' '
   register: kubectl_get_pods
   until: kubectl_get_pods.stdout|int == 1
   retries: 500

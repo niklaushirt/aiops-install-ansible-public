@@ -129,7 +129,19 @@ export WORKING_DIR_EVENTS="./tools/01_demo/INCIDENT_FILES/$APP_NAME/events"
 echo " "
 
 echo "     📥 Get Date Formats"
-export DATE_FORMAT_EVENTS="-v-60M +%Y-%m-%dT%H:%M"
+
+
+OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+if [ "${OS}" == "darwin" ]; then
+      # Suppose we're on Mac
+      export DATE_FORMAT_EVENTS="-v-60M +%Y-%m-%dT%H:%M"
+else
+      # Suppose we're on a Linux flavour
+      export DATE_FORMAT_EVENTS="-d-60min +%Y-%m-%dT%H:%M:%S" 
+fi
+
+
+
 case $LOG_TYPE in
   elk) export DATE_FORMAT_LOGS="+%Y-%m-%dT%H:%M:%S.000000+00:00";;
   humio) export DATE_FORMAT_LOGS="+%s000";;

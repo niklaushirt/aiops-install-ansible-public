@@ -40,7 +40,7 @@
 
 - name: RSEVENTS -           🚀 Get KAFKA_BROKER
   shell: |
-    echo $(oc get routes strimzi-cluster-kafka-bootstrap -n {{ WAIOPS_NAMESPACE }}      -o=jsonpath='{.status.ingress[0].host}{"\n"}'):443
+    echo $(oc get routes iaf-system-kafka-0 -n {{ WAIOPS_NAMESPACE }}      -o=jsonpath='{.status.ingress[0].host}{"\n"}'):443
   register: KAFKA_BROKER
 
 
