@@ -19,7 +19,7 @@ function parse_demo_event() {
   try {
     console.log("  **************************************************************************************************");
     console.log("   📛 Generating Demo Events from Config Map");
-  
+
     // console.log("  **************************************************************************************************");
     // console.log("   ⏳ Decode Payload");
 
@@ -132,7 +132,52 @@ function parse_demo_log() {
 
 
 
+function parse_demo_log_rsa() {
+
+  const payload = process.env.DEMO_LOGS_RSA || "{}"
+  const iterations = 1
+  let sleep = require('util').promisify(setTimeout);
+
+  try {
+    console.log("  **************************************************************************************************");
+    console.log("   📛 Generating Demo Log RSA Anomalies from Config Map");
+
+    var kafkaMessage = ""
+    var dateFull = Date.now();
+
+    for (let step = 0; step < iterations; step++) {
+
+      var array = payload.toString().split("\n");
+      for (i in array) {
+
+        dateFull = dateFull + 1000;
+        var objectToIterate = array[i]
+        var actTimestampElement = dateFull;
+        var formattedTimestamp = `${actTimestampElement}`.substring(0, 10);
+        actKafkaLine = objectToIterate.replace("MY_TIMESTAMP", formattedTimestamp)
+        //console.log(`         📥 Logs:     Injected ${i} Log Line`,actKafkaLine);
+
+        kafka.sendToKafkaLogAsync(actKafkaLine)
+
+      }
+      console.log(`         📥 Logs:     Injected ${i} Log Lines`);
+
+
+
+    }
+  } catch (ex) {
+    console.log(ex);
+  }
+}
+
+
+
+
+
+
+
 module.exports = {
   parse_demo_event,
-  parse_demo_log
+  parse_demo_log,
+  parse_demo_log_rsa
 };

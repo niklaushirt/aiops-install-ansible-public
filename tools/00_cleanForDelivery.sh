@@ -10,6 +10,7 @@ echo "--------------------------------------------------------------------------
 echo "    🚀  Find File Copies"
 echo "--------------------------------------------------------------------------------------------------------------------------------"
 find . -name '*copy*' -type f | grep -v DO_NOT_DELIVER
+find . -name '*test*' -type f | grep -v DO_NOT_DELIVER
 
 
 echo "--------------------------------------------------------------------------------------------------------------------------------"
@@ -29,7 +30,8 @@ echo "      ❎  Deleting JSON Log Files Elastic"
 find . -name '*-logtrain.json' -type f -size +10000k -delete
 echo "      ❎  Deleting Conflict Files"
 find . -name '*2021_Conflict*' -type f -delete
-
+echo "      ❎  Deleting node_modules directory"
+find . -name 'node_modules' -type d -exec rm -rf {} \;
 
 
 echo "--------------------------------------------------------------------------------------------------------------------------------"

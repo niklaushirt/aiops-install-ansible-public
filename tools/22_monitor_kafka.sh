@@ -96,7 +96,7 @@ menu_option_2() {
   
   echo "	Press CTRL-C to stop "
 
-  ${KAFKACAT_EXE} -v -X security.protocol=SASL_SSL -X ssl.ca.location=./ca.crt -X sasl.mechanisms=SCRAM-SHA-512 -X sasl.username=$SASL_USER -X sasl.password=$SASL_PASSWORD -b $BROKER -o -10 -C -t cp4waiops-cartridge.lifecycle.input.alerts
+  ${KAFKACAT_EXE} -v -X security.protocol=SASL_SSL -X ssl.ca.location=./ca.crt -X sasl.mechanisms=SCRAM-SHA-512 -X sasl.username=$SASL_USER -X sasl.password=$SASL_PASSWORD -b $BROKER -C -t cp4waiops-cartridge.lifecycle.input.alerts
 
 }
 
@@ -106,7 +106,7 @@ menu_option_3() {
   
   echo "	Press CTRL-C to stop "
 
-  ${KAFKACAT_EXE} -v -X security.protocol=SASL_SSL -X ssl.ca.location=./ca.crt -X sasl.mechanisms=SCRAM-SHA-512 -X sasl.username=$SASL_USER -X sasl.password=$SASL_PASSWORD -b $BROKER -o -10 -C -t cp4waiops-cartridge.lifecycle.input.stories 
+  ${KAFKACAT_EXE} -v -X security.protocol=SASL_SSL -X ssl.ca.location=./ca.crt -X sasl.mechanisms=SCRAM-SHA-512 -X sasl.username=$SASL_USER -X sasl.password=$SASL_PASSWORD -b $BROKER -C -t cp4waiops-cartridge.lifecycle.input.stories 
 
 }
 
@@ -116,7 +116,7 @@ menu_option_4() {
   
   echo "	Press CTRL-C to stop "
 
-  ${KAFKACAT_EXE} -v -X security.protocol=SASL_SSL -X ssl.ca.location=./ca.crt -X sasl.mechanisms=SCRAM-SHA-512 -X sasl.username=$SASL_USER -X sasl.password=$SASL_PASSWORD -b $BROKER -o -10 -C -t $EVENTS_TOPIC
+  ${KAFKACAT_EXE} -v -X security.protocol=SASL_SSL -X ssl.ca.location=./ca.crt -X sasl.mechanisms=SCRAM-SHA-512 -X sasl.username=$SASL_USER -X sasl.password=$SASL_PASSWORD -b $BROKER -C -t $EVENTS_TOPIC
 
 }
 
@@ -126,7 +126,7 @@ menu_option_5() {
   
   echo "	Press CTRL-C to stop "
 
-  ${KAFKACAT_EXE} -v -X security.protocol=SASL_SSL -X ssl.ca.location=./ca.crt -X sasl.mechanisms=SCRAM-SHA-512 -X sasl.username=$SASL_USER -X sasl.password=$SASL_PASSWORD -b $BROKER -o -10 -C -t $LOGS_TOPIC 
+  ${KAFKACAT_EXE} -v -X security.protocol=SASL_SSL -X ssl.ca.location=./ca.crt -X sasl.mechanisms=SCRAM-SHA-512 -X sasl.username=$SASL_USER -X sasl.password=$SASL_PASSWORD -b $BROKER -C -t $LOGS_TOPIC 
 
 }
 
@@ -135,7 +135,7 @@ menu_option_9() {
   oc get kafkatopic -n $WAIOPS_NAMESPACE
   read -p "Copy Paste Topic from above: " MY_TOPIC
 
-  ${KAFKACAT_EXE} -v -X security.protocol=SASL_SSL -X ssl.ca.location=./ca.crt -X sasl.mechanisms=SCRAM-SHA-512 -X sasl.username=$SASL_USER -X sasl.password=$SASL_PASSWORD -b $BROKER -o -10 -C -t $MY_TOPIC
+  ${KAFKACAT_EXE} -v -X security.protocol=SASL_SSL -X ssl.ca.location=./ca.crt -X sasl.mechanisms=SCRAM-SHA-512 -X sasl.username=$SASL_USER -X sasl.password=$SASL_PASSWORD -b $BROKER -C -t $MY_TOPIC
 }
 
 
@@ -182,7 +182,7 @@ echo "**************************************************************************
 echo "  "
 
 export LOGS_TOPIC=$(oc get kafkatopics.ibmevents.ibm.com -n $WAIOPS_NAMESPACE | grep logs-$LOG_TYPE| awk '{print $1;}')
-export EVENTS_TOPIC=$(oc get kafkatopics.ibmevents.ibm.com -n $WAIOPS_NAMESPACE | grep alerts-$EVENT_TYPE| awk '{print $1;}')
+export EVENTS_TOPIC=$(oc get kafkatopics.ibmevents.ibm.com -n $WAIOPS_NAMESPACE | grep -v noi-integration| grep -v cp4waiopscp4waiops | grep alerts-$EVENT_TYPE| awk '{print $1;}')
 
 
 until [ "$selection" = "0" ]; do

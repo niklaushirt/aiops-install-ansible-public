@@ -48,18 +48,6 @@ echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
 
 
 
-
-
-
-
-  read -p "Start Dump? [y,N] " DO_COMM
-  if [[ $DO_COMM == "y" ||  $DO_COMM == "Y" ]]; then
-      echo "✅ Ok, continuing..."
-  else
-    echo "❌ Aborted"
-    exit 1
-  fi
-
 oc project $WAIOPS_NAMESPACE
 
 #--------------------------------------------------------------------------------------------------------------------------------------------
@@ -155,7 +143,13 @@ for index in $(curl -k -u $username:$password -XGET https://localhost:9200/_cat/
 do
   echo "***************************************************************************************************************************************************"
   echo "   💾  Dumping Index ${index}.json"
-  elasticdump --input=https://$username:$password@localhost:9200/${index} --limit=5000 --output="$WORKING_DIR/${index}.json" --type=data; 
+  read -p "Start Dump (otherwise skip this index)? [y,N] " DO_COMM
+  if [[ $DO_COMM == "y" ||  $DO_COMM == "Y" ]]; then
+      elasticdump --input=https://$username:$password@localhost:9200/${index} --limit=5000 --output="$WORKING_DIR/${index}.json" --type=data; 
+  else
+    echo "❌ Skipped"
+  fi
+
 done
 
 

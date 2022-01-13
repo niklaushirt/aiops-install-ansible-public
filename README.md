@@ -1920,7 +1920,7 @@ Get it from Humio --> `Owl` in the top right corner / `Your Account` / `API Toke
 
 	```yaml
 	"kubernetes.namespace_name" = /robot-shop/
-	| "kubernetes.container_name" != load
+	| "kubernetes.container_name" = web or ratings or catalogue
 	```
 * Click `Next`
 * Put in the following mapping:
@@ -2038,7 +2038,23 @@ With this sample payload:
 	* 	Add action from above
 	
 	
-	
+
+### 15.3.5 Easily simulate erros
+
+Simulate MySQL error by cutting the communication with the Pod:
+
+```bash
+oc patch -n robot-shop service mysql -p '{"spec": {"selector": {"service": "mysql-deactivate"}}}'
+```
+
+Restore the communication:
+
+```bash
+oc patch -n robot-shop service mysql -p '{"spec": {"selector": {"service": "mysql"}}}'
+```
+
+
+
 ---------------------------------------------------------------
 # 16. ServiceMesh
 ---------------------------------------------------------------

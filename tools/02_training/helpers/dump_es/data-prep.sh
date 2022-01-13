@@ -10,7 +10,7 @@
 cat ./tools/02_training/helpers/dump_es/DUMP/logs/1000-1000-20211213-logtrain.json|jq '._source.instance_id' | sort | uniq -c
 
 export JSON_NAME=1000-1000-20211214-logtrain.json
-cat ./tools/02_training/helpers/dump_es/DUMP/logs/$JSON_NAME| grep -v "load"| grep -v "mongodb"| grep -v "rabbitmq"| grep -v "redis"| grep -v "shipping"| grep -v "user"| grep -v "cart"| grep -v "dispatch"| grep -v "payment" > ./tools/02_training/TRAINING_FILES/ELASTIC/robot-shop/logs/temp/$JSON_NAME
+cat ./tools/02_training/helpers/dump_es/DUMP/logs/$JSON_NAME| grep -v "mysql"| grep -v "load"| grep -v "mongodb"| grep -v "rabbitmq"| grep -v "redis"| grep -v "shipping"| grep -v "user"| grep -v "cart"| grep -v "dispatch"| grep -v "payment" > ./tools/02_training/TRAINING_FILES/ELASTIC/robot-shop/logs/temp/$JSON_NAME
 cat ./tools/02_training/TRAINING_FILES/ELASTIC/robot-shop/logs/temp/$JSON_NAME|jq '._source.instance_id' | sort | uniq -c
 
 

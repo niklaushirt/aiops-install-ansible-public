@@ -36,7 +36,13 @@ echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
 # DO NOT EDIT BELOW
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-unzip ./tools/02_training/TRAINING_FILES/ELASTIC/robot-shop/logs/data-log-training.zip
+read -p "Decompress Demo Logs? [y,N] " DO_COMM
+if [[ $DO_COMM == "y" ||  $DO_COMM == "Y" ]]; then
+    unzip ./tools/02_training/TRAINING_FILES/ELASTIC/robot-shop/logs/data-log-training.zip
+else
+    echo "❌ Skipped"
+fi
+
 
 echo ""
 echo ""

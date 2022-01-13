@@ -196,9 +196,30 @@ router.post("/demo_log", function (req, res) {
     res.sendStatus(200);
   } else {
     console.log("   ❌ OPERATION REFUSED for Token:", req.headers.token);
-    res.render('login', {});
+    res.sendStatus(401);
   }
 
 });
+
+
+
+router.post("/demo_log_rsa", function (req, res) {
+  if (req.headers.token == token) {
+    console.log("  **************************************************************************************************");
+    console.log("   🚀 Starting Demo: Log Anomalies RSA");
+    //console.log(req.body);
+    processing.parse_demo_log_rsa()
+    console.log("   ✅ Done");
+    console.log("  **************************************************************************************************");
+
+    res.sendStatus(200);
+  } else {
+    console.log("   ❌ OPERATION REFUSED for Token:", req.headers.token);
+    res.sendStatus(401);
+  }
+
+});
+
+
 
 module.exports = router;
