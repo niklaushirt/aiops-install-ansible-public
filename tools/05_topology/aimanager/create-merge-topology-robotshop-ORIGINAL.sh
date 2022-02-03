@@ -1,7 +1,7 @@
 echo "Starting..."
-WAIOPS_PARAMETER=$(cat ./00_config_cp4waiops.yaml|grep WAIOPS_NAMESPACE:)
-WAIOPS_NAMESPACE=${WAIOPS_PARAMETER##*:}
-WAIOPS_NAMESPACE=$(echo $WAIOPS_NAMESPACE|tr -d '[:space:]')
+echo "Starting..."
+export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
+export EVTMGR_NAMESPACE=$(oc get po -A|grep noi-operator |awk '{print$1}')
 
 CLUSTER_ROUTE=$(oc get routes console -n openshift-console | tail -n 1 2>&1 ) 
 CLUSTER_FQDN=$( echo $CLUSTER_ROUTE | awk '{print $2}')
@@ -16,11 +16,12 @@ oc create route passthrough topology-rest -n $WAIOPS_NAMESPACE --insecure-policy
 
 export LOGIN="$EVTMGR_REST_USR:$EVTMGR_REST_PWD"
 
+echo "Wait 10 seconds"
+sleep 10
+
 echo "URL: https://topology-rest-$WAIOPS_NAMESPACE.$CLUSTER_NAME/1.0/rest-observer/rest/resources"
 echo "LOGIN: $LOGIN"
 
-echo "Wait 5 seconds"
-sleep 5
 
 #echo curl -X "POST" "https://topology-rest-$WAIOPS_NAMESPACE.$CLUSTER_NAME/1.0/rest-observer/rest/resources" --insecure -H 'Content-Type: application/json' -u $LOGIN -H 'JobId: listenJob' -H 'X-TenantID: cfd95b7e-3bc7-4006-a4a8-a73a79c71255' -d $'{"app": "robotshop","availableReplicas": 1,"createdReplicas": 1,"dataCenter": "demo","desiredReplicas": 1,"entityTypes": ["deployment"],"mergeTokens": ["web"],"matchTokens": ["web","web-deployment"],"name": "web","namespace": "robot-shop","readyReplicas": 1,"tags": ["app:robotshop","namespace:robot-shop"],"vertexType": "resource","uniqueId": "web-id"}'
 

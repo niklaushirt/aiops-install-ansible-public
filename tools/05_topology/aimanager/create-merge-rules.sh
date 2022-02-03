@@ -1,7 +1,6 @@
 echo "Starting..."
-WAIOPS_PARAMETER=$(cat ./00_config_cp4waiops.yaml|grep WAIOPS_NAMESPACE:)
-WAIOPS_NAMESPACE=${WAIOPS_PARAMETER##*:}
-WAIOPS_NAMESPACE=$(echo $WAIOPS_NAMESPACE|tr -d '[:space:]')
+export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
+export EVTMGR_NAMESPACE=$(oc get po -A|grep noi-operator |awk '{print$1}')
 
 
 CLUSTER_ROUTE=$(oc get routes console -n openshift-console | tail -n 1 2>&1 ) 
@@ -13,13 +12,16 @@ export EVTMGR_REST_USR=$(oc get secret aiops-topology-asm-credentials -n $WAIOPS
 export EVTMGR_REST_PWD=$(oc get secret aiops-topology-asm-credentials -n $WAIOPS_NAMESPACE -o=template --template={{.data.password}} | base64 --decode)
 export LOGIN="$EVTMGR_REST_USR:$EVTMGR_REST_PWD"
 
-oc create route passthrough topology-merge -n $WAIOPS_NAMESPACE --insecure-policy="Redirect" --service=aiops-topology-merge --port=https-merge-api
+oc delete route  topology-merge -n $WAIOPS_NAMESPACE
+oc create route reencrypt topology-merge -n $WAIOPS_NAMESPACE --insecure-policy="Redirect" --service=aiops-topology-merge --port=https-merge-api
 
 
 echo "URL: https://topology-merge-$WAIOPS_NAMESPACE.$CLUSTER_NAME/1.0/merge/"
 echo "LOGIN: $LOGIN"
 
 
+echo "Wait 5 seconds"
+sleep 5
 
 
 ## MERGE CREATE

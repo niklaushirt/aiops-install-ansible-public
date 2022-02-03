@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name:  test-config
+  namespace: default
+data:
+  TOKEN: 123456789
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test
+  namespace: default
+  labels:
+      app:  test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app:  test
+  template:
+    metadata:
+      labels:
+        app:  test
+    spec:
+      containers:
+      - image: niklaushirt/test:latest
+        imagePullPolicy: IfNotPresent
+        name: gateway
+        command:
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "50Mi"
+          limits:
+            cpu: "250m"
+            memory: "250Mi"
+        envFrom:
+        - configMapRef:
+            name:  test-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name:  test-service
+  namespace: default
+spec:
+  selector:
+    app:  test
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name:  test
+  namespace: default
+spec:
+  to:
+    kind: Service
+    name:  test-service
+

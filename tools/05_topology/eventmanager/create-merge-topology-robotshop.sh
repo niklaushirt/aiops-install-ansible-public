@@ -16,13 +16,13 @@ export LOGIN="$EVTMGR_REST_USR:$EVTMGR_REST_PWD"
 oc delete route topology-rest -n $EVTMGR_NAMESPACE 
 oc create route passthrough topology-rest -n $EVTMGR_NAMESPACE --insecure-policy="Redirect" --service=evtmanager-topology-rest-observer --port=https-rest-observer-api
 
+echo "Wait 10 seconds"
+sleep 10
 
 echo "URL: https://topology-rest-$EVTMGR_NAMESPACE.$CLUSTER_NAME/1.0/rest-observer/rest/resources"
 echo "LOGIN: $LOGIN"
 
 
-echo "Wait 5 seconds"
-sleep 5
 
 #echo curl -X "POST" "https://topology-rest-$EVTMGR_NAMESPACE.$CLUSTER_NAME/1.0/rest-observer/rest/resources" --insecure -H 'Content-Type: application/json' -u $LOGIN -H 'JobId: listenJob' -H 'X-TenantID: cfd95b7e-3bc7-4006-a4a8-a73a79c71255' -d $'{"app": "robotshop","availableReplicas": 1,"createdReplicas": 1,"dataCenter": "demo","desiredReplicas": 1,"entityTypes": ["deployment"],"mergeTokens": ["web"],"matchTokens": ["web","web-deployment"],"name": "web","namespace": "robot-shop","readyReplicas": 1,"tags": ["app:robotshop","namespace:robot-shop"],"vertexType": "resource","uniqueId": "web-id"}'
 

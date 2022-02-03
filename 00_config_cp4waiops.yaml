@@ -40,8 +40,6 @@ OCP_MAJOR_VERSION: automatic
 # --------------------------------------------------------------------------------------------------------------------------------------
 # *************************************************************************************************************************************************
 
-# Install standalone AI Manager
-INSTALL_AIOPS: true
 # CP4WAIOPS Namespace for installation
 WAIOPS_NAMESPACE: cp4waiops
 
@@ -77,8 +75,6 @@ STORAGECLASS_BLOCK_OVERRIDE: not_configured
 # --------------------------------------------------------------------------------------------------------------------------------------
 # *************************************************************************************************************************************************
 
-# Install standalone Event Manager (Netcool Oprations Insight)
-INSTALL_EVTMGR: false
 # CP4WAIOPS Namespace for installation
 EVTMGR_NAMESPACE: cp4waiops-evtmgr
 
@@ -119,6 +115,12 @@ ROOK_CEPH_INSTALL_MODE: automatic
 
 # Install LDAP Server
 INSTALL_LDAP: true
+# LDAP Domain
+LDAP_DOMAIN: ibm.com
+# LDAP Base
+LDAP_BASE: dc=ibm,dc=com
+# LDAP Admin Password
+LDAP_ADMIN_PASSWORD: P4ssw0rd!
 
 
 # Install Turbonomic (experimental - needs separate license)
@@ -230,42 +232,22 @@ INSTALL_MANAGEIQ: false
 WAIOPS_NAME: ibm-aiops
 # Create externally accessible Route for Topology
 CREATE_TOPO_ROUTE: true
-# Create externally accessible Route for Flink (security risk!)
-CREATE_FLINK_ROUTE: true
+# Create externally accessible Routes  (security risk!)
+# Flink
+# AI Manager API Route
+# Datalayer API
+CREATE_EXTERNAL_ROUTES: true
+
 # Install the EvtManager --> AI Manegr Gateway
 INSTALL_GATEWAY: true
 # Number of Pods to be expected in final CP4WAIOPS Namespace
-WAIOPS_NS_MIN_PODS_FINAL: 115
+WAIOPS_NS_MIN_PODS_FINAL: 110
 # Number of Pods to be expected in final AI Manager Namespace
 CS_NS_MIN_PODS: 35
 # Number of Pods to be expected in final RookCeph Namespace
 ROOK_NS_MIN_PODS: 38
 # Number of Pods to be expected in final Event MAnager Namespace
 EVTMGR_NS_MIN_PODS_FINAL: 70
-
-
-# *************************************************************************************************************************************************
-# --------------------------------------------------------------------------------------------------------------------------------------
-# LDAP PARAMETERS
-# --------------------------------------------------------------------------------------------------------------------------------------
-# *************************************************************************************************************************************************
-
-# LDAP Domain
-LDAP_DOMAIN: ibm.com
-# LDAP Base
-LDAP_BASE: dc=ibm,dc=com
-# LDAP Admin Password
-LDAP_ADMIN_PASSWORD: P4ssw0rd!
-
-
-
-
-
-
-
-
-
-
 
 
 

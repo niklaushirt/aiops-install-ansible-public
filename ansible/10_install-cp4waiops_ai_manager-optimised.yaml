@@ -30,24 +30,24 @@
 
 # Run Prerequisites
     - role: 01_initialization
-      when: INSTALL_AIOPS
+      
   
     - role: 02_rook-ceph
       when: ROOK_CEPH_INSTALL_MODE=="enable" or ROOK_CEPH_INSTALL_MODE=="automatic"
 
     - role: 03_aiops-get-storage-class
-      when: INSTALL_AIOPS
+      
 
     - role: 04_aiops-prerequisites
-      when: INSTALL_AIOPS
+      
 
 # Install CP4WAIOPS Operator
     - role: 10_aiops-operator
-      when: INSTALL_AIOPS
+      
       
 # Install CP4WAIOPS Instance
     - role: 11_aiops-install
-      when: INSTALL_AIOPS
+      
 
 # Install Add-Ons while CP4WAIOPS is coming up
     - role: 20_aiops-addons-turbonomic
@@ -70,14 +70,13 @@
 
 # Install Add-Ons while CP4WAIOPS is coming up
     - role: 25_aiops-addons-ldap
-      when: INSTALL_LDAP and INSTALL_AIOPS
+      when: INSTALL_LDAP
 
     - role: 26_aiops-addons-user
-      when: CREATE_DEMO_USER and INSTALL_AIOPS
+      when: CREATE_DEMO_USER
 
     - role: 27_aiops-addons-demoapps
-      when: INSTALL_DEMO_APPS and INSTALL_AIOPS
-
+      when: INSTALL_DEMO_APPS
     - role: 28_aiops-addons-runbook-bastion
       when: INSTALL_RUNBOOK_BASTION
       
@@ -87,24 +86,24 @@
 
 # Wait for Common Services being completely installed
     - role: 99_aiops-wait-common-services
-      when: INSTALL_AIOPS
+      
 
     - role: 99_aiops-wait-for-zen
-      when: INSTALL_AIOPS
+      
 
     - role: 30_aiops-patches
-      when: INSTALL_AIOPS and INSTALL_AIOPS
+
 
 # Wait for CP4WAIOPS being completely installed
     - role: 99_aiops-wait-cp4waiops
-      when: INSTALL_AIOPS
+      
 
     - role: 31_aiops-final-patches
-      when: INSTALL_AIOPS
+      
 
 # Post installation tasks
     - role: 40_aiops-post-ldap-register
-      when: INSTALL_LDAP and INSTALL_AIOPS
+      when: INSTALL_LDAP
 
 
 # Install Add-Ons after CP4WAIOPS has come up

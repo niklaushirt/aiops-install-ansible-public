@@ -15,6 +15,8 @@ export LOGIN="$EVTMGR_REST_USR:$EVTMGR_REST_PWD"
 
 oc create route passthrough topology-merge -n $EVTMGR_NAMESPACE --insecure-policy="Redirect" --service=evtmanager-topology-merge --port=https-merge-api
 
+echo "Wait 10 seconds"
+sleep 10
 
 echo "URL: https://topology-merge-$EVTMGR_NAMESPACE.$CLUSTER_NAME/1.0/merge/"
 echo "LOGIN: $LOGIN"  

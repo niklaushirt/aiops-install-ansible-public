@@ -19,14 +19,16 @@ export INDEX_TYPE=logs
 
 
 
-# Get Namespace from Cluster 
-echo "   ------------------------------------------------------------------------------------------------------------------------------"
-echo "   🔬 Getting Installation Namespace"
-echo "   ------------------------------------------------------------------------------------------------------------------------------"
 
-export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
-echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
 
+if [[  $WAIOPS_NAMESPACE =~ "" ]]; then
+    # Get Namespace from Cluster 
+    echo "   ------------------------------------------------------------------------------------------------------------------------------"
+    echo "   🔬 Getting Installation Namespace"
+    echo "   ------------------------------------------------------------------------------------------------------------------------------"
+    export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
+    echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
+fi
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -36,19 +38,23 @@ echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
 # DO NOT EDIT BELOW
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-read -p "Decompress Demo Logs? [y,N] " DO_COMM
-if [[ $DO_COMM == "y" ||  $DO_COMM == "Y" ]]; then
-    unzip ./tools/02_training/TRAINING_FILES/ELASTIC/robot-shop/logs/data-log-training.zip
-else
-    echo "❌ Skipped"
-fi
+# read -p "Decompress Demo Logs? [y,N] " DO_COMM
+# if [[ $DO_COMM == "y" ||  $DO_COMM == "Y" ]]; then
+echo "   ------------------------------------------------------------------------------------------------------------------------------"
+echo "   📦 Uncompressing log anomaly training files"
+echo "   ------------------------------------------------------------------------------------------------------------------------------"
+unzip -o ./tools/02_training/TRAINING_FILES/ELASTIC/robot-shop/logs/data-log-training.zip -d ./tools/02_training/TRAINING_FILES/ELASTIC/robot-shop/logs>/dev/null 2>&1
+# else
+#     echo "❌ Skipped"
+# fi
 
+echo "***************************************************************************************************************************************************"
+echo "  "
+echo "  ⏱ This will take some time (up to 45 minutes"
+echo "  📥 Indexes will count up to approx 320000 and 390000 respectively."
+echo "  "
+echo "***************************************************************************************************************************************************"
 
-echo ""
-echo ""
-echo ""
-echo ""
-echo ""
 echo ""
 ./tools/02_training/scripts/load-es-index.sh
 

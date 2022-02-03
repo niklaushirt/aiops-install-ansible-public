@@ -1652,6 +1652,7 @@ until [ "$selection" = "0" ]; do
   echo "    	21  - Patch IAF                                                - if the IBM Automation Foundation does not come up try this"
   echo "    	22  - Patch AI Manager merge topology pod                      - if the topology-merge pod is crashlooping"
   echo "    	23  - Patch Handler Pods/Vault Access                            - if *handler* Pods have Errors"
+  echo "    	25  - Patch IR Pull Secrets                                    - if IR Pods have Image Pull Errors"
   echo "    	28  - Patch/enable ZEN route traffic                           - if ZEN related components are not coming up"
   echo "    	29  - Restart Zen Operator                                     - if Zen Operator Ansible Script has errors - (takes 15-20 minutes)"
   echo "" 

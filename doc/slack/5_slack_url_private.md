@@ -3,6 +3,31 @@
 
 As the Slack integration requires a two-way communication and for Slack to communicate with the WAIOps server, you need to configure a tunnel, a feature that is included in CP4WAIOPS 3.2.  
 
+> ❗To use this feature, make sure the Secure Tunnel is enabled in the installtion definition.
+> 
+> 
+```yaml
+apiVersion: orchestrator.aiops.ibm.com/v1alpha1
+kind: Installation
+metadata:
+  name: {{ WAIOPS_NAME }}
+  namespace: {{ WAIOPS_NAMESPACE }}
+spec:
+  imagePullSecret: ibm-aiops-pull-secret
+  license:
+    accept: true
+  pakModules:
+    - enabled: true
+      name: aiManager
+    - enabled: true
+      name: aiopsFoundation
+    - enabled: true
+      name: applicationManager
+    - enabled: true    <-- Make sure this is set to true ⚠️
+      name: connection
+```
+
+> The automated install does this by default.
 
 
 1. Open your AIManager Web UI

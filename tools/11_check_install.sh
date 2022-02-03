@@ -168,10 +168,94 @@ echo "  Initializing......"
 # DO NOT EDIT BELOW
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+    echo "--------------------------------------------------------------------------------------------------------------------------------"
+    echo " 🚀  Examining CP4WAIOPS AI Manager Configuration...." 
+    echo "--------------------------------------------------------------------------------------------------------------------------------"
+
+      echo ""
+      echo ""
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "🔎 Initializing"
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "   🛠️  Get Route"
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+      oc create route passthrough ai-platform-api -n $WAIOPS_NAMESPACE  --service=aimanager-aio-ai-platform-api-server --port=4000 --insecure-policy=Redirect --wildcard-policy=None
+      export ROUTE=$(oc get route -n cp4waiops ai-platform-api  -o jsonpath={.spec.host})
+      echo "       Route: $ROUTE"
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+
+      echo ""
+      echo ""
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "🔎 Trained Models"
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+
+
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "   📥  LAD"
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+      echo ""
+      export result=$(curl "https://$ROUTE/graphql" -k -s -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: https://ai-platform-api-cp4waiops.itzroks-270003bu3k-qd899z-6ccd7f378ae819553d37d5f2ee142bd6-0000.eu-de.containers.appdomain.cloud' --data-binary '{"query":"query {\n    getTrainingDefinitions(algorithmName:Log_Anomaly_Detection) {\n      definitionName\n      algorithmName\n      version\n      deployedVersion\n      description\n      createdBy\n      modelDeploymentDate\n      trainedModels(latest: true) {\n        modelStatus\n        trainingStartTimestamp\n        trainingEndTimestamp\n        precheckTrainingDetails {\n          dataQuality\n          dataQualityDetails {\n            report\n            languageInfo {\n              language\n            }\n          }\n        }\n        postcheckTrainingDetails {\n          aiCoverage\n          overallModelQuality\n          modelsCreatedList {\n            modelId\n          }\n        }\n      }\n    }\n  }"}' --compressed)
+      #echo $result| jq ".data.getTrainingDefinitions[].definitionName,.data.getTrainingDefinitions[].deployedVersion, .data.getTrainingDefinitions[].trainedModels.precheckTrainingDetails.dataQuality, .data.getTrainingDefinitions[].trainedModels.precheckTrainingDetails.dataQuality.dataQualityDetails.report, .data.getTrainingDefinitions[].trainedModels.postcheckTrainingDetails    , .data.getTrainingDefinitions[].postcheckTrainingDetails.aiCoverage"
+      echo "Name:          "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".definitionName")
+      echo "Deployed:      "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".deployedVersion")
+      echo "Latest:        "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".version")
+      echo "Data Quality:  "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".trainedModels[].precheckTrainingDetails.dataQuality")" - " $(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".trainedModels[].precheckTrainingDetails.dataQualityDetails.report[0]")
+      echo "AI Coverage:   "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".trainedModels[].postcheckTrainingDetails.aiCoverage")
+      echo "Models:        "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".trainedModels[].postcheckTrainingDetails.modelsCreatedList")
+      echo "Deployed:      "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".modelDeploymentDate")
+      #echo $result| jq 
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+      echo ""
+      echo ""
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "   📥  TEMPORAL GROUPING"
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+      echo ""
+      export result=$(curl "https://$ROUTE/graphql" -k -s -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: https://ai-platform-api-cp4waiops.itzroks-270003bu3k-qd899z-6ccd7f378ae819553d37d5f2ee142bd6-0000.eu-de.containers.appdomain.cloud' --data-binary '{"query":"query {\n    getTrainingDefinitions(algorithmName:Temporal_Grouping) {\n      definitionName\n      algorithmName\n      version\n      deployedVersion\n      description\n      createdBy\n      modelDeploymentDate\n      trainedModels(latest: true) {\n        modelStatus\n        trainingStartTimestamp\n        trainingEndTimestamp\n        postcheckTrainingDetails {\n          modelsCreatedList {\n            modelId\n          }\n        }\n      }\n    }\n  }"}' --compressed)
+      echo "Name:          "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".definitionName")
+      echo "Deployed:      "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".deployedVersion")
+      echo "Latest:        "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".version")      
+      echo "Data Quality:  "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".trainedModels[].precheckTrainingDetails.dataQuality")" - " $(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".trainedModels[].precheckTrainingDetails.dataQualityDetails.report[0]")
+      echo "AI Coverage:   "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".trainedModels[].postcheckTrainingDetails.modelsCreatedList")
+      echo "Deployed:      "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".modelDeploymentDate")
+      #echo $result| jq 
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+      echo ""
+      echo ""
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "   📥  SIMILAR INCIDENTS"
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+      echo ""
+      export result=$(curl "https://$ROUTE/graphql" -k -s -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: https://ai-platform-api-cp4waiops.itzroks-270003bu3k-qd899z-6ccd7f378ae819553d37d5f2ee142bd6-0000.eu-de.containers.appdomain.cloud' --data-binary '{"query":"  query {\n    getTrainingDefinitions (algorithmName:Similar_Incidents){\n      definitionName\n      algorithmName\n      description\n      version\n      deployedVersion\n      lastTraining\n      trainingSchedule {\n        frequency\n        repeat\n        noEndDate\n      }\n      trainedModels(latest: true) {\n        trainingStartTimestamp\n        trainingEndTimestamp\n        modelStatus\n        postcheckTrainingDetails {\n            aiCoverage\n          \n          }\n      }\n    }\n  }"}' --compressed)
+            echo "Name:          "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".definitionName")
+      echo "Deployed:      "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".deployedVersion")
+      echo "Latest:        "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".version")      
+      echo "Schedule:      "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".trainingSchedule.frequency")" - " $(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".trainingSchedule.repeat")
+      echo "AI Coverage:   "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".trainedModels[].postcheckTrainingDetails.aiCoverage")
+      #echo $result| jq 
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+      echo ""
+      echo ""
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "   📥  CHANGE RISK"
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+      echo ""
+      export result=$(curl "https://$ROUTE/graphql" -k -s -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: https://ai-platform-api-cp4waiops.itzroks-270003bu3k-qd899z-6ccd7f378ae819553d37d5f2ee142bd6-0000.eu-de.containers.appdomain.cloud' --data-binary '{"query":"  query {\n    getTrainingDefinitions (algorithmName:Change_Risk){\n      definitionName\n      algorithmName\n      description\n      version\n      deployedVersion\n      lastTraining\n      trainingSchedule {\n        frequency\n        repeat\n        noEndDate\n      }\n      trainedModels(latest: true) {\n        trainingStartTimestamp\n        trainingEndTimestamp\n        modelStatus\n        postcheckTrainingDetails {\n            aiCoverage\n          \n          }\n      }\n    }\n  }"}' --compressed)
+      echo "Name:          "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".definitionName")
+      echo "Deployed:      "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".deployedVersion")
+      echo "Latest:        "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".version")
+      echo "Schedule:      "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".trainingSchedule.frequency")" - " $(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".trainingSchedule.repeat")
+      echo "AI Coverage:   "$(echo $result| jq ".data.getTrainingDefinitions[]" | jq -r ".trainedModels[].postcheckTrainingDetails.aiCoverage")
+      echo $result| jq 
+      echo "------------------------------------------------------------------------------------------------------------------------------------------------------"
+
 
 
     echo "--------------------------------------------------------------------------------------------------------------------------------"
-    echo " 🚀  Examining CP4WAIOPS AI Manager Installation for hints...." 
+    echo " 🚀  Examining CP4WAIOPS AI Manager Installation...." 
     echo "--------------------------------------------------------------------------------------------------------------------------------"
 
       echo ""
@@ -251,7 +335,7 @@ echo "  Initializing......"
       echo "🔎 Check ZEN Operator"
       echo "--------------------------------------------------------------------------------------------"
 
-      export ZEN_LOGS=$(oc logs $(oc get po -n ibm-common-services|grep ibm-zen-operator|awk '{print$1}') -n ibm-common-services)
+      export ZEN_LOGS=$(oc logs --since=12h $(oc get po -n ibm-common-services|grep ibm-zen-operator|awk '{print$1}') -n ibm-common-services)
       export ZEN_ERRORS=$(echo $ZEN_LOGS|grep -i error)
       export ZEN_FAILED=$(echo $ZEN_LOGS|grep -i "failed=0")
       export ZEN_READY=$(echo $ZEN_LOGS|grep -i "ok=2")

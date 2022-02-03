@@ -37,6 +37,13 @@
     oc adm policy add-scc-to-user privileged -n humio-logging -z humiocluster-humio
 
 
+- name: HUMIO -              🔐 Create Humio License Secret
+  community.kubernetes.k8s:
+    state: present
+    namespace: humio-logging
+    template: ./templates/humio/./humio-license-secret.j2
+  register: task_result
+
 
 - name: HUMIO -              🚀 Install Humio Operator
   community.kubernetes.k8s:
@@ -44,8 +51,6 @@
     namespace: humio-logging
     src: ./templates/humio/./humio-operator.yaml
   register: task_result
-
-
 
 
 - name: HUMIO -              🚀 Install Kafka and Zookeeper

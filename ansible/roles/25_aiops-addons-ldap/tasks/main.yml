@@ -14,7 +14,7 @@
 #     template: ./templates/ldap/install-ldap.j2
 #   #when: INSTALL_LDAP == true
 
-- name: ADDONS -             🚀 Install OpenLDAP
+- name: LDAP -               🚀 Install OpenLDAP
   community.kubernetes.k8s:
     state: present
     template: ./templates/ldap/install-ldap.j2

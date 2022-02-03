@@ -1,0 +1,33 @@
+extends bootstrap
+
+
+
+block content
+  p 
+  p
+  p(style='font-size:35px;font-weight: lighter;') Parameters
+  div(style='font-size:25px;font-weight: lighter;')
+    table
+      tbody
+        tr
+          td   Token:
+          td #{token}
+
+        tr
+          td   KafkaBroker:     
+          td #{kafkaBroker}
+        tr
+          td   KafkaUser:       
+          td #{kafkaUser}
+        tr
+          td   KafkaPWD:        
+          td **PROVIDED**
+        tr
+          td   KafkaTopic Events:
+          td #{kafkaTopicEvents}
+        tr
+          td   KafkaTopic Logs:
+          td #{kafkaTopicLogs}
+        tr
+          td   Log Iterations:
+          td #{iterations}

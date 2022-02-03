@@ -31,7 +31,7 @@
 # Run Prerequisites
 
     - role: 03_aiops-get-storage-class
-      when: INSTALL_AIOPS
+      
  
 
 # Install Event Manager and Gateway if selected

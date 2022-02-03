@@ -19,14 +19,14 @@ export INDEX_TYPE=logs
 
 
 
-# Get Namespace from Cluster 
-echo "   ------------------------------------------------------------------------------------------------------------------------------"
-echo "   🔬 Getting Installation Namespace"
-echo "   ------------------------------------------------------------------------------------------------------------------------------"
-
-export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
-echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
-
+if [[  $WAIOPS_NAMESPACE =~ "" ]]; then
+    # Get Namespace from Cluster 
+    echo "   ------------------------------------------------------------------------------------------------------------------------------"
+    echo "   🔬 Getting Installation Namespace"
+    echo "   ------------------------------------------------------------------------------------------------------------------------------"
+    export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
+    echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
+fi
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -36,13 +36,9 @@ echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
 # DO NOT EDIT BELOW
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#unzip ./tools/02_training/TRAINING_FILES/ELASTIC/robot-shop/logs/data-log-training-elk.zip
+unzip ./tools/02_training/TRAINING_FILES/ELASTIC/robot-shop/logs/data-log-training-elk.zip -d ./tools/02_training/TRAINING_FILES/ELASTIC/robot-shop/logs
 
-echo ""
-echo ""
-echo ""
-echo ""
-echo ""
+
 echo ""
 ./tools/02_training/scripts/load-es-index.sh
 

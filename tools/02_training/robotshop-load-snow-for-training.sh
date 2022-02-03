@@ -19,13 +19,15 @@ export INDEX_TYPE=changerisk
 
 
 
-# Get Namespace from Cluster 
-echo "   ------------------------------------------------------------------------------------------------------------------------------"
-echo "   🔬 Getting Installation Namespace"
-echo "   ------------------------------------------------------------------------------------------------------------------------------"
+if [[  $WAIOPS_NAMESPACE =~ "" ]]; then
+    # Get Namespace from Cluster 
+    echo "   ------------------------------------------------------------------------------------------------------------------------------"
+    echo "   🔬 Getting Installation Namespace"
+    echo "   ------------------------------------------------------------------------------------------------------------------------------"
+    export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
+    echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
+fi
 
-export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
-echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
 
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -38,11 +40,6 @@ echo "       ✅ OK - AI Manager:    $WAIOPS_NAMESPACE"
 
 
 
-echo ""
-echo ""
-echo ""
-echo ""
-echo ""
 echo ""
 ./tools/02_training/scripts/load-es-index.sh
 
