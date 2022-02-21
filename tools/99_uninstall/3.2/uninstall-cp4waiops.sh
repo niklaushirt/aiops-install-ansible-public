@@ -7,9 +7,9 @@
 # cleanup resources created by the product.  Please configure what you want to uninstall
 # in the uninstall-cp4waiops.props file first before running this script.
 
-. ./tools/99_uninstall/3.2/uninstall-cp4waiops.props
-. ./tools/99_uninstall/3.2/uninstall-cp4waiops-helper.sh
-. ./tools/99_uninstall/3.2/uninstall-cp4waiops-resource-groups.props
+. ./tools/99_uninstall/main/uninstall-cp4waiops.props
+. ./tools/99_uninstall/main/uninstall-cp4waiops-helper.sh
+. ./tools/99_uninstall/main/uninstall-cp4waiops-resource-groups.props
 
 HELP="false"
 SKIP_CONFIRM="false"
@@ -31,6 +31,12 @@ if [[ $HELP == "true" ]]; then
   display_help
   exit 0
 fi 
+
+#export CP4WAIOPS_PROJECT=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
+#export INSTALLATION_NAME=$(oc get installation.orchestrator.management.ibm.com -n $CP4WAIOPS_PROJECT |awk '{print$1}')
+
+
+
 
 analyze_script_properties
 

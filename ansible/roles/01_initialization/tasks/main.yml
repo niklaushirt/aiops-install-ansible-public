@@ -15,7 +15,7 @@
 #
 #  CloudPak for Watson AIOps
 #
-#  ©2021 nikh@ch.ibm.com
+#  ©2022 nikh@ch.ibm.com
 # ---------------------------------------------------------------------------------------------------------------------------------------------------"
 # ---------------------------------------------------------------------------------------------------------------------------------------------------"
 # ---------------------------------------------------------------------------------------------------------------------------------------------------"
@@ -120,15 +120,15 @@
   shell: |
     INSTALL_MODE="{{ ROOK_CEPH_INSTALL_MODE }}"
     CLUSTER_NAME={{ CLUSTER_NAME.stdout_lines[0] }}
-    if [[ $INSTALL_MODE == "enable" ]];
+    if [ -z "${INSTALL_MODE##*enable*}" ]; 
     then
       echo "true"
     else
-      if [[ $INSTALL_MODE == "disable" ]];
+      if [ -z "${INSTALL_MODE##*disable*}" ]; 
       then
         echo "false"
       else
-        if [[ $CLUSTER_NAME =~ "fyre.ibm.com" ]];
+        if [ -z "${CLUSTER_NAME##*fyre.ibm.com*}" ]; 
         then
             echo "true"
         else
@@ -137,6 +137,8 @@
       fi
     fi
   register: INSTALL_ROOK_CEPH_TEST
+  #args:
+  #  executable: /bin/bash
 
 - name: ROOKCEPH -           💾 Install Rook-Ceph={{ INSTALL_ROOK_CEPH_TEST.stdout_lines[0] }} 
   set_fact: INSTALL_ROOK_CEPH={{ INSTALL_ROOK_CEPH_TEST.stdout_lines[0] }} 
@@ -160,7 +162,7 @@
 - name: OPENSHIFT VERSION -  ☑️  Determine OpenShift Major Version
   shell: |
     DECLARED_VERSION={{ OCP_MAJOR_VERSION }}
-    if [[ $DECLARED_VERSION =~ "automatic" ]];
+    if [ -z "${DECLARED_VERSION##*automatic*}" ]; 
     then
       VERSION=$(oc version | grep "Server Version"| cut -d':' -f2| cut -d'.' -f1-2)
       echo ${VERSION//* } 
@@ -168,6 +170,8 @@
       echo $DECLARED_VERSION
     fi
   register: MAJOR_VERSION
+  args:
+    executable: /bin/bash
 
 - name: OPENSHIFT VERSION -  💾 Set OCP_MAJOR_VERSION={{ MAJOR_VERSION.stdout_lines[0] }} 
   set_fact: OCP_MAJOR_VERSION={{ MAJOR_VERSION.stdout_lines[0] }} 

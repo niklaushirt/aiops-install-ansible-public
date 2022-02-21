@@ -17,7 +17,7 @@
 
 - name: EVENTS-WEBHOOK -      🌏 Get CERT_ELEMENT
   shell: |
-    CERT_ELEMENT=$(oc get secret -n cp4waiops  kafka-secrets  -ojson|jq '.data'| jq -r '."ca.crt"'| base64 -d)
+    CERT_ELEMENT=$(oc get secret -n {{ WAIOPS_NAMESPACE }}  kafka-secrets  -ojson|jq '.data'| jq -r '."ca.crt"'| base64 -d)
     echo ${CERT_ELEMENT}
   register: CERT_ELEMENT
 
@@ -92,6 +92,6 @@
 
 
 - name: EVENTS-WEBHOOK -      🚀 Create CP4WAIOPS Generic Event Webhook  
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     template: ./templates/waiops-webhook/create-cp4waiops-event-gateway.j2

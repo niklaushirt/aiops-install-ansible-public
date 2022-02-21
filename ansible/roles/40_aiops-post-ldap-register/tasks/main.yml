@@ -80,7 +80,7 @@
 
 
   - name: LDAPREGISTER -       📥 Register Users and Teams
-    shell:         
+    shell: |
       cloudctl iam user-import -u demo -f
       cloudctl iam user-import -u dev -f
       cloudctl iam user-import -u test -f

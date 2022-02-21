@@ -11,7 +11,23 @@
 
 
 
-- name: DEMO-UI -      🚀 Create CP4WAIOPS Demo UI  
-  community.kubernetes.k8s:
+- name: DEMO-UI -      🚀 Create CP4WAIOPS Demo UI Configuration
+  kubernetes.core.k8s:
     state: present
-    template: ./templates/waiops-demo-ui/create-cp4waiops-demo.j2
+    template: ./templates/waiops-demo-ui/create-cp4waiops-demo-cm.j2
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Wait for Demo UI Configuration being ready
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: DEMO-UI -      🕦 Wait for Demo UI Configuration being ready
+  shell: oc get cm -n {{ WAIOPS_NAMESPACE }} demo-ui-config --ignore-not-found --no-headers|grep -c ""
+  register: kubectl_get_pods
+  until: kubectl_get_pods.stdout == "1"
+  retries: 500
+  delay: 15
+
+
+- name: DEMO-UI -      🚀 Create CP4WAIOPS Demo UI Deployment
+  kubernetes.core.k8s:
+    state: present
+    template: ./templates/waiops-demo-ui/create-cp4waiops-demo-deploy.j2

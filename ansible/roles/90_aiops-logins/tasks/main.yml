@@ -59,7 +59,7 @@
   k8s_info:
     kind: Namespace
     name: "{{ EVTMGR_NAMESPACE }}"
-  register: K8S_EXISTS
+  register: EVENTMANAGER_EXISTS 
 
 - name: LOGIN -  🚀 ADDONS - EventManager
   block:
@@ -80,7 +80,7 @@
     debug: 
       var: output_string.stdout_lines
     #when: PRINT_LOGINS == true
-  when: K8S_EXISTS.resources|length != 0
+  when: EVENTMANAGER_EXISTS .resources|length != 0
 
 
 
@@ -177,7 +177,7 @@
   k8s_info:
     kind: Namespace
     name: turbonomic
-  register: K8S_EXISTS
+  register: EVENTMANAGER_EXISTS 
 
 - name: LOGIN -  🚀 ADDONS - Turbonomic
   block:
@@ -200,7 +200,7 @@
     debug: 
       var: ready.stdout_lines
     #when: PRINT_LOGINS == true
-  when: K8S_EXISTS.resources|length != 0
+  when: EVENTMANAGER_EXISTS .resources|length != 0
 
 
 
@@ -211,7 +211,7 @@
   k8s_info:
     kind: Namespace
     name: istio-system
-  register: K8S_EXISTS
+  register: EVENTMANAGER_EXISTS 
 
 - name: LOGIN -  🚀 ADDONS - Istio
   block:
@@ -241,7 +241,7 @@
     debug: 
       var: output_string.stdout_lines
     #when: PRINT_LOGINS == true
-  when: K8S_EXISTS.resources|length != 0
+  when: EVENTMANAGER_EXISTS .resources|length != 0
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------
@@ -251,7 +251,7 @@
   k8s_info:
     kind: Namespace
     name: awx
-  register: K8S_EXISTS
+  register: EVENTMANAGER_EXISTS 
 
 - name: LOGIN -  🚀 ADDONS - AWX
   block:
@@ -272,7 +272,7 @@
     debug: 
       var: output_string.stdout_lines
     #when: PRINT_LOGINS == true
-  when: K8S_EXISTS.resources|length != 0
+  when: EVENTMANAGER_EXISTS .resources|length != 0
 
 # --------------------------------------------------------------------------------------------------------------------------------------
 # ADDONS - ManageIQ
@@ -281,7 +281,7 @@
   k8s_info:
     kind: Namespace
     name: manageiq
-  register: K8S_EXISTS
+  register: EVENTMANAGER_EXISTS 
 
 - name: LOGIN -  🚀 ADDONS - HuManageIQmio
   block:
@@ -303,7 +303,7 @@
     debug: 
       var: output_string.stdout_lines
     #when: PRINT_LOGINS == true
-  when: K8S_EXISTS.resources|length != 0
+  when: EVENTMANAGER_EXISTS .resources|length != 0
   # --------------------------------------------------------------------------------------------------------------------------------------
 # ADDONS - Humio
 # --------------------------------------------------------------------------------------------------------------------------------------
@@ -311,7 +311,7 @@
   k8s_info:
     kind: Namespace
     name: humio-logging
-  register: K8S_EXISTS
+  register: EVENTMANAGER_EXISTS 
 
 - name: LOGIN -  🚀 ADDONS - Humio
   block:
@@ -338,7 +338,7 @@
     debug: 
       var: output_string.stdout_lines
     #when: PRINT_LOGINS == true
-  when: K8S_EXISTS.resources|length != 0
+  when: EVENTMANAGER_EXISTS .resources|length != 0
 
 # --------------------------------------------------------------------------------------------------------------------------------------
 # ADDONS - Rook/Ceph
@@ -347,7 +347,7 @@
   k8s_info:
     kind: Namespace
     name: rook-ceph
-  register: K8S_EXISTS
+  register: EVENTMANAGER_EXISTS 
 
 - name: LOGIN -  🚀 ADDONS - Rook/Ceph
   block:
@@ -366,7 +366,7 @@
     debug: 
       var: output_string.stdout_lines
     #when: PRINT_LOGINS == true
-  when: K8S_EXISTS.resources|length != 0
+  when: EVENTMANAGER_EXISTS .resources|length != 0
 
 
 
@@ -378,7 +378,7 @@
   k8s_info:
     kind: Namespace
     name: openshift-logging
-  register: K8S_EXISTS
+  register: EVENTMANAGER_EXISTS 
 
 - name: LOGIN -  🚀 ADDONS - ELK
   block:
@@ -414,7 +414,7 @@
     debug: 
       var: output_string.stdout_lines
     #when: PRINT_LOGINS == true
-  when: K8S_EXISTS.resources|length != 0
+  when: EVENTMANAGER_EXISTS .resources|length != 0
 
 
 

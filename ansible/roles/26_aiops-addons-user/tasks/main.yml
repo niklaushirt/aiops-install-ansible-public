@@ -13,7 +13,7 @@
     kind: serviceaccount
     name: demo-admin
     namespace: default
-  register: K8S_EXISTS
+  register: USER_EXISTS 
 
 - name: USER -               🩹 Create OCP Demouser Account
   shell: |
@@ -23,5 +23,5 @@
         oc create clusterrolebinding ibm-zen-operator-serviceaccount --clusterrole=cluster-admin --serviceaccount=ibm-common-services:ibm-zen-operator-serviceaccount
   ignore_errors: yes
   register: demo_account
-  when: K8S_EXISTS.resources|length == 0
+  when: USER_EXISTS .resources|length == 0
 

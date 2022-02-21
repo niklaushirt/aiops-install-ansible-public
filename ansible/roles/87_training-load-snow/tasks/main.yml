@@ -18,7 +18,8 @@
     done
     echo "      ✅ OK"
   register: ES_READY
-
+  args:
+    executable: /bin/bash
 
 
 - name: TRAINING LOAD SNOW -       🧻 CLEANUP JOB

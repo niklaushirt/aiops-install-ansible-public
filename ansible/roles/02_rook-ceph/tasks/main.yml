@@ -12,13 +12,13 @@
   k8s_info:
     kind: Namespace
     name: rook-ceph
-  register: K8S_EXISTS
+  register: ROOK_EXISTS 
 
 - name: ROOKCEPH -           🚀 Install Rook-Ceph
   block:
 
   - name: ROOKCEPH -           🚀 Rook-Ceph CRDS
-    community.kubernetes.k8s:
+    kubernetes.core.k8s:
       state: present
       namespace: rook-ceph
       src: ./templates/rook-ceph/crds.yaml
@@ -27,7 +27,7 @@
 
 
   - name: ROOKCEPH -           🚀 Rook-Ceph Common
-    community.kubernetes.k8s:
+    kubernetes.core.k8s:
       state: present
       namespace: rook-ceph
       src: ./templates/rook-ceph/common.yaml
@@ -36,7 +36,7 @@
 
 
   - name: ROOKCEPH -           🚀 Rook-Ceph Operator
-    community.kubernetes.k8s:
+    kubernetes.core.k8s:
       state: present
       namespace: rook-ceph
       src: ./templates/rook-ceph/operator-openshift.yaml
@@ -45,7 +45,7 @@
 
 
   - name: ROOKCEPH -           🚀 Rook-Ceph Cluster
-    community.kubernetes.k8s:
+    kubernetes.core.k8s:
       state: present
       namespace: rook-ceph
       src: ./templates/rook-ceph/cluster.yaml
@@ -54,7 +54,7 @@
 
 
   - name: ROOKCEPH -           🚀 Rook-Ceph Filesystem
-    community.kubernetes.k8s:
+    kubernetes.core.k8s:
       state: present
       namespace: rook-ceph
       src: ./templates/rook-ceph/filesystem.yaml
@@ -63,7 +63,7 @@
 
 
   - name: ROOKCEPH -           🚀 Rook-Ceph Storageclass File
-    community.kubernetes.k8s:
+    kubernetes.core.k8s:
       state: present
       namespace: rook-ceph
       src: ./templates/rook-ceph/storageclass-fs.yaml
@@ -71,7 +71,7 @@
     
 
   - name: ROOKCEPH -           🚀 Rook-Ceph Storageclass Block
-    community.kubernetes.k8s:
+    kubernetes.core.k8s:
       state: present
       namespace: rook-ceph
       src: ./templates/rook-ceph/storageclass-block.yaml
@@ -84,7 +84,7 @@
     ignore_errors: yes
     register: demo_robot_shop
     when: INSTALL_ROOK_CEPH
-  when: K8S_EXISTS.resources|length == 0
+  when: ROOK_EXISTS .resources|length == 0
 
 # --------------------------------------------------------------------------------------------------------------------------------------
 # Wait for rook-ceph Namespace to be ready

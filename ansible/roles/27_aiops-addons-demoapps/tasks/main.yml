@@ -12,12 +12,12 @@
   k8s_info:
     kind: Namespace
     name: "robot-shop"
-  register: K8S_EXISTS
+  register: DEMO_EXISTS 
 
 - name: DEMO -               🚀 Install RobotShop
   block:
   - name: DEMO -               🚀 Create robot-shop namespace
-    community.kubernetes.k8s:
+    kubernetes.core.k8s:
       api_version: v1
       kind: Namespace
       name: "robot-shop"
@@ -36,47 +36,18 @@
               
 
   - name: DEMO -               🚀 Create robot-shop application
-    community.kubernetes.k8s:
+    kubernetes.core.k8s:
       state: present
       namespace: robot-shop
       src: ./templates/demo_apps/robotshop/robot-all-in-one.yaml
     #when: INSTALL_DEMO_APPS == true
 
   - name: DEMO -               🚀 Create robot-shop load generation
-    community.kubernetes.k8s:
+    kubernetes.core.k8s:
       state: present
       namespace: robot-shop
       src: ./templates/demo_apps/robotshop/load-deployment.yaml
     #when: INSTALL_DEMO_APPS == true
-  when: K8S_EXISTS.resources|length == 0
+  when: DEMO_EXISTS .resources|length == 0
 
-
-
-  # --------------------------------------------------------------------------------------------------------------------------------------
-  # Install Kubetoy
-  # --------------------------------------------------------------------------------------------------------------------------------------
-- name: DEMO -               🔎 Check Kubetoy
-  k8s_info:
-    kind: Namespace
-    name: "kubetoy"
-  register: K8S_EXISTS
-
-- name: DEMO -               🚀 Install Kubetoy
-  block:
-  - name: DEMO -               🚀 Create kubetoy namespace
-    community.kubernetes.k8s:
-      api_version: v1
-      kind: Namespace
-      name: "kubetoy"
-      state: present
-    #when: INSTALL_DEMO_APPS == true
-            
-
-  - name: DEMO -               🚀 Create kubetoy application
-    community.kubernetes.k8s:
-      state: present
-      namespace: kubetoy
-      src: ./templates/demo_apps/kubetoy/kubetoy_all_in_one.yaml
-    #when: INSTALL_DEMO_APPS == true
-  when: K8S_EXISTS.resources|length == 0
 

@@ -13,7 +13,7 @@
 
 
 - name: TURBOGATEWAY -       🚀 Create turbo-gateway installation
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: default
     src: ./templates/turbo-gateway/create-turbo-gateway.yaml

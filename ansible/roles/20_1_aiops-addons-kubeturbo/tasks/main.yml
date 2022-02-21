@@ -11,7 +11,7 @@
 # --------------------------------------------------------------------------------------------------------------------------------------
 # Create Namespace 
 - name: KUBETURBO -          🚀 Create namespace kubeturbo
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     api_version: v1
     kind: Namespace
     name: "kubeturbo"
@@ -27,35 +27,35 @@
 
 
 - name: KUBETURBO -         🚀 Create kubeturbo service account
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: kubeturbo
     src: ./templates/kubeturbo/service_account.yaml
   
 
 - name: KUBETURBO -         🚀 Create kubeturbo role bindings
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: kubeturbo
     src: ./templates/kubeturbo/role_binding.yaml
   
 
 - name: KUBETURBO -         🚀 Create kubeturbo CRD
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: kubeturbo
     src: ./templates/kubeturbo/crds/charts_v1alpha1_kubeturbo_crd.yaml
   
 
 - name: KUBETURBO -         🚀 Create kubeturbo Operator
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: kubeturbo
     src: ./templates/kubeturbo/operator.yaml
   
   
 - name: KUBETURBO -         🚀 Create kubeturbo installation
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: kubeturbo
     src: ./templates/kubeturbo/my_kubeturbo_instance_cr.yaml

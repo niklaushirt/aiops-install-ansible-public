@@ -12,7 +12,7 @@
 
 
 - name: HUMIO -              🚀 Create humio-logging namespace
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     api_version: v1
     kind: Namespace
     name: "humio-logging"
@@ -38,7 +38,7 @@
 
 
 - name: HUMIO -              🔐 Create Humio License Secret
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: humio-logging
     template: ./templates/humio/./humio-license-secret.j2
@@ -46,7 +46,7 @@
 
 
 - name: HUMIO -              🚀 Install Humio Operator
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: humio-logging
     src: ./templates/humio/./humio-operator.yaml
@@ -54,7 +54,7 @@
 
 
 - name: HUMIO -              🚀 Install Kafka and Zookeeper
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: humio-logging
     template: ./templates/humio/./humio-kafka.j2
@@ -74,7 +74,7 @@
 
 
 - name: HUMIO -              🚀 Install Humio Core Instance
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: humio-logging
     template: ./templates/humio/./humio-instance.j2
@@ -100,7 +100,7 @@
 
 
 - name: HUMIO -              🚀 Install Humio Configuration (Repository and Ingest Token)
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: humio-logging
     src: ./templates/humio/./humio-config.yaml
@@ -109,7 +109,7 @@
 
 
 - name: HUMIO -              🚀 Create Route
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: humio-logging
     src: ./templates/humio/./humio-route.yaml
@@ -117,7 +117,7 @@
 
 
 - name: HUMIO -              🚀 Install Fluentbit
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: humio-logging
     src: ./templates/humio/./fluentbit.yaml

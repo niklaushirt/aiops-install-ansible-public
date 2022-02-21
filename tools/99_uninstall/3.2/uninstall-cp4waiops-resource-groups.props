@@ -100,7 +100,12 @@ CP4WAIOPS_INTERNAL_SECRETS=("secret/aiops-ir-lifecycle-eventprocessor-ep-client-
                             "secret/aiops-ir-lifecycle-policy-grpc-clt-svc"
                             "secret/cp4waiops-eventprocessor-eve-29ee-ep-client-cert-kp"
                             "secret/cp4waiops-eventprocessor-eve-29ee-ep-ss-cacert-kp"
-                            "secret/ir-ui-session-secret")
+                            "secret/ir-ui-session-secret"
+                            "secret/sre-tunnel-tunnel-api-cert"
+                            "secret/sre-tunnel-tunnel-readiness-cert"
+                            "secret/sre-tunnel-tunnel-ui-secret"
+                            "secret/connector-manager-cert-secret"
+                            "secret/connector-local-orchestrator")
 
 
 CP4WAIOPS_CONFIGMAPS_INTERNAL_LABELS=("app=cp4waiops-eventprocessor-eve-29ee-ep")
@@ -137,7 +142,8 @@ CP4WAIOPS_LEASE=("lease.coordination.k8s.io/9efbc0e4.aiops.ibm.com"
                 "lease.coordination.k8s.io/5ba58da1.ai.ir.aiops.ibm.com"
                 "lease.coordination.k8s.io/e1d7d41e.ibm.com"
                 "lease.coordination.k8s.io/fc7f2af9.ibm.com"
-                "lease.coordination.k8s.io/ff20eae3.connectors.aiops.ibm.com")
+                "lease.coordination.k8s.io/ff20eae3.connectors.aiops.ibm.com"
+                "lease.coordination.k8s.io/aiopsedge-connector-manager")
 
 CP4WAIOPS_CRDS=("aimanagermainprods.ai-manager.watson-aiops.ibm.com" 
                 "aimanagers.ai-manager.watson-aiops.ibm.com"

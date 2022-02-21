@@ -17,7 +17,8 @@
     done
     echo "      ✅ OK"
   register: ES_READY
-
+  args:
+    executable: /bin/bash
 
 
 - name: TRAINING LOAD LAD -        🧻 CLEANUP JOB

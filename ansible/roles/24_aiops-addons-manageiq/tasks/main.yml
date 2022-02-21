@@ -22,7 +22,7 @@
 
 
 - name: MANAGEIQ -           🚀 Create MANAGEIQ namespace
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     api_version: v1
     kind: Namespace
     name: "manageiq"
@@ -30,42 +30,42 @@
   
   
 - name: MANAGEIQ -           🚀 Create MANAGEIQ CRD
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: manageiq
     src: ./templates/manageiq/1_manageiq.org_manageiqs_crd.yaml
   
 
 - name: MANAGEIQ -           🚀 Create MANAGEIQ Service Account
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: manageiq
     src: ./templates/manageiq/2_service_account.yaml
   
 
 - name: MANAGEIQ -           🚀 Create MANAGEIQ Role
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: manageiq
     src: ./templates/manageiq/3_role.yaml
   
 
 - name: MANAGEIQ -           🚀 Create MANAGEIQ Role Binding
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: manageiq
     src: ./templates/manageiq/4_role_binding.yaml
   
 
 - name: MANAGEIQ -           🚀 Create MANAGEIQ Operator
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: manageiq
     src: ./templates/manageiq/5_operator.yaml
   
 
 - name: MANAGEIQ -           🚀 Create MANAGEIQ Instance
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: manageiq
     template: ./templates/manageiq/6_manageiq_install_cr.j2

@@ -3,7 +3,7 @@
 # Copyright 2020- IBM Inc. All rights reserved
 # SPDX-License-Identifier: Apache2.0
 #
-. ./tools/99_uninstall/3.2/uninstall-cp4waiops.props
+. ./tools/99_uninstall/main/uninstall-cp4waiops.props
 
 export OPERATORS_PROJECT=openshift-operators
 export IBM_COMMON_SERVICES_PROJECT=ibm-common-services

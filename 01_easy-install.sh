@@ -140,9 +140,9 @@ if [ ! -x "$(command -v cloudctl)" ]; then
       exit 1
 fi
 
-printf "\r  🐣🥚🥚🥚🥚🥚🥚🥚🥚🥚🥚🥚🥚 - Getting Cluster Status                                       "
+printf "\r  🐣🥚🥚🥚🥚🥚🥚🥚🥚🥚🥚🥚🥚🥚 - Getting Cluster Status                                       "
 export CLUSTER_STATUS=$(oc status | grep "In project")
-printf "\r  🐥🐣🥚🥚🥚🥚🥚🥚🥚🥚🥚🥚🥚 - Getting Cluster User                                         "
+printf "\r  🐥🐣🥚🥚🥚🥚🥚🥚🥚🥚🥚🥚🥚🥚 - Getting Cluster User                                         "
 
 export CLUSTER_WHOAMI=$(oc whoami)
 
@@ -156,27 +156,29 @@ else
 fi
 
 
-printf "  🐥🐥🐣🥚🥚🥚🥚🥚🥚🥚🥚🥚 - Getting AI Manager Namespace                                    "
+printf "  🐥🐥🐣🥚🥚🥚🥚🥚🥚🥚🥚🥚🥚 - Getting AI Manager Namespace                                    "
 export WAIOPS_NAMESPACE=$(oc get po -A|grep aimanager-operator |awk '{print$1}')
-printf "\r  🐥🐥🐥🐣🥚🥚🥚🥚🥚🥚🥚🥚 -  Getting Event Manager Namespace                              "
+printf "\r  🐥🐥🐥🐣🥚🥚🥚🥚🥚🥚🥚🥚🥚 -  Getting Event Manager Namespace                              "
 export EVTMGR_NAMESPACE=$(oc get po -A|grep noi-operator |awk '{print$1}')
-printf "\r  🐥🐥🐥🐥🐣🥚🥚🥚🥚🥚🥚🥚 - Getting RobotShop Status                                      "
+printf "\r  🐥🐥🐥🐥🐣🥚🥚🥚🥚🥚🥚🥚🥚 - Getting RobotShop Status                                      "
 export RS_NAMESPACE=$(oc get ns robot-shop  --ignore-not-found|awk '{print$1}')
-printf "\r  🐥🐥🐥🐥🐥🐣🥚🥚🥚🥚🥚🥚 - Getting Turbonomic Status                                     "
+printf "\r  🐥🐥🐥🐥🐥🐣🥚🥚🥚🥚🥚🥚🥚 - Getting Turbonomic Status                                     "
 export TURBO_NAMESPACE=$(oc get ns turbonomic  --ignore-not-found|awk '{print$1}')
-printf "\r  🐥🐥🐥🐥🐥🐥🐣🥚🥚🥚🥚🥚 - Getting AWX Status                                            "
+printf "\r  🐥🐥🐥🐥🐥🐥🐣🥚🥚🥚🥚🥚🥚 - Getting AWX Status                                            "
 export AWX_NAMESPACE=$(oc get ns awx  --ignore-not-found|awk '{print$1}')
-printf "\r  🐥🐥🐥🐥🐥🐥🐥🐣🥚🥚🥚🥚 - Getting LDAP Status                                           "
+printf "\r  🐥🐥🐥🐥🐥🐥🐥🐣🥚🥚🥚🥚🥚 - Getting LDAP Status                                           "
 export LDAP_NAMESPACE=$(oc get po -n default --ignore-not-found| grep ldap |awk '{print$1}')
-printf "\r  🐥🐥🐥🐥🐥🐥🐥🐥🐣🥚🥚🥚 - Getting Demo UI Status                                       "
-export DEMO_NAMESPACE=$(oc get po -A|grep demo-ui- |awk '{print$1}')
-printf "\r  🐥🐥🐥🐥🐥🐥🐥🐥🐥🐣🥚🥚 - Getting ELK Status                                            "
+printf "\r  🐥🐥🐥🐥🐥🐥🐥🐥🐣🥚🥚🥚🥚 - Getting Aiops Toolbox Status                                       "
+export TOOLBOX_READY=$(oc get po -n default|grep cp4waiops-tools| grep 1/1 |awk '{print$1}')
+printf "\r  🐥🐥🐥🐥🐥🐥🐥🐥🐥🐣🥚🥚🥚 - Getting ELK Status                                            "
 export ELK_NAMESPACE=$(oc get ns openshift-logging  --ignore-not-found|awk '{print$1}')
-printf "\r  🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥🐣🥚 - Getting Istio Status                                          "
-export ISTIO_NAMESPACE=$(oc get ns istio-logging  --ignore-not-found|awk '{print$1}')
-printf "\r  🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥🐣 - Getting Humio Status                                          "
+printf "\r  🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥🐣🥚🥚 - Getting Istio Status                                          "
+export ISTIO_NAMESPACE=$(oc get ns istio-system  --ignore-not-found|awk '{print$1}')
+printf "\r  🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥🐣🥚 - Getting Humio Status                                          "
 export HUMIO_NAMESPACE=$(oc get ns humio-logging  --ignore-not-found|awk '{print$1}')
-printf "\r  🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥 - Done ✅                                                        "
+printf "\r  🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥🐣 - GettingDEMO UI Status                                          "
+export DEMOUI_READY=$(oc get pods -n $WAIOPS_NAMESPACE |grep ibm-aiops-demo-ui|awk '{print$1}')
+printf "\r  🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥🐥 - Done ✅                                                        "
 
 
 
@@ -194,7 +196,7 @@ menu_INSTALL_AIMGR () {
       echo ""
 
       # Check if already installed
-      if [[  $WAIOPS_NAMESPACE == "" ]]; then
+      if [[ ! $WAIOPS_NAMESPACE == "" ]]; then
             echo "⚠️  CP4WAIOPS AI Manager seems to be installed already"
 
             read -p "   Are you sure you want to continue❓ [y,N] " DO_COMM
@@ -258,6 +260,24 @@ menu_INSTALL_AIMGR () {
                   cd -
 
             fi
+
+
+
+            echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+            echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+            echo "    🚀 AI Manager Login"
+            echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+            echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+            echo "    "
+            echo "      📥 AI Manager"
+            echo ""
+            echo "                🌏 URL:      https://$(oc get route -n $WAIOPS_NAMESPACE cpd -o jsonpath={.spec.host})"
+            echo ""
+            echo "                🧑 User:     $(oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_username}' | base64 --decode && echo)"
+            echo "                🔐 Password: $(oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 --decode)"
+            echo "     "
+
+
       else
             echo "    ⚠️  Skipping"
             echo "--------------------------------------------------------------------------------------------"
@@ -337,6 +357,292 @@ menu_INSTALL_EVTMGR () {
 
 
 
+menuDEMO_OPEN () {
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    🚀 Demo UI - Details"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    "
+      appURL=$(oc get routes -n $WAIOPS_NAMESPACE cp4waiops-demo-ui  -o jsonpath="{['spec']['host']}")|| true
+      appToken=$(oc get cm -n cp4waiops demo-ui-config -o jsonpath='{.data.TOKEN}')
+      echo "            📥 Demo UI:"   
+      echo "    " 
+      echo "                🌏 URL:           http://$appURL/"
+      echo "                🔐 Token:         $appToken"
+      echo ""
+      echo ""
+      open "http://"$appURL
+
+
+}
+     
+
+
+menuAWX_OPENAWX () {
+      export AWX_ROUTE="https://"$(oc get route -n awx awx -o jsonpath={.spec.host})
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    🚀 AWX "
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    "
+      echo "            📥 AWX :"
+      echo ""
+      echo "                🌏 URL:      $AWX_ROUTE"
+      echo "                🧑 User:     admin"
+      echo "                🔐 Password: $(oc -n awx get secret awx-admin-password -o jsonpath='{.data.password}' | base64 --decode && echo)"
+      echo "    "
+      echo "    "
+
+      open $AWX_ROUTE
+
+}
+
+
+
+menuAIMANAGER_OPEN () {
+      export ROUTE="https://"$(oc get route -n $WAIOPS_NAMESPACE cpd -o jsonpath={.spec.host})
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    🚀 AI Manager"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    "
+      echo "      📥 AI Manager"
+      echo ""
+      echo "                🌏 URL:      $ROUTE"
+      echo ""
+      echo "                🧑 User:     $(oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_username}' | base64 --decode && echo)"
+      echo "                🔐 Password: $(oc -n ibm-common-services get secret platform-auth-idp-credentials -o jsonpath='{.data.admin_password}' | base64 --decode)"
+      echo "    "
+      echo "    "
+
+      open  $ROUTE
+
+}
+
+
+
+menuEVENTMANAGER_OPEN () {
+      export ROUTE="https://"$(oc get route -n $EVTMGR_NAMESPACE  evtmanager-ibm-hdm-common-ui -o jsonpath={.spec.host})
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    🚀 Event Manager (Netcool Operations Insight)"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    "
+      echo "      📥 Event Manager"
+      echo ""
+      echo "            🌏 URL:      $ROUTE"
+      echo ""
+      echo "            🧑 User:     smadmin"
+      echo "            🔐 Password: $(oc get secret -n $EVTMGR_NAMESPACE  evtmanager-was-secret -o jsonpath='{.data.WAS_PASSWORD}'| base64 --decode && echo)"
+      echo "    "
+      echo "    "
+
+
+      open  $ROUTE
+
+}
+
+
+menuAWX_OPENELK () {
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    🚀 ELK "
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      token=$(oc sa get-token cluster-logging-operator -n openshift-logging)
+      routeES=`oc get route elasticsearch -o jsonpath={.spec.host} -n openshift-logging`
+      routeKIBANA=`oc get route kibana -o jsonpath={.spec.host} -n openshift-logging`
+      echo "      "
+      echo "            📥 ELK:"
+      echo "      "
+      echo "               🌏 ELK service URL             : https://$routeES/app*"
+      echo "               🔐 Authentication type         : Token"
+      echo "               🔐 Token                       : $token"
+      echo "      "
+      echo "               🌏 Kibana URL                  : https://$routeKIBANA"
+      echo "               🚪 Kibana port                 : 443"
+
+      open  https://$routeKIBANA
+
+}
+
+
+menuAWX_OPENISTIO () {
+      export KIALI_ROUTE="https://"$(oc get route -n istio-system kiali -o jsonpath={.spec.host})
+      export RS_ROUTE="http://"$(oc get route -n istio-system istio-ingressgateway -o jsonpath={.spec.host})
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    🚀 ServiceMesh/ISTIO "
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    "
+      echo "            📥 ServiceMesh:"
+      echo ""
+      echo "                🌏 RobotShop:     $RS_ROUTE"
+      echo "                🌏 Kiali:         $KIALI_ROUTE"
+      echo "                🌏 Jaeger:        https://$(oc get route -n istio-system jaeger -o jsonpath={.spec.host})"
+      echo "                🌏 Grafana:       https://$(oc get route -n istio-system grafana -o jsonpath={.spec.host})"
+      echo "    "
+      echo "    "
+      echo "          In the begining all traffic is routed to ratings-test"
+      echo "            You can modify the routing by executing:"
+      echo "              All Traffic to test:    oc apply -n robot-shop -f ./ansible/templates/demo_apps/robotshop/istio/ratings-100-0.yaml"
+      echo "              Traffic split 50-50:    oc apply -n robot-shop -f ./ansible/templates/demo_apps/robotshop/istio/ratings-50-50.yaml"
+      echo "              All Traffic to prod:    oc apply -n robot-shop -f ./ansible/templates/demo_apps/robotshop/istio/ratings-0-100.yaml"
+      echo "    "
+      echo "    "
+      echo "    "
+
+      open  $KIALI_ROUTE      
+      open  $RS_ROUTE
+
+}
+
+menuAWX_OPENTURBO () {
+      export ROUTE="https://"$(oc get route -n turbonomic api -o jsonpath={.spec.host})
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    🚀 Turbonomic Dashboard "
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    "
+      echo "            📥 Turbonomic Dashboard :"
+      echo ""
+      echo "                🌏 URL:      $ROUTE"
+      echo "                🧑 User:     administrator"
+      echo "                🔐 Password: As set at init step"
+      echo "    "
+      echo "    "
+
+      open  $ROUTE
+
+}
+
+
+menuAWX_OPENHUMIO () {
+      export ROUTE="https://"$(oc get route -n humio-logging humio -o jsonpath={.spec.host})
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    🚀 HUMIO "
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    "
+      echo "            📥 HUMIO:"
+      echo ""
+      echo "                🌏 URL:      $ROUTE"
+      echo "                🧑 User:     developer"
+      echo "                🔐 Password: P4ssw0rd!"
+      echo "    "
+      echo "    "
+
+      open  $ROUTE
+
+}
+
+
+menuAWX_OPENLDAP () {
+      export ROUTE="http://"$(oc get route -n default openldap-admin -o jsonpath={.spec.host})
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    🚀 LDAP "
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    " 
+      echo "            📥 OPENLDAP:"
+      echo "    " 
+      echo "                🌏 URL:      $ROUTE"
+      echo "                🧑 User:     cn=admin,dc=ibm,dc=com"
+      echo "                🔐 Password: P4ssw0rd!"
+      echo "    "
+      echo "    "
+
+      open  $ROUTE
+
+}
+
+
+
+
+
+menuAWX_OPENRS () {
+      export ROUTE="http://"$(oc get routes -n robot-shop web  -o jsonpath="{['spec']['host']}")
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    🚀 RobotShop "
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    "
+      echo "    "
+
+
+      open  $ROUTE
+
+}
+
+
+
+menuINSTALL_AWX_EASY () {
+      echo "--------------------------------------------------------------------------------------------"
+      echo " 🚀  Start AWX Easy Install" 
+      echo "--------------------------------------------------------------------------------------------"
+      echo ""
+
+      oc apply -f ./ansible/templates/awx/awx-create-easy-installer.yaml
+
+     echo ""
+
+      echo "   ------------------------------------------------------------------------------------------------------------------------------"
+      echo "   🕦  Wait for AWX pods ready"
+      while [ `oc get pods -n awx| grep postgres|grep 1/1 | wc -l| tr -d ' '` -lt 1 ]
+      do
+            echo "        AWX pods not ready yet. Waiting 15 seconds"
+            sleep 15
+      done
+      echo "       ✅  OK: AWX pods ready"
+
+      export AWX_ROUTE=$(oc get route -n awx awx -o jsonpath={.spec.host})
+      export AWX_URL=$(echo "https://$AWX_ROUTE")
+
+
+      echo ""
+      echo "   ------------------------------------------------------------------------------------------------------------------------------"
+      echo "   🕦  Wait for AWX being ready"
+      while : ; do
+            READY=$(curl -s $AWX_URL|grep "Application is not available")
+            if [[  $READY  =~ "Application is not available" ]]; then
+                  echo "        AWX not ready yet. Waiting 15 seconds"
+                  sleep 30
+            else
+                  break
+            fi
+      done
+      echo "       ✅  OK: AWX ready"
+
+
+      export AWX_ROUTE="https://"$(oc get route -n awx awx -o jsonpath={.spec.host})
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    🚀 AWX "
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    "
+      echo "            📥 AWX :"
+      echo ""
+      echo "                🌏 URL:      $AWX_ROUTE"
+      echo "                🧑 User:     admin"
+      echo "                🔐 Password: $(oc -n awx get secret awx-admin-password -o jsonpath='{.data.password}' | base64 --decode && echo)"
+      echo "    "
+      echo "    "
+
+      open $AWX_ROUTE
+}
+
+
+
 menuTRAIN_AIOPSDEMO () {
       echo "--------------------------------------------------------------------------------------------"
       echo " 🚀  Start CP4WAIOPS Demo Training (skip)" 
@@ -367,15 +673,77 @@ menuLOAD_TOPOLOGYNOI () {
 }
 
 
-menu_INSTALL_AIOPSDEMO () {
+
+
+
+menuDEBUG_PATCH () {
       echo "--------------------------------------------------------------------------------------------"
-      echo " 🚀  Install CP4WAIOPSDemoUI" 
+      echo " 🚀  Launch Debug Patches" 
+      echo "--------------------------------------------------------------------------------------------"
+      echo ""
+
+      read -p "   Are you sure you want to continue❓ [y,N] " DO_COMM
+      if [[ $DO_COMM == "y" ||  $DO_COMM == "Y" ]]; then
+            echo ""
+            echo "   ✅ Ok, continuing..."
+            echo ""
+      else
+            echo ""
+            echo "    ❌  Aborting"
+            echo "--------------------------------------------------------------------------------------------"
+            echo  ""    
+            echo  ""
+            return
+      fi
+
+
+      cd ansible
+      ansible-playbook 91_aiops-debug-patches.yaml
+      cd -
+
+}
+
+menu_INSTALL_TOOLBOX () {
+      echo "--------------------------------------------------------------------------------------------"
+      echo " 🚀  Install CP4WAIOPS Toolbox Pod" 
       echo "--------------------------------------------------------------------------------------------"
       echo ""
 
       cd ansible
+      ansible-playbook 17_aiops-toolbox.yaml
+      cd -
+
+}
+
+
+menu_INSTALL_AIOPSDEMO () {
+      echo "--------------------------------------------------------------------------------------------"
+      echo " 🚀  Install CP4WAIOPS Demo UI" 
+      echo "--------------------------------------------------------------------------------------------"
+      echo ""
+
+      oc delete job -n $WAIOPS_NAMESPACE demo-ui-create-config>/dev/null 2>/dev/null
+      oc delete cm -n $WAIOPS_NAMESPACE demo-ui-config>/dev/null 2>/dev/null
+      oc delete deployment -n $WAIOPS_NAMESPACE ibm-aiops-demo-ui>/dev/null 2>/dev/null
+      cd ansible
       ansible-playbook 18_aiops-demo-ui.yaml
       cd -
+
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    🚀 Demo UI - Details"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    -----------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "    "
+      appURL=$(oc get routes -n $WAIOPS_NAMESPACE cp4waiops-demo-ui  -o jsonpath="{['spec']['host']}")|| true
+      appToken=$(oc get cm -n cp4waiops demo-ui-config -o jsonpath='{.data.TOKEN}')
+      echo "            📥 Demo UI:"   
+      echo "    " 
+      echo "                🌏 URL:           http://$appURL/"
+      echo "                🔐 Token:         $appToken"
+      echo ""
+      echo ""
+      open "http://"$appURL
 
 }
 
@@ -514,7 +882,8 @@ incorrect_selection() {
       echo "--------------------------------------------------------------------------------------------"
 }
 
-
+until [ "$selection" = "0" ]; do
+  
 clear
 
 echo "*****************************************************************************************************************************"
@@ -529,13 +898,7 @@ echo ""
 echo "*****************************************************************************************************************************"
 echo " 🐥 CloudPak for Watson AIOPs - EASY INSTALL"
 echo "*****************************************************************************************************************************"
-echo "  "
-echo "  ℹ️  This script provides different options to install CP4WAIOPS demo environments through Ansible"
 echo ""
-echo "   ------------------------------------------------------------------------------------------------------------------------------"
-echo "   🗄️  Using Parameters"
-echo "   ------------------------------------------------------------------------------------------------------------------------------"
-
 
 if [[ $ENTITLED_REGISTRY_KEY == "" ]];
 then
@@ -557,108 +920,179 @@ echo "  "
 
 
 
-until [ "$selection" = "0" ]; do
-  
+
 
 
 
       echo "  🐥 CP4WAIOPS - Base Install"
       if [[ $WAIOPS_NAMESPACE == "" ]]; then
-            echo "      11  - Install AI Manager                                      - Install CP4WAIOPS AI Manager Component"
+            echo "         11  - Install AI Manager                                      - Install CP4WAIOPS AI Manager Component"
       else
-            echo "      ✅  - Install AI Manager                                      "
+            echo "         11 ✅ Install AI Manager                                      - Already installed "
       fi
 
       if [[ $EVTMGR_NAMESPACE == "" ]]; then
-            echo "      12  - Install Event Manager                                   - Install CP4WAIOPS Event Manager Component"
+            echo "         12  - Install Event Manager                                   - Install CP4WAIOPS Event Manager Component"
       else
-            echo "      ✅  - Install Event Manager                                   "
+            echo "         12 ✅ Install Event Manager                                   - Already installed "
       fi
 
+
+
       echo "  "
-      echo "  "
-      echo "  🐥 Solutions"
-      if [[ $TURBO_NAMESPACE == "" ]]; then
-            echo "      21  - Install Turbonomic                                      - Install Turbonomic (needs a separate license)"
+      echo "  🐥 CP4WAIOPS Addons"
+      if [[  $DEMOUI_READY == "" ]]; then
+            echo "         17  - Install CP4WAIOPS Demo Application                      - Install CP4WAIOPS Demo Application"
       else
-            echo "      ✅  - Install Turbonomic                                      "
+            echo "         17 ✅ Install CP4WAIOPS Demo Application                      - Already installed "
+      fi
+
+      if [[  $TOOLBOX_READY == "" ]]; then
+            echo "         18  - Install CP4WAIOPS Toolbox                               - Install Toolbox pod with all important tools (oc, kubectl, kafkacat, ...)"
+      else
+            echo "         18 ✅ Install CP4WAIOPS Toolbox                               - Already installed "
+      fi
+
+
+
+      if [[  $LDAP_NAMESPACE == "" ]]; then
+            echo "         32  - Install OpenLdap                                        - Install OpenLDAP for CP4WAIOPS (should be installed by option 11)"
+      else
+            echo "         32 ✅ Install OpenLdap                                        - Already installed "
+      fi
+
+      if [[  $RS_NAMESPACE == "" ]]; then
+            echo "         33  - Install RobotShop                                       - Install RobotShop for CP4WAIOPS (should be installed by option 11)"
+      else
+            echo "         33 ✅ Install RobotShop                                       - Already installed  "
+      fi
+
+
+
+
+      echo "  "
+      echo "  🐥 Third Party Solutions"
+      if [[ $TURBO_NAMESPACE == "" ]]; then
+            echo "         21  - Install Turbonomic                                      - Install Turbonomic (needs a separate license)"
+      else
+            echo "         21 ✅ Install Turbonomic                                      - Already installed "
       fi
 
       if [[  $HUMIO_NAMESPACE == "" ]]; then
-            echo "      22  - Install Humio                                           - Install Humio (needs a separate license)"
+            echo "         22  - Install Humio                                           - Install Humio (needs a separate license)"
       else
-            echo "      ✅  - Install Humio                                           "
+            echo "         22 ✅ Install Humio                                           - Already installed "
       fi
 
 
       if [[  $AWX_NAMESPACE == "" ]]; then
-            echo "      23  - Install AWX                                             - Install AWX (open source Ansible Tower)"
+            echo "         23  - Install AWX                                             - Install AWX (open source Ansible Tower)"
       else
-            echo "      ✅  - Install AWX                                             "
+            echo "         23 ✅ Install AWX                                             - Already installed "
       fi
 
       if [[  $ISTIO_NAMESPACE == "" ]]; then
-            echo "      24  - Install OpenShift Mesh                                  - Install OpenShift Mesh (Istio)"
+            echo "         24  - Install OpenShift Mesh                                  - Install OpenShift Mesh (Istio)"
             else
-            echo "      ✅  - Install OpenShift Mesh                                  "
+            echo "         24 ✅ Install OpenShift Mesh                                  - Already installed "
             fi
 
 
 
-      if [[  $ISTIO_NAMESPACE == "" ]]; then
-            echo "      25  - Install OpenShift Logging                               - Install OpenShift Logging (ELK)"
+      if [[  $ELK_NAMESPACE == "" ]]; then
+            echo "         25  - Install OpenShift Logging                               - Install OpenShift Logging (ELK)"
             else
-            echo "      ✅  - Install OpenShift Logging                                 "
+            echo "         25 ✅ Install OpenShift Logging                               - Already installed "
             fi
 
 
 
-      echo "  "
-      echo "  "
-      echo "  🐥 CP4WAIOPS Addons"
-      if [[  $DEMO_NAMESPACE == "" ]]; then
-            echo "      31  - Install CP4WAIOPS Demo Application                      - Install CP4WAIOPS Demo Application"
-      else
-            echo "      ✅  - Install CP4WAIOPS Demo Application                      "
-      fi
 
-      if [[  $LDAP_NAMESPACE == "" ]]; then
-            echo "      32  - Install OpenLdap                                        - Install OpenLDAP for CP4WAIOPS (should be installed by option 10)"
-      else
-            echo "      ✅  - Install OpenLdap                                        "
-      fi
-
-      if [[  $RS_NAMESPACE == "" ]]; then
-            echo "      33  - Install RobotShop                                       - Install RobotShop for CP4WAIOPS (should be installed by option 10)"
-      else
-            echo "      ✅  - Install RobotShop                                       "
-      fi
 
             #       echo "    	25  - Install OpenShift Logging                               - Install OpenShift Logging (ELK)"
       echo "  "
-      echo "  "
       echo "  🐥 Demo Configuration"
-      echo "      51  - AI Manager Topology                                      - Create RobotShop Topology for AI Manager"
-      echo "      52  - Event Manager Topology                                   - Create RobotShop Topology for AI Manager"
-      echo "      55  - Train RobotShop Models                                   - Loads training data, creates definitions and launches training (skip if index exists: $SILENT_SKIP)"
+      echo "         51  - AI Manager Topology                                     - Create RobotShop Topology for AI Manager (must create Observers before - documentation 4.)"
+      echo "         52  - Event Manager Topology                                  - Create RobotShop Topology for Event Manager (must create Observers before - documentation 11.1)"
+      echo "         55  - Train RobotShop Models                                  - Loads training data, creates definitions and launches training (skip if index exists: $SILENT_SKIP)"
+      
       echo "  "
+      echo "  🐥 Ansible AWX"
+      if [[  $AWX_NAMESPACE == "" ]]; then
+            echo "         61  - Install AWX and Jobs                                    - Create AWX and preload Jobs for a complete installation"
+      else
+            echo "         61 ✅ Install AWX and Jobs                                    - Already installed "
+      fi
+
 
       echo "  "
       echo "  🐥 Prerequisites Install"
-      echo "      81  - Install Prerequisites Mac                                - Install Prerequisites for Mac"
-      echo "      82  - Install Prerequisites Ubuntu                             - Install Prerequisites for Ubuntu"
-      echo "  "
+      echo "         71  - Install Prerequisites Mac                               - Install Prerequisites for Mac"
+      echo "         72  - Install Prerequisites Ubuntu                            - Install Prerequisites for Ubuntu"
+
 
       echo "  "
-      echo "  🐥 Infos"
-      echo "      91  - Get logins                                               - Get logins for all installed components"
-      echo "      92  - Write logins to file                                     - Write logins for all installed components to file LOGIN.txt"
+      echo "  🌏 Access Information"
+      echo "         81  - Get logins                                              - Get logins for all installed components"
+      echo "         82  - Write logins to file                                    - Write logins for all installed components to file LOGIN.txt"
       echo "  "
 
+      if [[ ! $WAIOPS_NAMESPACE == "" ]]; then
+            echo "         90  - Open AI Manager                                         - Open AI Manager"
+      fi
+
+      if [[ ! $DEMOUI_READY == "" ]]; then
+            echo "         91  - Open AI Manager Demo                                    - Open AI Manager Incident Demo UI"
+      fi
+
+      if [[ ! $EVTMGR_NAMESPACE == "" ]]; then
+            echo "         92  - Open Event Manager                                      - Open Event Manager"
+      fi
+
+      if [[ ! $TURBO_NAMESPACE == "" ]]; then
+            echo "         93  - Open Turbonomic                                         - Open Turbonomic Instance"
+      fi
+
+      if [[ ! $ELK_NAMESPACE == "" ]]; then
+            echo "         94  - Open ELK                                                - Open ELK Instance"
+      fi
+
+      if [[ ! $HUMIO_NAMESPACE == "" ]]; then
+            echo "         95  - Open Humio                                              - Open Humio Instance"
+      fi
+
+      if [[ ! $ISTIO_NAMESPACE == "" ]]; then
+            echo "         96  - Open Istio                                              - Open ServcieMesh/Istio Kiali Instance"
+      fi
+
+      if [[ ! $LDAP_NAMESPACE == "" ]]; then
+            echo "         97  - Open OpenLDAP                                           - Open OpenLDAP Instance"
+      fi
+
+      if [[ ! $RS_NAMESPACE == "" ]]; then
+            echo "         98  - Open RobotShop                                          - Open RobotShop Demo Application"
+      fi
+
+      if [[ ! $AWX_NAMESPACE == "" ]]; then
+            echo "         99  - Open AWX                                                - Open AWX Instance (Open Source Ansible Tower)"
+      fi
+
+
+
+
+
+      echo "  "
+      echo "  🦟 Debug"
+      echo "         999  - Debug Patch                                             - Patches if your AI Manager install is hanging"
+      echo "  "
+
+
+
+
+
+
   echo "      "
-  echo "      "
-  echo "      "
-  echo "    	0  -  Exit"
+echo "      ❌  0  -  Exit"
   echo ""
   echo ""
   echo "  Enter selection: "
@@ -674,20 +1108,37 @@ until [ "$selection" = "0" ]; do
     24 ) clear ; menu_INSTALL_ISTIO  ;;
     25 ) clear ; menu_INSTALL_ELK  ;;
 
-    31 ) clear ; menu_INSTALL_AIOPSDEMO  ;;
+    17 ) clear ; menu_INSTALL_AIOPSDEMO  ;;
+    18 ) clear ; menu_INSTALL_TOOLBOX  ;;
     32 ) clear ; menu_INSTALL_LDAP  ;;
     33 ) clear ; menu_INSTALL_ROBOTSHOP  ;;
+
+
 
     51 ) clear ; menuLOAD_TOPOLOGY  ;;
     52 ) clear ; menuLOAD_TOPOLOGYNOI  ;;
     55 ) clear ; menuTRAIN_AIOPSDEMO  ;;
 
+    61 ) clear ; menuINSTALL_AWX_EASY  ;;
 
-    81 ) clear ; ./ansible/scripts/02-prerequisites-mac.sh  ;;
-    82 ) clear ; ./ansible/scripts/03-prerequisites-ubuntu.sh  ;;
+    71 ) clear ; ./13_prerequisites-mac.sh  ;;
+    72 ) clear ; ./14_prerequisites-ubuntu.sh  ;;
 
-    91 ) clear ; ./tools/20_get_logins.sh  ;;
-    92 ) clear ; ./tools/20_get_logins.sh > LOGINS.txt  ;;
+    81 ) clear ; ./tools/20_get_logins.sh  ;;
+    82 ) clear ; ./tools/20_get_logins.sh > LOGINS.txt  ;;
+
+    90 ) clear ; menuAIMANAGER_OPEN  ;;
+    91 ) clear ; menuDEMO_OPEN  ;;
+    92 ) clear ; menuEVENTMANAGER_OPEN  ;;
+    93 ) clear ; menuAWX_OPENTURBO  ;;
+    94 ) clear ; menuAWX_OPENELK  ;;
+    95 ) clear ; menuAWX_OPENHUMIO  ;;
+    96 ) clear ; menuAWX_OPENISTIO  ;;
+    97 ) clear ; menuAWX_OPENLDAP  ;;
+    98 ) clear ; menuAWX_OPENRS  ;;
+    99 ) clear ; menuAWX_OPENAWX  ;;
+
+    999 ) clear ; menuDEBUG_PATCH  ;;
 
 
     0 ) clear ; exit ;;

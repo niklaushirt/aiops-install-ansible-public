@@ -13,7 +13,7 @@
 
 - name: CHECK -          🕦 Wait for Zen Ansible Script zen_ready.stdout in namespace ibm-common-services
   shell: |
-    ZEN_LOGS=$(oc logs $(oc get po -n ibm-common-services|grep ibm-zen-operator|awk '{print$1}') -n ibm-common-services|grep -i -E "ok=2|ok=3")
+    ZEN_LOGS=$(oc logs $(oc get po -n ibm-common-services|grep ibm-zen-operator|awk '{print$1}') -n ibm-common-services|grep -i -E "ok=2|ok=3|ok=4")
     echo $ZEN_LOGS
   register: zen_ready
   until: ("ok" in zen_ready.stdout)

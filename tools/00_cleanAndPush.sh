@@ -50,6 +50,8 @@ echo "--------------------------------------------------------------------------
 cp ./tools/patches/templates/13_reset-slack.sh ./tools/98_reset/13_reset-slack.sh
 cp ./tools/patches/templates/14_reset-slack-changerisk.sh ./tools/98_reset/14_reset-slack-changerisk.sh
 cp ./tools/patches/templates/incident_robotshop-noi.sh ./tools/01_demo/incident_robotshop-noi.sh
+mv -f ./LOGINS.txt ./DO_NOT_DELIVER
+
 
 echo "--------------------------------------------------------------------------------------------------------------------------------"
 echo "    🚀  Remove Training Files"

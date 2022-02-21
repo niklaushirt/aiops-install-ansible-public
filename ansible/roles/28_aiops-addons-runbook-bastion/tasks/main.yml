@@ -10,14 +10,14 @@
     kind: Deployment
     name: bastion-host
     namespace: default
-  register: K8S_EXISTS
+  register: BASTION_EXISTS 
 
 # --------------------------------------------------------------------------------------------------------------------------------------
 # Install Runbook Bastion Server
 # --------------------------------------------------------------------------------------------------------------------------------------
 - name: BASTION -            🚀 Install Runbook Bastion Server
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: "default"
     template: ./templates/runbook_bastion/create-bastion.yaml
-  when: K8S_EXISTS.resources|length == 0
+  when: BASTION_EXISTS .resources|length == 0

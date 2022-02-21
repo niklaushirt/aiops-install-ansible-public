@@ -13,7 +13,7 @@
 #
 # VWatson AIOps 3.2
 #
-# ©2021 nikh@ch.ibm.com
+# ©2022 nikh@ch.ibm.com
 # ---------------------------------------------------------------------------------------------------------------------------------------------------"
 # ---------------------------------------------------------------------------------------------------------------------------------------------------"
 # ---------------------------------------------------------------------------------------------------------------------------------------------------"
@@ -43,8 +43,13 @@ echo ""
         echo "      📥 Install Ansible"
         sudo apt-get install -y ansible
 
+        echo "      📥 Install PIP"
+        sudo apt-get install -y python3-pip
+
         echo "      📥 Install Ansible Kubernetes"
         ansible-galaxy collection install community.kubernetes:1.2.1
+        ansible-galaxy collection install kubernetes.core:2.2.3
+        pip install openshift pyyaml kubernetes 
 
         echo "      📥 Install kafkacat"
         sudo apt-get install -y kafkacat

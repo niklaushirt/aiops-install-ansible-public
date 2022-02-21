@@ -26,7 +26,7 @@
     kind: EventManagerGateway
     name: event-gateway-generic
     namespace: "{{ WAIOPS_NAMESPACE }}"
-  register: K8S_EXISTS
+  register: GATEWAY_EXISTS 
 
 
 - name: GATEWAY -            🚀 Install Gateway
@@ -35,7 +35,7 @@
   # Create Gateway
   # --------------------------------------------------------------------------------------------------------------------------------------
   - name: GATEWAY -            🚀 Create Gateway
-    community.kubernetes.k8s:
+    kubernetes.core.k8s:
       state: present
       namespace: "{{ WAIOPS_NAMESPACE }}"
       template: ./templates/gateway/1_gateway-generic-template.j2
@@ -50,4 +50,4 @@
   #   shell: oc delete pod -n {{ WAIOPS_NAMESPACE }} $(oc get po -n {{ WAIOPS_NAMESPACE }}|grep event-gateway-generic|awk '{print$1}') 
   #   ignore_errors: yes
   #   when: INSTALL_GATEWAY == true
-  # when: K8S_EXISTS.resources|length == 0
+  # when: GATEWAY_EXISTS .resources|length == 0

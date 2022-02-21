@@ -1,11 +1,10 @@
 <center> <h1>CP4WatsonAIOps V3.2</h1> </center>
-<center> <h2>Demo Environment Installation with Ansible</h2> </center>
+<center> <h2>Demo Environment Installation - 🐥 EASY INSTALL</h2> </center>
 
 ![K8s CNI](./doc/pics/front.png)
 
 
-<center> ©2021 Niklaus Hirt / IBM </center>
-
+<center> ©2022 Niklaus Hirt / IBM </center>
 
 
 <div style="page-break-after: always;"></div>
@@ -67,7 +66,7 @@ Please drop me a note on Slack or by mail nikh@ch.ibm.com if you find glitches o
 1. [Installing Turbonomic](#13-installing-turbonomic)
 1. [Installing ELK (optional)](#14-installing-ocp-elk)
 1. [Installing Humio (optional)](#15-humio)
-1. [Installing ServiceMest/Istio (optional)](#16-servicemesh)
+1. [Installing ServiceMesh/Istio (optional)](#16-servicemesh)
 1. [Installing AWX/AnsibleTower (optional)](#17-awx)
 1. [Detailed Prerequisites](#18-detailed-prerequisites)
 1. [Detailed CP4WAIOPS Installation](#19-detailed-cp4waiops-installation)
@@ -82,7 +81,7 @@ Please drop me a note on Slack or by mail nikh@ch.ibm.com if you find glitches o
 
 
 ---------------------------------------------------------------
-# 1. Introduction
+# 1 Introduction
 ---------------------------------------------------------------
 
 This repository contains the scrips for installing a Watson AIOps demo environment with an Ansible based installer.
@@ -116,7 +115,7 @@ So please if you have any feedback contact me
 
 
 ---------------------------------------------------------------
-# 🐥 2. Easy Install
+# 🐥 2 Easy Install
 ---------------------------------------------------------------
 
 I have provided a tool to very easily install the different components.
@@ -124,7 +123,7 @@ I have provided a tool to very easily install the different components.
 Please follow this chapter and execute all steps marked with 🟢.
 
 
-## 2.1. Get the code 🟢
+## 2.1 Get the code 🟢
 
 Clone the GitHub Repository
 
@@ -134,7 +133,7 @@ git clone https://<YOUR GIT TOKEN>@github.ibm.com/NIKH/aiops-install-ansible.git
 ```
 
 
-## 2.2. Prerequisites 
+## 2.2 Prerequisites 
 
 ### 2.2.1 OpenShift requirements 🟢
 
@@ -174,7 +173,7 @@ Use Option 🐥`82` in [Easy Install](#-2-easy-install) to install the `Prerequi
 
 
 
-## 2.3. Get the CP4WAIOPS installation token 🟢
+## 2.3 Get the CP4WAIOPS installation token 🟢
 
 You can get the installation (pull) token from [https://myibm.ibm.com/products-services/containerlibrary](https://myibm.ibm.com/products-services/containerlibrary).
 
@@ -185,11 +184,11 @@ This allows the CP4WAIOPS images to be pulled from the IBM Container Registry.
 
 
 
-## 2.4. Install AI Manager 🟢
+## 2.4 Install AI Manager 🟢
 
 ![K8s CNI](./doc/pics/install-aimanager.png)
 
-### 2.4.1. Launch the Easy Install Tool 🟢
+### 2.4.1 Launch the Easy Install Tool 🟢
 
 Just run:
 
@@ -205,16 +204,29 @@ For a vanilla install you will see this:
 
 <div style="page-break-after: always;"></div>
 
-### 2.4.1. Start AI Manager Installation 🟢
+### 2.4.1 Start AI Manager Installation 🟢
 
 1. Select option 🐥`11` to install a base `AI Manager` instance.
 2. Click through the assistant, enter the installation token (if not provided on the command line):
 
 ![K8s CNI](./doc/pics/tool1.png)
 
+### 2.4.2 First Login 🟢
+
+After successful installation, the Easy Installer gives you the URL and the Login Information for your first connections.
+
+
+You can also run `./tools/20_get_logins.sh` at any moment. This will print out all the relevant passwords and credentials.
+
+Usually it's a good idea to store this in a file for later use:
+
+```bash
+./tools/20_get_logins.sh > my_credentials.txt
+```
+
 <div style="page-break-after: always;"></div>
 
-## 2.5. Configure AI Manager 🟢
+## 2.5 Configure AI Manager 🟢
 
 There are some minimal configurations that you have to do to use the demo system and that are covered by the following flow:
 
@@ -269,11 +281,11 @@ In this case you will see the selected options:
 
 <div style="page-break-after: always;"></div>
 
-## 2.6. Install Event Manager 🟢
+## 2.6 Install Event Manager 🟢
 
 ![K8s CNI](./doc/pics/install-evtmanager.png)
 
-### 2.6.1. Start Event Manager Installation 🟢
+### 2.6.1 Start Event Manager Installation 🟢
 
 Use Option 🐥`12` in [Easy Install](#-2-easy-install) to install a base `Event Manager` instance
 
@@ -285,7 +297,7 @@ There are some minimal configurations that you have to do to use the demo system
 
 <div style="page-break-after: always;"></div>
 
-## 2.7. Installing additional components 🟢
+## 2.7 Installing additional components 🟢
 
 Select the options you want to install.
 
@@ -297,7 +309,7 @@ The ones marked with ✅ have already been detected as being present in the clus
 
 
 ---------------------------------------------------------------
-# 3. Architecture
+# 3 Architecture
 ---------------------------------------------------------------
 
 
@@ -340,7 +352,7 @@ This allows us to:
 
 
 ---------------------------------------------------------------
-# 4. Configure Applications and Topology
+# 4 Configure Applications and Topology
 ---------------------------------------------------------------
 
 
@@ -437,7 +449,7 @@ This will create:
 <div style="page-break-after: always;"></div>
 
 ---------------------------------------------------------------
-# 5. Training
+# 5 Training
 ---------------------------------------------------------------
 
 
@@ -514,7 +526,7 @@ or use the procedure in [Chapter 22](#22-manually-train-the-models) to do this m
 
 
 ---------------------------------------------------------------
-# 6. Slack integration
+# 6 Slack integration
 ---------------------------------------------------------------
 
 ## 6.1 Initial Slack Setup 🟢
@@ -647,7 +659,7 @@ oc set env deployment/$(oc get deploy -l app.kubernetes.io/component=chatops-sla
 <div style="page-break-after: always;"></div>
 
 ---------------------------------------------------------------
-# 7. Some Polishing
+# 7 Some Polishing
 ---------------------------------------------------------------
 
 ## 7.1 Add LDAP Logins to CP4WAIOPS 🟢
@@ -677,12 +689,39 @@ oc set env deployment/$(oc get deploy -l app.kubernetes.io/component=chatops-sla
 <div style="page-break-after: always;"></div>
 
 ---------------------------------------------------------------
-# 8. Demo the Solution
+# 8 Demo the Solution
 ---------------------------------------------------------------
 
 
 
-## 8.1 Simulate incident
+## 7.1 Simulate incident - Demo UI
+
+> ❗**In order to use the DEMO UI, you have to have followed through all the steps in [AI Manager Configuration](#25-configure-ai-manager). Notably Configuring Topology, Integrations and having run the Models Training.**
+
+### 7.1.1 Install Demo UI
+
+#### Use 🐥 [Easy Install](#-2-easy-install) - Option `34` to automatically install a Demo UI instance.
+
+## 7.1.2 Simulate incident - Demo UI
+
+1. Run `./tools/20_get_logins.sh` to get the URL and Login Token.
+1. Open the URL and enter the Token.
+	![](./doc/pics/demoui1.png)
+1. Click on Configuration
+1. Verify that you have `Kafka Topics` shown for Events and Logs
+	![](./doc/pics/demoui2.png)
+1. Click `Back`
+1. Now you can use the buttons to simulate:
+
+	* Only Events
+	* Only Log Anomalies
+	* or Both
+	![](./doc/pics/demoui1.png)
+
+1. The UI will confirm that the incident creation has been launched
+	![](./doc/pics/demoui3.png)
+
+## 7.2 Simulate incident - Command Line
 
 **Make sure you are logged-in to the Kubernetes Cluster first** 
 
@@ -699,11 +738,13 @@ This will delete all existing Alerts and inject pre-canned event and logs to cre
 
 
 
+
+
 <div style="page-break-after: always;"></div>
 
 ---------------------------------------------------------------
 
-# 9. TROUBLESHOOTING
+# 9 TROUBLESHOOTING
 ---------------------------------------------------------------
 
 ## 9.1 Check with script
@@ -899,7 +940,7 @@ Follow these steps to connects from Elasticvue:
 <div style="page-break-after: always;"></div>
 
 ---------------------------------------------------------------
-# 10. Uninstall
+# 10 Uninstall
 ---------------------------------------------------------------
 
 ❗ The scritps are coming from here [https://github.com/IBM/cp4waiops-samples.git](https://github.com/IBM/cp4waiops-samples.git)
@@ -922,10 +963,10 @@ Just run:
 <div style="page-break-after: always;"></div>
 
 ---------------------------------------------------------------
-# 11. EventManager Configuration
+# 11 EventManager Configuration
 ---------------------------------------------------------------
 
-## 11.1. Configure EventManager 🟢
+## 11.1 Configure EventManager 🟢
 
 ❗ You only have to do this if you have installed EventManager/NOI (As described in Easy Install - Chapter 6). For basic demoing with AI MAnager this is not needed.
 
@@ -1044,29 +1085,49 @@ Optionnally you can also add `Expiry Time` from `Optional event attributes` and 
 
 ### 11.1.5 Create custom Filter and View in EventManager 🟢
 
+
+
+
+
+
 #### 11.1.5.1 Filter 🟢
 
-Duplicate the `Default` filter and set to global.
 
+* In the `Event Manager` "Hamburger" Menu select `Netcool WebGui`
+* Click `Administration`
+* Click `Filters`
+* Select `Global Filters` from the DropDown menu
+* Select `Default`
+* Click `Copy Filter` (the two papers on the top left) 
+* Set to `global`
+* Click `Ok`
 * Name: AIOPS
-* Logic: **Any** (!)
+* Logic: **Any** ❗ (the right hand option)
 * Filter:
 	* AlertGroup = 'CEACorrelationKeyParent'
 	* AlertGroup = 'robot-shop'
 
+![](./doc/pics/noi10.png)
+
+
 #### 11.1.5.2 View 🟢
-
-Duplicate the `Example_IBM_CloudAnalytics` View and set to global.
-
-
+* In the `Event Manager` "Hamburger" Menu select `Netcool WebGui`
+* Click `Administration`
+* Click `Views`
+* Select `System Views` from the DropDown menu
+* Select `Example_IBM_CloudAnalytics`
+* Click `Copy View` (the two papers on the top left) 
+* Set to `global`
+* Click `Ok`
 * Name: AIOPS
-
-Configure to your likings.
+* Configure to your likings.
 
 
 ### 11.1.6 Create grouping Policy 🟢
 
-* NetCool Web Gui --> `Insights` / `Scope Based Grouping`
+* In the `Event Manager` "Hamburger" Menu select `Netcool WebGui`
+* Click `Insights`
+* Click `Scope Based Grouping`
 * Click `Create Policy`
 * `Action` select fielt `Alert Group`
 * Toggle `Enabled` to `On`
@@ -1156,7 +1217,7 @@ This will create:
 <div style="page-break-after: always;"></div>
 
 ---------------------------------------------------------------
-# 12. Runbook Configuration
+# 12 Runbook Configuration
 ---------------------------------------------------------------
 
 ## 12.1 Configure Runbooks with AWX 🟢
@@ -1166,7 +1227,7 @@ This is the preferred method.
 Use Option 🐥`23` in [Easy Install](#-2-easy-install) to install an `AWX ` instance if you haven't done so yet.
 
 
-### 12.1.1. Configure AWX 🟢
+### 12.1.1 Configure AWX 🟢
 
 There is some demo content available to RobotShop.
 
@@ -1187,7 +1248,7 @@ There is some demo content available to RobotShop.
 
 
 
-### 12.1.2. Configure AWX Integration 🟢
+### 12.1.2 Configure AWX Integration 🟢
 
 In EventManager:
 
@@ -1199,7 +1260,7 @@ In EventManager:
 
 <div style="page-break-after: always;"></div>
 
-### 12.1.3. Configure Runbook 🟢
+### 12.1.3 Configure Runbook 🟢
 
 In EventManager:
 
@@ -1209,26 +1270,42 @@ In EventManager:
 1. Name it `Mitigate Robotshop Ratings Outage`
 1. Click `Add automated Step`
 2. Select the `Mitigate Robotshop Ratings Outage` Job
+
+	![](./doc/pics/rb1.png)
+
 3. Click `Select this automation`
 4. Select `New Runbook Parameter`
-5. Name it `ClusterCredentials`
-6. Input the login credentials in JSON Format (get the URL and token from the 20_get_logins.sh script)
 
+	![](./doc/pics/rb2.png)
+
+5. Name it `ClusterCredentials`
+6. Input the login credentials in JSON Format (get the URL and token from the 20\_get\_logins.sh script)
+
+	![](./doc/pics/rb5.png)
+	
 	```json
 	{     
 		"my_k8s_apiurl": "https://c117-e.xyz.containers.cloud.ibm.com:12345",
 		"my_k8s_apikey": "PASTE YOUR API KEY"
 	}
 	```
+	
+	![](./doc/pics/rb3.png)
+
 7. Click Save
+
+	![](./doc/pics/rb4.png)
+	
 7. Click Publish
 
 
+	
+	
 Now you can test the Runbook by clicking on `Run`.
 
 <div style="page-break-after: always;"></div>
 
-### 12.1.4. Add Runbook Triggers 🟢
+### 12.1.4 Add Runbook Triggers 🟢
 
 1. Select `Automations` / `Runbooks`
 1. Select `Triggers` tab
@@ -1245,6 +1322,14 @@ Now you can test the Runbook by clicking on `Run`.
 3. Select `Mitigate RobotShop Problem`
 4. Click `Select This Runbook`
 5. Toggle `Execution` / `Automatic` to `off`
+6. Under `Parameters for this runbook` select `Manual` and input the login credentials in JSON Format (get the URL and token from the 20\_get\_logins.sh script)
+
+	```json
+	{     
+		"my_k8s_apiurl": "https://c117-e.xyz.containers.cloud.ibm.com:12345",
+		"my_k8s_apikey": "PASTE YOUR API KEY"
+	}
+	```
 6. Click `Save`
 
 
@@ -1354,7 +1439,7 @@ user:   root
 <div style="page-break-after: always;"></div>
 
 -----------------------------------------------------------------------------------
-# 13. Installing Turbonomic
+# 13 Installing Turbonomic
 ---------------------------------------------------------------
 
 ## 13.1 Installing Turbonomic
@@ -1525,7 +1610,7 @@ So an example might be:
 <div style="page-break-after: always;"></div>
 
 -----------------------------------------------------------------------------------
-# 14. Installing OCP ELK
+# 14 Installing OCP ELK
 ---------------------------------------------------------------
 
 ## 14.1 Installing OCP ELK
@@ -1551,7 +1636,7 @@ You can easily install ELK into the same cluster as CP4WAIOPS.
 <div style="page-break-after: always;"></div>
 
 ---------------------------------------------------------------
-# 15. HUMIO 
+# 15 HUMIO 
 ---------------------------------------------------------------
 
 ## 15.1 Installing HUMIO
@@ -1760,7 +1845,7 @@ oc patch -n robot-shop service mysql -p '{"spec": {"selector": {"service": "mysq
 <div style="page-break-after: always;"></div>
 
 ---------------------------------------------------------------
-# 16. ServiceMesh
+# 16 ServiceMesh
 ---------------------------------------------------------------
 
 ## 16.1 Installing ServiceMesh
@@ -1794,7 +1879,7 @@ This will instrument the RobotShop Application at the same time.
 
 
 ---------------------------------------------------------------
-# 17. AWX
+# 17 AWX
 ---------------------------------------------------------------
 
 ## 17.1 Installing AWX
@@ -1832,7 +1917,7 @@ You can easily install AWX (OpenSource Ansible Tower) into the same cluster as C
 
 
 ---------------------------------------------------------------
-# 18. Detailed Prerequisites
+# 18 Detailed Prerequisites
 ---------------------------------------------------------------
 
 
@@ -1878,6 +1963,8 @@ Or install them manually:
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew install ansible
 ansible-galaxy collection install community.kubernetes:1.2.1
+ansible-galaxy collection install kubernetes.core:2.2.3
+pip install openshift pyyaml kubernetes 
 brew install kafkacat
 brew install node
 brew install wget
@@ -1937,6 +2024,8 @@ Or install them manually:
 ```bash
 sudo apt-get install -y ansible
 ansible-galaxy collection install community.kubernetes:1.2.1
+ansible-galaxy collection install kubernetes.core:2.2.3
+pip install openshift pyyaml kubernetes 
 sudo apt-get install -y kafkacat
 sudo apt-get install -y npm
 sudo apt-get install -y jq
@@ -2013,7 +2102,7 @@ Simply click on the green `CODE` button and select `Download Zip` to download th
 
 
 ---------------------------------------------------------------
-# 19. Detailed CP4WAIOPS Installation
+# 19 Detailed CP4WAIOPS Installation
 ---------------------------------------------------------------
 
 
@@ -2322,26 +2411,27 @@ At any moment you can run `./tools/11_check_install.sh` or for a more in-depth e
 <div style="page-break-after: always;"></div>
 
 
+
 ---------------------------------------------------------------
-# 20. Additional Configuration
+# 20 Additional Configuration
 ---------------------------------------------------------------
 
 ## 20.1 Setup remote Kubernetes Observer
 
 
 
-### 20.1.1. Get Kubernetes Cluster Access Details
+### 20.1.1 Get Kubernetes Cluster Access Details
 
 As part of the kubernetes observer, it is required to communicate with the target cluster. So it is required to have the URL and Access token details of the target cluster. 
 
 Do the following.
 
 
-#### 20.1.1.1. Login
+#### 20.1.1.1 Login
 
 Login into the remote Kubernetes cluster on the Command Line.
 
-#### 20.1.1.2. Access user/token 
+#### 20.1.1.2 Access user/token 
 
 
 Run the following:
@@ -2356,7 +2446,7 @@ Please jot this down.
 
 
 
-### 20.1.1. Create Kubernetes Observer Connection
+### 20.1.1 Create Kubernetes Observer Connection
 
 
 
@@ -2519,7 +2609,7 @@ curl -X "POST" "http://cp4waiops-event-gateway-cp4waiops.itzroks-270003bu3k-azsa
 <div style="page-break-after: always;"></div>
 
 ---------------------------------------------------------------
-# 21. Service Now integration
+# 21 Service Now integration
 ---------------------------------------------------------------
 
 
@@ -2555,7 +2645,7 @@ curl -X "POST" "http://cp4waiops-event-gateway-cp4waiops.itzroks-270003bu3k-azsa
 
 
 ---------------------------------------------------------------
-# 22. Manually train the models
+# 22 Manually train the models
 ---------------------------------------------------------------
 
 
@@ -2726,6 +2816,603 @@ After successful training you should get:
 
 
 
+-----------------------------------------------------------------------------------
+# 99 Example Installation Log
+---------------------------------------------------------------
 
 
+```bash
+--------------------------------------------------------------------------------------------
+ 🚀  Install CP4WAIOPS AI Manager
+--------------------------------------------------------------------------------------------
+
+
+  🔐 You have provided the following Token:
+    eyJhbGciOiJIUzaaaaaaa.....aaaaaaaax4m9EH-abvdc53DYEkbYY
+
+  Are you sure that this is correct❓ [y,N] y
+  Do you want to install demo content (highly recommended - OpenLdap and RobotShop)❓ [Y,n] y
+
+   ✅ Ok, continuing with demo content...
+
+
+
+[WARNING]: No inventory was parsed, only implicit localhost is available
+[WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'
+
+PLAY [localhost] *******************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************************************************************
+ok: [localhost]
+
+TASK [00_pre : PREREQUISITES -      👓 Load parameters] ****************************************************************************************************************************************
+ok: [localhost]
+
+TASK [01_initialization : PREREQUISITES -      👓 Load parameters] *****************************************************************************************************************************
+ok: [localhost]
+
+TASK [01_initialization : PREREQUISITES -      📥  Installing in Namespace "cp4waiops" with size "small"] **************************************************************************************
+ok: [localhost]
+
+TASK [01_initialization : PREREQUISITES -      📥  Installation Parameters"] *******************************************************************************************************************
+ok: [localhost] => {
+    "msg": [
+        "** CP4WAIOPS AI Manager Parameters ***********************************************************************",
+        " AI Manager Installation Name:      ibm-aiops",
+        " AI Manager Namespace:              cp4waiops",
+        " AI Manager Installation Size:      small",
+        "",
+        "** Installation Options ***********************************************************************",
+        " Rook-Ceph installation method:    automatic",
+        " Auto Login for OCP:               False",
+        "    OCP Url:                        not_configured",
+        "    OCP Token:                      not_configured",
+        " OCP Major Version:                automatic",
+        " Storage Class File Override:      not_configured",
+        " Storage Class Block Override:     not_configured",
+        "",
+        "** Additional Content *************************************************************************",
+        " Create a demo user:               True",
+        " Install Demo Applications:        True",
+        " Install Bastion Server (RBA):     True",
+        " Install LDAP Server:              True",
+        "  LDAP Domain:                     ibm.com",
+        "  LDAP Base:                       dc=ibm,dc=com",
+        "  LDAP Admin Password:             P4ssw0rd!",
+        " Install Turbonomic:               False",
+        "     Turbonomic Storage Class:      ibmc-block-gold",
+        " Install Humio:                    False",
+        " Install OCP ELK Stack:            False"
+    ]
+}
+
+TASK [01_initialization : PLATFORM -           🌏 Get Cluster FQDN] ****************************************************************************************************************************
+changed: [localhost]
+
+TASK [01_initialization : ROOKCEPH -           💾 Set Global Cluster Name=xxx-0000.eu-de.containers.appdomain.cloud] ********************
+ok: [localhost]
+
+TASK [01_initialization : PLATFORM -           🔎  Check if Rook-Ceph should be installed for mode automatic] **********************************************************************************
+changed: [localhost]
+
+TASK [01_initialization : ROOKCEPH -           💾 Install Rook-Ceph=false] *********************************************************************************************************************
+ok: [localhost]
+
+TASK [01_initialization : OPENSHIFT VERSION -  ☑️  Determine OpenShift Major Version] **********************************************************************************************************
+changed: [localhost]
+
+TASK [01_initialization : OPENSHIFT VERSION -  💾 Set OCP_MAJOR_VERSION=4.8] *******************************************************************************************************************
+ok: [localhost]
+
+TASK [02_rook-ceph : ROOKCEPH -           🔎 Check if Rook-Ceph should be installed] ***********************************************************************************************************
+ok: [localhost]
+
+TASK [03_aiops-get-storage-class : STORAGECLASS -       👓 Load parameters] ********************************************************************************************************************
+ok: [localhost]
+
+TASK [03_aiops-get-storage-class : STORAGECLASS -       🌏 Get Cluster FQDN] *******************************************************************************************************************
+changed: [localhost]
+
+TASK [03_aiops-get-storage-class : STORAGECLASS -       ☑️  Determine File Storage Class] ******************************************************************************************************
+changed: [localhost]
+
+TASK [03_aiops-get-storage-class : STORAGECLASS -       ☑️  Determine Block Storage Class] *****************************************************************************************************
+changed: [localhost]
+
+TASK [03_aiops-get-storage-class : STORAGECLASS -       💾 Set WAIOPS_STORAGE_CLASS_FILE=ibmc-file-gold-gid] ***********************************************************************************
+ok: [localhost]
+
+TASK [03_aiops-get-storage-class : STORAGECLASS -       💾 Set WAIOPS_STORAGE_CLASS_LARGE_BLOCK=ibmc-block-gold] *******************************************************************************
+ok: [localhost]
+
+TASK [03_aiops-get-storage-class : STORAGECLASS -       ☑️  Check File Storage Class exists ibmc-file-gold-gid] ********************************************************************************
+changed: [localhost]
+
+TASK [03_aiops-get-storage-class : STORAGECLASS -       ☑️  Check Large Block Storage Class exists ibmc-block-gold] ****************************************************************************
+changed: [localhost]
+
+TASK [03_aiops-get-storage-class : STORAGECLASS -       💿 Storage Class] **********************************************************************************************************************
+ok: [localhost] => {
+    "msg": [
+        "** Global Storage Classes for CP4WAIOPS installation *************************************************************************",
+        " CP4WAIOPS Storage Class File:          ibmc-file-gold-gid",
+        " CP4WAIOPS Storage Class Large Block:   ibmc-block-gold"
+    ]
+}
+
+TASK [04_aiops-prerequisites : PREREQUISITES -      👓 Load parameters] ************************************************************************************************************************
+ok: [localhost]
+
+TASK [04_aiops-prerequisites : PREREQUISITES -      🚀 Create CP4WAIOPS namespace cp4waiops] ***************************************************************************************************
+changed: [localhost]
+
+TASK [04_aiops-prerequisites : PREREQUISITES -      🚀 Create Pull Secret] *********************************************************************************************************************
+changed: [localhost]
+
+TASK [04_aiops-prerequisites : PREREQUISITES -      🚀 Create aiops-topology-service-account] **************************************************************************************************
+changed: [localhost]
+
+TASK [10_aiops-operator : AI Manager -           🚀 Install IBM Operator Catalog] **************************************************************************************************************
+changed: [localhost]
+
+TASK [10_aiops-operator : AI Manager -           🚀 Install Operator Group] ********************************************************************************************************************
+changed: [localhost]
+
+TASK [10_aiops-operator : AI Manager -           🚀 Install Subscription] **********************************************************************************************************************
+changed: [localhost]
+FAILED - RETRYING: [localhost]: CHECK -              🕦 Wait for CSVs to become ready (500 retries left).
+...
+
+TASK [10_aiops-operator : CHECK -              🕦 Wait for CSVs to become ready] ***************************************************************************************************************
+changed: [localhost]
+
+TASK [11_aiops-install : AI Manager -         🚀 Install Custom Resource - INSTALL AI MANAGER] *************************************************************************************************
+changed: [localhost]
+
+TASK [25_aiops-addons-ldap : LDAP -               🚀 Install OpenLDAP] *************************************************************************************************************************
+changed: [localhost]
+
+TASK [26_aiops-addons-user : USER -               🔎 Check OCP Demouser Account] ***************************************************************************************************************
+ok: [localhost]
+
+TASK [26_aiops-addons-user : USER -               🩹 Create OCP Demouser Account] ****************************************************************************************************************
+changed: [localhost]
+
+TASK [27_aiops-addons-demoapps : DEMO -               🔎 Check RobotShop] **********************************************************************************************************************
+ok: [localhost]
+
+TASK [27_aiops-addons-demoapps : DEMO -               🚀 Create robot-shop namespace] **********************************************************************************************************
+changed: [localhost]
+
+TASK [27_aiops-addons-demoapps : DEMO -               🚀 Create robot-shop service account] ****************************************************************************************************
+changed: [localhost]
+
+TASK [27_aiops-addons-demoapps : DEMO -               🚀 Create robot-shop application] ********************************************************************************************************
+changed: [localhost]
+
+TASK [27_aiops-addons-demoapps : DEMO -               🚀 Create robot-shop load generation] ****************************************************************************************************
+changed: [localhost]
+
+TASK [28_aiops-addons-runbook-bastion : BASTION -            🔎 Check Runbook Bastion Server] **************************************************************************************************
+ok: [localhost]
+
+TASK [28_aiops-addons-runbook-bastion : BASTION -            🚀 Install Runbook Bastion Server] ************************************************************************************************
+changed: [localhost]
+FAILED - RETRYING: [localhost]: CHECK -          🕦 Wait for more than >35 pods in namespace ibm-common-services (500 retries left).
+...
+
+TASK [99_aiops-wait-common-services : CHECK -          🕦 Wait for more than >35 pods in namespace ibm-common-services] ************************************************************************
+changed: [localhost]
+FAILED - RETRYING: [localhost]: CHECK -          🕦 Wait for ibm-common-services to become ready (500 retries left).
+...
+
+
+TASK [99_aiops-wait-common-services : CHECK -          🕦 Wait for ibm-common-services to become ready] ****************************************************************************************
+changed: [localhost]
+FAILED - RETRYING: [localhost]: CHECK -          🕦 Wait for Zen Ansible Script zen_ready.stdout in namespace ibm-common-services (500 retries left).
+...
+
+TASK [99_aiops-wait-for-zen : CHECK -          🕦 Wait for Zen Ansible Script zen_ready.stdout in namespace ibm-common-services] ***************************************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : PATCH    -             🩹 Patch Ingress] ********************************************************************************************************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : ROUTES -               🔎 Check Topology Routes] **********************************************************************************************************************
+ok: [localhost]
+
+TASK [30_aiops-patches : ROUTES    -             🚀 Create Topology Route - topology-merge] ****************************************************************************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : ROUTES    -             🚀 Create Topology Route - topology-rest] *****************************************************************************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : ROUTES    -             🚀 Create Topology Route - topology-file] *****************************************************************************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : ROUTES    -             🚀 Create Topology Route - topology-manage] ***************************************************************************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : ROUTES    -             🚀 Create external Flink Job Manager Route (you can ignore errors in this step)] **************************************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : ROUTES    -             🚀 Create external AI Manager API Route (you can ignore errors in this step)] *****************************************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : ROUTES    -             🚀 Create external Datalayer API Route (you can ignore errors in this step)] ******************************************************************
+changed: [localhost]
+FAILED - RETRYING: [localhost]: HACK    -             🕦 Wait for Cassandra Pod to become available - this can take up to 45 minutes (hack for 3.2) (500 retries left).
+...
+
+TASK [30_aiops-patches : HACK    -             🕦 Wait for Cassandra Pod to become available - this can take up to 45 minutes (hack for 3.2)] **************************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : HACK    -             🩹 Patch aiops-topology-service-account (hack for 3.2)] *******************************************************************************************
+changed: [localhost]
+FAILED - RETRYING: [localhost]: HACK    -             🕦 Wait for Topology Pods to become available - this can take up to 45 minutes (hack for 3.2) (500 retries left).
+...
+
+FAILED - RETRYING: [localhost]: HACK    -             🕦 Wait for Cassandra Pod to become available - this can take up to 45 minutes (hack for 3.2) (475 retries left).
+
+TASK [30_aiops-patches : HACK    -             🕦 Wait for Cassandra Pod to become available - this can take up to 45 minutes (hack for 3.2)] **************************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : HACK    -             🩹 Patch aiops-topology-service-account (hack for 3.2)] *******************************************************************************************
+changed: [localhost]
+FAILED - RETRYING: [localhost]: HACK    -             🕦 Wait for Topology Pods to become available - this can take up to 45 minutes (hack for 3.2) (500 retries left).
+...
+
+TASK [30_aiops-patches : HACK    -             🕦 Wait for Topology Pods to become available - this can take up to 45 minutes (hack for 3.2)] **************************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : HACK    -             🩹 Patch aiops-topology-merge (hack for 3.2)] *****************************************************************************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : HACK    -             🩹 Patch aiops-topology-search (hack for 3.2)] ****************************************************************************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : HACK    -             🩹 Patch aiops-topology-status (hack for 3.2)] ****************************************************************************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : HACK    -             🩹 Patch aiops-topology-layout (hack for 3.2)] ****************************************************************************************************
+changed: [localhost]
+FAILED - RETRYING: [localhost]: HACK    -             🕦 Wait for IR Analytics Pods to become available - this can take up to 45 minutes (hack for 3.2) (500 retries left).
+...
+
+
+TASK [30_aiops-patches : HACK    -             🕦 Wait for IR Analytics Pods to become available - this can take up to 45 minutes (hack for 3.2)] **********************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : HACK    -             🩹 Patch IR Analytics Pods (hack for 3.2) (you can ignore errors in this step)] *******************************************************************
+changed: [localhost]
+
+TASK [30_aiops-patches : HACK    -             🩹 Delete Pods with ImgPull Error (hack for 3.2)  (you can ignore errors in this step)] ***********************************************************
+fatal: [localhost]: FAILED! => {"changed": true, "cmd": "oc delete pod --ignore-not-found $(oc get po -n cp4waiops|grep ImagePull|awk '{print$1}') -n cp4waiops\n", "delta": "0:00:01.351690", "end": "2022-02-21 10:36:15.723159", "msg": "non-zero return code", "rc": 1, "start": "2022-02-21 10:36:14.371469", "stderr": "error: resource(s) were provided, but no name, label selector, or --all flag specified", "stderr_lines": ["error: resource(s) were provided, but no name, label selector, or --all flag specified"], "stdout": "", "stdout_lines": []}
+...ignoring
+
+TASK [99_aiops-wait-cp4waiops : CHECK -          🕦 Wait for more than >110 pods in namespace cp4waiops] ***************************************************************************************
+changed: [localhost]
+FAILED - RETRYING: [localhost]: CHECK -          🕦 Wait for cp4waiops to become ready (500 retries left).
+...
+
+TASK [99_aiops-wait-cp4waiops : CHECK -          🕦 Wait for cp4waiops to become ready] ********************************************************************************************************
+changed: [localhost]
+FAILED - RETRYING: [localhost]: CHECK -          🕦 Wait for all Pods in cp4waiops to become ready (500 retries left).
+...
+
+TASK [99_aiops-wait-cp4waiops : CHECK -          🕦 Wait for all Pods in cp4waiops to become ready] ********************************************************************************************
+changed: [localhost]
+
+TASK [31_aiops-final-patches : SLACK -                🕦 Wait for Slack Pod Ready] *************************************************************************************************************
+changed: [localhost]
+
+TASK [31_aiops-final-patches : NETWORK -              🩹 Patch NetworkPolicy] ********************************************************************************************************************
+changed: [localhost]
+
+TASK [31_aiops-final-patches : CERTIFICATES -         🩹 Patch AutomationUIConfig Certificates] **************************************************************************************************
+changed: [localhost]
+
+TASK [31_aiops-final-patches : CERTIFICATES -         🩹 Patch Ingress Certificates (you can ignore errors in this step)] ************************************************************************
+fatal: [localhost]: FAILED! => {"msg": "template error while templating string: expected token 'end of print statement', got 'string'. String: ingress_pod=$(oc get secrets -n openshift-ingress | grep tls | grep -v router-metrics-certs-default | awk '{print $1}')\noc get secret -n openshift-ingress -o 'go-template={{index .data \"tls.crt\"}}' ${ingress_pod} | base64 -d > cert.crt\noc get secret -n openshift-ingress -o 'go-template={{index .data \"tls.key\"}}' ${ingress_pod} | base64 -d > cert.key\noc get secret -n {{ WAIOPS_NAMESPACE }} iaf-system-automationui-aui-zen-ca -o 'go-template={{index .data \"ca.crt\"}}'| base64 -d > ca.crt\n\noc get secret -n {{ WAIOPS_NAMESPACE }} external-tls-secret --ignore-not-found -o yaml > external-tls-secret.yaml\noc delete secret -n {{ WAIOPS_NAMESPACE }} --ignore-not-found external-tls-secret\noc create secret generic -n {{ WAIOPS_NAMESPACE }} external-tls-secret --from-file=ca.crt=ca.crt --from-file=cert.crt=cert.crt --from-file=cert.key=cert.key --dry-run=client -o yaml | oc apply -f -\nREPLICAS=2\noc scale Deployment/ibm-nginx --replicas=0\nsleep 3\noc scale Deployment/ibm-nginx --replicas=${REPLICAS}\n# rm cert.crt\n# rm cert.key\n# rm ca.crt\n# rm external-tls-secret.yaml\n"}
+...ignoring
+
+TASK [31_aiops-final-patches : CERTIFICATES -         🕦 Wait for AutomationUIConfig being ready] **********************************************************************************************
+changed: [localhost]
+
+TASK [31_aiops-final-patches : CERTIFICATES -         🕦 Wait for nginx coming back up] ********************************************************************************************************
+changed: [localhost]
+
+TASK [31_aiops-final-patches : SLACK -                🩹 Patch Slack Welcome Message] ************************************************************************************************************
+changed: [localhost]
+
+TASK [40_aiops-post-ldap-register : LDAPREGISTER -       🌏 Get Cluster FQDN] ******************************************************************************************************************
+changed: [localhost]
+
+TASK [40_aiops-post-ldap-register : LDAPREGISTER -       📥 Get CS Server] *********************************************************************************************************************
+changed: [localhost]
+
+TASK [40_aiops-post-ldap-register : LDAPREGISTER -       📥 Get CS Server IP] ******************************************************************************************************************
+changed: [localhost]
+
+TASK [40_aiops-post-ldap-register : LDAPREGISTER -       📥 Get CS Server Password] ************************************************************************************************************
+changed: [localhost]
+
+TASK [40_aiops-post-ldap-register : LDAPREGISTER -       📥 SC Login] **************************************************************************************************************************
+changed: [localhost]
+
+TASK [40_aiops-post-ldap-register : DEBUG -                 🟢 Output] ***************************************************************************************************************************
+ok: [localhost] => {
+    "LOGIN.stdout_lines": [
+        "Authenticating...",
+        "OK",
+        "",
+        "Targeted account mycluster Account",
+        "",
+        "Targeted namespace kube-system",
+        "",
+        "Configuring kubectl ...",
+        "Property \"clusters.mycluster\" unset.",
+        "Property \"users.mycluster-user\" unset.",
+        "Property \"contexts.mycluster-context\" unset.",
+        "Cluster \"mycluster\" set.",
+        "User \"mycluster-user\" set.",
+        "Context \"mycluster-context\" created.",
+        "Switched to context \"mycluster-context\".",
+        "OK",
+        "",
+        "Configuring helm: /Users/nhirt/.helm",
+        "OK"
+    ]
+}
+
+TASK [40_aiops-post-ldap-register : LDAPREGISTER -       🔎 Check already registered] **********************************************************************************************************
+changed: [localhost]
+
+TASK [40_aiops-post-ldap-register : DEBUG -                 🟢 Output] ***************************************************************************************************************************
+ok: [localhost] => {
+    "LDAPS.stdout_lines": []
+}
+
+TASK [40_aiops-post-ldap-register : LDAPREGISTER -       📥 Register LDAP Server] **************************************************************************************************************
+changed: [localhost]
+
+TASK [40_aiops-post-ldap-register : DEBUG -                 🟢 Output] ***************************************************************************************************************************
+ok: [localhost] => {
+    "LOGIN.stdout_lines": [
+        "LDAP connection LDAP 'df331930-92fa-11ec-9c5b-8dd6e59652c6' successfully created"
+    ]
+}
+
+TASK [40_aiops-post-ldap-register : LDAPREGISTER -       📥 Get Team ID] ***********************************************************************************************************************
+changed: [localhost]
+
+TASK [40_aiops-post-ldap-register : LDAPREGISTER -       📥 Register Users and Teams] **********************************************************************************************************
+changed: [localhost]
+
+TASK [90_aiops-logins : PREREQUISITES -  🌏 Get Cluster FQDN] **********************************************************************************************************************************
+changed: [localhost]
+
+TASK [90_aiops-logins : LOGIN -  🚀 WAIOPS] ****************************************************************************************************************************************************
+changed: [localhost]
+
+TASK [90_aiops-logins : LOGIN -          🔐 WAIOPS] ********************************************************************************************************************************************
+ok: [localhost] => {
+    "output_string.stdout_lines": [
+        "CloudPak for Watson AIOps",
+        "**********************************************************************************************************************************",
+        "CP4WAIOPS",
+        "**********************************************************************************************************************************",
+        "    AIOPS:",
+        "        URL:      https://cpd-cp4waiops.xxx-0000.eu-de.containers.appdomain.cloud",
+        "        ADMIN USER:",
+        "         User:     admin",
+        "         Password: aaaaa",
+        " ",
+        "    Administration hub / Common Services",
+        "        URL:      https://cp-console.xxx-0000.eu-de.containers.appdomain.cloud",
+        "        User:     admin",
+        "        Password: aaaa",
+        " ",
+        " ",
+        " ",
+        " "
+    ]
+}
+
+TASK [90_aiops-logins : CHECK -  🔎 ADDONS - EventManager] *************************************************************************************************************************************
+ok: [localhost]
+
+TASK [90_aiops-logins : LOGIN -  🚀 OCP Demo User] *********************************************************************************************************************************************
+changed: [localhost]
+
+TASK [90_aiops-logins : LOGIN -          🔐 OCP Demo User] *************************************************************************************************************************************
+ok: [localhost] => {
+    "output_string.stdout_lines": [
+        "**********************************************************************************************************************************",
+        "OCP Connection Details",
+        "**********************************************************************************************************************************",
+        "        URL:     https://c115-e.eu-de.containers.cloud.ibm.com:30205",
+        "        Token:   eyJhbGciOiJSUzI1NiIsIaaaaaaJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlbW8tYWRtaW4tdG9rZW4tNjg1MmsiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVtby1hZG1pbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImI0MDcyY2ZlLTdhZWYtNDc1OC05YmQzLWE5Y2M4OWZhMDAyNCIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlbW8tYWRtaW4ifQ.wy8aku1jvUBSH3_F7Uo3p4r2Iud60kNuRa5lgxM0I8bdBg96fagzZa95jXfbfmsfVPmXv6iRYWeAaJemjMnj0h-SaqyR4yXwoKpP-MtFF_Yq3wGrbbt3_FQ-alT-ejaI0M--AYOGVJmSh8aU2TFWUTmj3hwEhOGmmwmc7XrUPd_EUGfKKpl5swEWl0p92PczlV4yQPeZ3eu_iCvQExifsYxAU7bfqhesOkaffXSACCkBWBk3VzYHlHzHQg1XOgeWA4Hq03QiMPODF3Fx1MQ9LEotaP8y7PJYQeOeqyDQbg9kGtodrbrBTy-CZKQeBSP8JRKvGWNwc4OF4xLRy51nKw",
+        "",
+        "",
+        "",
+        "        Login:   oc login --token=eyJhbGciOiJSUzI1NiIsImtpZaaaaaaJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlbW8tYWRtaW4tdG9rZW4tNjg1MmsiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVtby1hZG1pbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImI0MDcyY2ZlLTdhZWYtNDc1OC05YmQzLWE5Y2M4OWZhMDAyNCIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlbW8tYWRtaW4ifQ.wy8aku1jvUBSH3_F7Uo3p4r2Iud60kNuRa5lgxM0I8bdBg96fagzZa95jXfbfmsfVPmXv6iRYWeAaJemjMnj0h-SaqyR4yXwoKpP-MtFF_Yq3wGrbbt3_FQ-alT-ejaI0M--AYOGVJmSh8aU2TFWUTmj3hwEhOGmmwmc7XrUPd_EUGfKKpl5swEWl0p92PczlV4yQPeZ3eu_iCvQExifsYxAU7bfqhesOkaffXSACCkBWBk3VzYHlHzHQg1XOgeWA4Hq03QiMPODF3Fx1MQ9LEotaP8y7PJYQeOeqyDQbg9kGtodrbrBTy-CZKQeBSP8JRKvGWNwc4OF4xLRy51nKw --server=https://c115-e.eu-de.containers.cloud.ibm.com:30205",
+        "",
+        " ",
+        " ",
+        " ",
+        " "
+    ]
+}
+
+TASK [90_aiops-logins : LOGIN -  🚀 Demo Apps] *************************************************************************************************************************************************
+changed: [localhost]
+
+TASK [90_aiops-logins : LOGIN -          🔐 Demo Apps] *****************************************************************************************************************************************
+ok: [localhost] => {
+    "output_string.stdout_lines": [
+        "**********************************************************************************************************************************",
+        "Demo Apps - Details",
+        "**********************************************************************************************************************************",
+        "    RobotShop:",
+        "        APP URL:           http://web-robot-shop.xxx-0000.eu-de.containers.appdomain.cloud/",
+        "",
+        "    Kubetoy:",
+        "        APP URL:           http:///",
+        " ",
+        " ",
+        " ",
+        " "
+    ]
+}
+
+TASK [90_aiops-logins : LOGIN -  🚀 LDAP Connection] *******************************************************************************************************************************************
+changed: [localhost]
+
+TASK [90_aiops-logins : LOGIN -          🔐 LDAP Connection] ***********************************************************************************************************************************
+ok: [localhost] => {
+    "output_string.stdout_lines": [
+        "**********************************************************************************************************************************",
+        "LDAP Connection Details",
+        "**********************************************************************************************************************************",
+        "    OPENLDAP:",
+        "        URL:      http://openldap-admin-default.xxx-0000.eu-de.containers.appdomain.cloud",
+        "        User:     cn=admin,dc=ibm,dc=com",
+        "        Password: P4ssw0rd!",
+        " ",
+        " ",
+        " ",
+        " "
+    ]
+}
+
+TASK [90_aiops-logins : CHECK -  🔎 ADDONS - Turbonomic] ***************************************************************************************************************************************
+ok: [localhost]
+
+TASK [90_aiops-logins : CHECK -  🔎 ADDONS - Istio] ********************************************************************************************************************************************
+ok: [localhost]
+
+TASK [90_aiops-logins : CHECK -  🔎 ADDONS - AWX] **********************************************************************************************************************************************
+ok: [localhost]
+
+TASK [90_aiops-logins : LOGIN -  🚀 ADDONS - AWX] **********************************************************************************************************************************************
+changed: [localhost]
+
+TASK [90_aiops-logins : LOGIN -          🔐 ADDONS - AWX] **************************************************************************************************************************************
+ok: [localhost] => {
+    "output_string.stdout_lines": [
+        "**********************************************************************************************************************************",
+        "AWX Connection Details",
+        "**********************************************************************************************************************************",
+        "    AWX:",
+        "                🌏 URL:      https://awx-awx.xxx-0000.eu-de.containers.appdomain.cloud",
+        "                🧑 User:     admin",
+        "                🔐 Password: aaaaa",
+        " ",
+        " "
+    ]
+}
+
+TASK [90_aiops-logins : CHECK -  🔎 ADDONS - ManageIQ] *****************************************************************************************************************************************
+ok: [localhost]
+
+TASK [90_aiops-logins : CHECK -  🔎 ADDONS - Humio] ********************************************************************************************************************************************
+ok: [localhost]
+
+TASK [90_aiops-logins : CHECK -  🔎 ADDONS - Rook/Ceph] ****************************************************************************************************************************************
+ok: [localhost]
+
+TASK [90_aiops-logins : CHECK -  🔎 ADDONS - ELK] **********************************************************************************************************************************************
+ok: [localhost]
+
+TASK [90_aiops-logins : LOGIN -  🚀 Flink Task Manager] ****************************************************************************************************************************************
+changed: [localhost]
+
+TASK [90_aiops-logins : LOGIN -          🔐 Flink Task Manager] ********************************************************************************************************************************
+ok: [localhost] => {
+    "output_string.stdout_lines": [
+        "**********************************************************************************************************************************",
+        "Flink Task Manager",
+        "**********************************************************************************************************************************",
+        "    Flink Task Manager:",
+        "        APP URL:           https://job-manager-cp4waiops.xxx-0000.eu-de.containers.appdomain.cloud/",
+        "",
+        "        In Chrome: if you get blocked just type thisisunsafe and it will continue (you don't get any visual feedback when typing!)",
+        " ",
+        " ",
+        " ",
+        " "
+    ]
+}
+
+TASK [90_aiops-logins : LOGIN -  🚀 Vault] *****************************************************************************************************************************************************
+changed: [localhost]
+
+TASK [90_aiops-logins : LOGIN -          🔐 Vault] *********************************************************************************************************************************************
+ok: [localhost] => {
+    "output_string.stdout_lines": [
+        "**********************************************************************************************************************************",
+        "Vault",
+        "**********************************************************************************************************************************",
+        "                🌏 URL:      https://ibm-vault-deploy-vault-route-cp4waiops.xxx-0000.eu-de.containers.appdomain.cloud",
+        "                🔐 Token:    s.FFJ65T23WRoghBnniKUmU2G7"
+    ]
+}
+
+TASK [90_aiops-logins : LOGIN -  🚀 Service Now Connection] ************************************************************************************************************************************
+changed: [localhost]
+
+TASK [90_aiops-logins : LOGIN -          🔐 Service Now Connection] ****************************************************************************************************************************
+ok: [localhost] => {
+    "output_string.stdout_lines": [
+        "**********************************************************************************************************************************",
+        "Service Now Connection Details",
+        "**********************************************************************************************************************************",
+        "            📥 Login SNOW Dev Portal (if you have to wake the dev instance):",
+        "    ",
+        "                🌏 URL:                   https://developer.servicenow.com/dev.do",
+        "                🧑 User:                  demo@mydemo.center",
+        "                🔐 Password:              P4ssw0rd!IBM",
+        "",
+        "",
+        "            📥  Login SNOW Instance::",
+        "",
+        "                🌏 URL:                   https://dev56805.service-now.com",
+        "                🧑 User ID:               abraham.lincoln             (if you followed the demo install instructions)",
+        "                🔐 Password:              P4ssw0rd!                   (if you followed the demo install instructions)",
+        "                🔐 Encrypted Password:    g4W3L7/eFsUjV0eMncBkbg==    (if you followed the demo install instructions)",
+        "",
+        "",
+        "            📥 INTEGRATION SNOW-->CP4WAIOPS:",
+        "    ",
+        "                🌏 URL:                   https://cpd-cp4waiops.xxx-0000.eu-de.containers.appdomain.cloud    (URL for IBM Watson AIOps connection)",
+        "                📛 Instance Name:         aimanager",
+        "                🧑 User:                  admin",
+        "                🔐 Password:              0LncD8QoGl4V5zjS984NX9EjxTqGCtYK",
+        " ",
+        " ",
+        " ",
+        " "
+    ]
+}
+
+PLAY RECAP *************************************************************************************************************************************************************************************
+localhost                  : ok=109  changed=71   unreachable=0    failed=0    skipped=33   rescued=0    ignored=2
+
+/Users/nhirt/DOCUMENTS_SYNC/4_PROJECTS/1_CLOUDPAKS/2_INSTALL/2_AIOPS/aiops-3.2-ansible
+    -----------------------------------------------------------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------------------------------------------------------
+    🚀 AI Manager Login
+    -----------------------------------------------------------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------------------------------------------------------
+
+      📥 AI Manager
+
+                🌏 URL:      https://
+
+                🧑 User:     admin
+                🔐 Password: abcd
+
+             
+```
 

@@ -13,7 +13,7 @@
 
 
 - name: TURBOMETRICS -       🚀 Create turbo-metrics installation
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: default
     src: ./templates/turbo-metrics/create-data-ingestion.yaml

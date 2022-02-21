@@ -1,21 +1,12 @@
 ---
 # tasks file for aiops
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#       __________  __ ___       _____    ________            
-#      / ____/ __ \/ // / |     / /   |  /  _/ __ \____  _____
-#     / /   / /_/ / // /| | /| / / /| |  / // / / / __ \/ ___/
-#    / /___/ ____/__  __/ |/ |/ / ___ |_/ // /_/ / /_/ (__  ) 
-#    \____/_/      /_/  |__/|__/_/  |_/___/\____/ .___/____/  
-#                                              /_/            
-#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------------------------------"
 #  Ansible Install Playbook V0.1
 #
-#  CloudPak for Watson AIOps
+#  CloudPak for MultiCloud Management
 #
-#  ©2021 nikh@ch.ibm.com
+#  ©2022 nikh@ch.ibm.com
 # ---------------------------------------------------------------------------------------------------------------------------------------------------"
 # ---------------------------------------------------------------------------------------------------------------------------------------------------"
 # ---------------------------------------------------------------------------------------------------------------------------------------------------"
@@ -60,20 +51,20 @@
 # --------------------------------------------------------------------------------------------------------------------------------------
 # Otherwise determine Storage Class
 # --------------------------------------------------------------------------------------------------------------------------------------
-- name: STORAGECLASS -       ☑️  Determine Storage Class
+- name: STORAGECLASS -       ☑️  Determine File Storage Class
   shell: |
       CLUSTER_NAME={{ CLUSTER_NAME.stdout_lines[0] }}
-      if [[ $CLUSTER_NAME =~ "fyre.ibm.com" ]];
+      if [ -z "${CLUSTER_NAME##*fyre.ibm.com*}" ];
       then
           echo "rook-cephfs"
       else
-        if [[ $CLUSTER_NAME =~ "appdomain.cloud" ]];
+        if [ -z "${CLUSTER_NAME##*appdomain.cloud*}" ]; 
         then
             echo "ibmc-file-gold-gid"
         else
           # Use Default Class (storageclass.kubernetes.io/is-default-class:true)
           SC_DEFAULT_STRING=$(oc get sc | grep "(default)")
-          if [[ $SC_DEFAULT_STRING =~ "(default)" ]];
+          if [ -z "${SC_DEFAULT_STRING##*(default)*}" ];
           then
             echo ${SC_DEFAULT_STRING//\(*} 
           else
@@ -85,7 +76,44 @@
         fi
       fi
   register: INSTALL_DETECTED_STORAGECLASS
-  when: STORAGECLASS_FILE_OVERRIDE=="not_configured" or STORAGECLASS_BLOCK_OVERRIDE=="not_configured"
+  when: STORAGECLASS_FILE_OVERRIDE=="not_configured"
+  #args:
+  #  executable: /bin/bash
+
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Otherwise determine Storage Class
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: STORAGECLASS -       ☑️  Determine Block Storage Class
+  shell: |
+      CLUSTER_NAME={{ CLUSTER_NAME.stdout_lines[0] }}
+      if [ -z "${CLUSTER_NAME##*fyre.ibm.com*}" ]; 
+      then
+          echo "rook-ceph-block"
+      else
+        if [ -z "${CLUSTER_NAME##*appdomain.cloud*}" ]; 
+        then
+            echo "ibmc-block-gold"
+        else
+          # Use Default Class (storageclass.kubernetes.io/is-default-class:true)
+          SC_DEFAULT_STRING=$(oc get sc | grep "(default)")
+          if [ -z "${SC_DEFAULT_STRING##*(default)*}" ]; 
+          then
+            echo ${SC_DEFAULT_STRING//\(*} 
+          else
+            echo "No default StorageClass defined. Unable to determine what SC to use." 
+            echo "Please define one using storageclass.kubernetes.io/is-default-class:true"
+            echo "or set the STORAGECLASS_XXX_OVERRIDE in the configuration file."
+            exit 1
+          fi
+        fi
+      fi
+  register: INSTALL_DETECTED_BLOCK_STORAGECLASS
+  when: STORAGECLASS_BLOCK_OVERRIDE=="not_configured"
+  #args:
+  #  executable: /bin/bash
+
 
 # --------------------------------------------------------------------------------------------------------------------------------------
 # Set File Storage Class
@@ -97,10 +125,48 @@
 # --------------------------------------------------------------------------------------------------------------------------------------
 # Set Large Block Storage Class to same value
 # --------------------------------------------------------------------------------------------------------------------------------------
-- name: STORAGECLASS -       💾 Set WAIOPS_STORAGE_CLASS_LARGE_BLOCK={{ INSTALL_DETECTED_STORAGECLASS.stdout_lines[0] }} 
-  set_fact: WAIOPS_STORAGE_CLASS_LARGE_BLOCK={{ INSTALL_DETECTED_STORAGECLASS.stdout_lines[0] }} 
+- name: STORAGECLASS -       💾 Set WAIOPS_STORAGE_CLASS_LARGE_BLOCK={{ INSTALL_DETECTED_BLOCK_STORAGECLASS.stdout_lines[0] }} 
+  set_fact: WAIOPS_STORAGE_CLASS_LARGE_BLOCK={{ INSTALL_DETECTED_BLOCK_STORAGECLASS.stdout_lines[0] }} 
   when: STORAGECLASS_BLOCK_OVERRIDE=="not_configured" 
 
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Check File Storage Class exists
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: STORAGECLASS -       ☑️  Check File Storage Class exists {{ WAIOPS_STORAGE_CLASS_FILE }}
+  shell: |
+          SC_EXISTS=$(oc get sc {{ WAIOPS_STORAGE_CLASS_FILE }} --ignore-not-found --no-headers| wc -l|tr -d ' ')
+          if [ $SC_EXISTS -gt 0 ];
+          then
+            echo "OK"
+          else
+            echo "Storage Class does not exist!"
+            echo "Please revioew your block storage class or set the STORAGECLASS_XXX_OVERRIDE in the configuration file."
+            exit 1
+          fi     
+  register: INSTALL_DETECTED_BLOCK_STORAGECLASS
+  args:
+    executable: /bin/bash
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------
+# Check Large Block Storage Class exists
+# --------------------------------------------------------------------------------------------------------------------------------------
+- name: STORAGECLASS -       ☑️  Check Large Block Storage Class exists {{ WAIOPS_STORAGE_CLASS_LARGE_BLOCK }}
+  shell: |
+          SC_EXISTS=$(oc get sc {{ WAIOPS_STORAGE_CLASS_LARGE_BLOCK }} --ignore-not-found --no-headers| wc -l|tr -d ' ')
+          if [ $SC_EXISTS -gt 0 ];
+          then
+            echo "OK"
+          else
+            echo "Storage Class does not exist!"
+            echo "Please revioew your block storage class or set the STORAGECLASS_XXX_OVERRIDE in the configuration file."
+            exit 1
+          fi     
+  register: INSTALL_DETECTED_BLOCK_STORAGECLASS
+  args:
+    executable: /bin/bash
 
 
 - name: STORAGECLASS -       💿 Storage Class 

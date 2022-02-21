@@ -9,14 +9,14 @@
 # Install ELK Stack on OCP
 # --------------------------------------------------------------------------------------------------------------------------------------
 - name: ELK -                🚀 Create Elasticsearch
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: turbonomic
     template: ./templates/elk/1_elasticsearch.j2
   
 
 - name: ELK -                🚀 Create ELK Operator
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: turbonomic
     template: ./templates/elk/2_logging.j2
@@ -26,7 +26,7 @@
     seconds: 120
 
 - name: ELK -                🚀 Create ELK Instance
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     namespace: turbonomic
     template: ./templates/elk/3_logging-cr.j2
